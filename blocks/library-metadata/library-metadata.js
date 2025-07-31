@@ -7,11 +7,14 @@ export default async function decorate(block) {
 
   // Look for the description in the second div's second child
   const descriptionElement = block.querySelector('div:nth-child(2) > div:nth-child(2)');
-  const description = descriptionElement || document.createElement('div');
 
   const newBlock = document.createElement('div');
-  moveInstrumentation(block, newBlock);
-  newBlock.innerHTML = `<h2>${blockname}</h2>${description.outerHTML}`;
+  const descriptionBlock = document.createElement('div');
+  descriptionBlock.innerHTML = descriptionElement.innerHTML;
+
+  moveInstrumentation(descriptionElement, descriptionBlock);
+
+  newBlock.innerHTML = `<h2>${blockname}</h2>${descriptionElement.outerHTML}`;
   newBlock.classList.add('library-metadata');
   block.replaceChildren(newBlock);
 }
