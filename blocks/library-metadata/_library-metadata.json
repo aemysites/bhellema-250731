@@ -24,9 +24,8 @@
         {
           "component": "text",
           "valueType": "string",
-          "hidden": "true",
-          "name": "name",
-          "label": "Library Metadata name(hidden)"
+          "name": "blockName",
+          "label": "Block name"
         },
         {
           "component": "richtext",
