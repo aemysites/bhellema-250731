@@ -1,5 +1,16 @@
 {
-  "project": "AEM XWalk Boilerplate",
+  "project": "STA Boilerplate",
   "editUrlLabel": "AEM Editor",
-  "editUrlPattern": "{{contentSourceUrl}}{{pathname}}?cmd=open"
+  "editUrlPattern": "{{contentSourceUrl}}{{pathname}}?cmd=open",
+  "plugins": [
+    {
+      "id": "library",
+      "title": "STA Boilerplate",
+      "environments": [
+        "preview",
+        "live"
+      ],
+      "url": "/tools/sidekick/library.html"
+    }
+  ]
 }
