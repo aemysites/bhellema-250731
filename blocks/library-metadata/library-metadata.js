@@ -14,7 +14,7 @@ export default async function decorate(block) {
   newBlock.append(heading);
   newBlock.append(descEl);
 
-  // moveInstrumentation(descriptionElement, descriptionBlock);
+  moveInstrumentation(block, newBlock);
 
   newBlock.classList.add('library-metadata');
   block.replaceChildren(newBlock);
