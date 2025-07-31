@@ -1,21 +1,18 @@
-import { moveInstrumentation } from '../../scripts/scripts.js';
-
 export default async function decorate(block) {
-  // Look for the block name in the first div's second child
-  // const blockNameElement = block.querySelector('div:first-child > div:nth-child(2)');
-  // const blockname = blockNameElement?.textContent?.trim() || 'Block Name';
+  Array.from(block.children).forEach((child, index) => {
+    // Remove the first <div> if it's a direct child
+    const firstDiv = child.querySelector('div');
+    if (firstDiv && firstDiv.parentElement === child) {
+      child.removeChild(firstDiv);
+    }
 
-  // // Look for the description in the second div's second child
-  // const descEl = block.querySelector('div:nth-child(2) > div:nth-child(2)');
-  // const newBlock = document.createElement('div');
-
-  // const heading = document.createElement('h2');
-  // heading.textContent = blockname;
-  // newBlock.append(heading);
-  // newBlock.append(descEl);
-
-  // moveInstrumentation(block, newBlock);
-
-  // newBlock.classList.add('library-metadata');
-  // block.replaceChildren(newBlock);
+    if (index === 0) {
+      const nextDiv = child.querySelector('div');
+      if (nextDiv && nextDiv.parentElement === child) {
+        const h2 = document.createElement('h2');
+        h2.innerHTML = nextDiv.innerHTML;
+        child.replaceChild(h2, nextDiv);
+      }
+    }
+  });
 }
