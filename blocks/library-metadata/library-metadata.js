@@ -6,15 +6,16 @@ export default async function decorate(block) {
   const blockname = blockNameElement?.textContent?.trim() || 'Block Name';
 
   // Look for the description in the second div's second child
-  const descriptionElement = block.querySelector('div:nth-child(2) > div:nth-child(2)');
-
+  const descEl = block.querySelector('div:nth-child(2) > div:nth-child(2)');
   const newBlock = document.createElement('div');
-  const descriptionBlock = document.createElement('div');
-  descriptionBlock.innerHTML = descriptionElement.innerHTML;
 
-  moveInstrumentation(descriptionElement, descriptionBlock);
+  const heading = document.createElement('h2');
+  heading.textContent = blockname;
+  newBlock.append(heading);
+  newBlock.append(descEl);
 
-  newBlock.innerHTML = `<h2>${blockname}</h2>${descriptionElement.outerHTML}`;
+  // moveInstrumentation(descriptionElement, descriptionBlock);
+
   newBlock.classList.add('library-metadata');
   block.replaceChildren(newBlock);
 }
