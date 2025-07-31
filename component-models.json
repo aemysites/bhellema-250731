@@ -356,7 +356,7 @@
         "component": "text",
         "valueType": "string",
         "name": "blockName",
-        "label": "Block name"
+        "label": "Block Name"
       },
       {
         "component": "richtext",
