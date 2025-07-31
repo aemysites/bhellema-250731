@@ -1,9 +1,13 @@
+import { moveInstrumentation } from '../../scripts/scripts.js';
+
 export default async function decorate(block) {
   Array.from(block.children).forEach((child, index) => {
     // Remove the first <div> if it's a direct child
     const firstDiv = child.querySelector('div');
     if (firstDiv && firstDiv.parentElement === child) {
-      child.removeChild(firstDiv);
+      // child.removeChild(firstDiv);
+      // hide the first div
+      firstDiv.style.display = 'none';
     }
 
     if (index === 0) {
