@@ -19,7 +19,8 @@
       "accordion",
       "tabs",
       "embed",
-      "quote"
+      "quote",
+      "library-metadata"
     ]
   },
   {
@@ -54,6 +55,10 @@
       "button",
       "title"
     ]
+  },
+  {
+    "id": "library-metadata",
+    "components": []
   },
   {
     "id": "table",

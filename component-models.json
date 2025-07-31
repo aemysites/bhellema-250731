@@ -350,6 +350,24 @@
     ]
   },
   {
+    "id": "library-metadata",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "hidden": "true",
+        "name": "name",
+        "label": "Library Metadata name(hidden)"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "description",
+        "label": "Description of the block variant"
+      }
+    ]
+  },
+  {
     "id": "modal",
     "fields": [
       {
