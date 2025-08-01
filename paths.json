@@ -6,6 +6,7 @@
     "/content/bhellema-250731/tools/sidekick/library:/tools/sidekick/library.json"
   ],
   "includes": [
-    "/content/bhellema-250731/"
+    "/content/bhellema-250731/",
+    "/content/dam/bhellema-250731/"
   ]
 }
