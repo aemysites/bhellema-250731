@@ -3,7 +3,7 @@ export default async function decorate(block) {
     const directDivs = [...child.children].filter((el) => el.tagName === 'DIV');
 
     if (directDivs.length >= 2) {
-      directDivs[0].remove();
+      directDivs[0].style.display = 'none';
       if (index === 0) {
         const secondDiv = directDivs[1];
         const h2 = document.createElement('h2');
