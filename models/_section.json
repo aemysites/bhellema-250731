@@ -52,6 +52,7 @@
         "embed",
         "quote",
         "search",
+        "table",
         "library-metadata"
       ]
     }
