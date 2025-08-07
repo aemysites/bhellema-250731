@@ -44,6 +44,7 @@
         "title",
         "hero",
         "cards",
+        "carousel",
         "columns",
         "fragment",
         "accordion",
