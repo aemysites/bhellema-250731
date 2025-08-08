@@ -156,10 +156,9 @@
   ],
   "blocks": [
     {
-      "name": "Columns",
+      "name": "Cards",
       "cluster": 1,
-      "source": "",
-      "key": "columns1",
+      "key": "cards1",
       "instances": [
         {
           "url": "https://www.wknd-trendsetters.site/blog/fashion-trends-young-culture",
@@ -173,7 +172,6 @@
     {
       "name": "Cards",
       "cluster": 2,
-      "source": "",
       "key": "cards2",
       "instances": [
         {
@@ -188,7 +186,6 @@
     {
       "name": "Columns",
       "cluster": 3,
-      "source": "",
       "key": "columns3",
       "instances": [
         {
@@ -202,7 +199,6 @@
     {
       "name": "Columns",
       "cluster": 4,
-      "source": "",
       "key": "columns4",
       "instances": [
         {
@@ -234,7 +230,6 @@
     {
       "name": "Columns",
       "cluster": 5,
-      "source": "",
       "key": "columns5",
       "instances": [
         {
@@ -254,7 +249,6 @@
     {
       "name": "Hero",
       "cluster": 6,
-      "source": "",
       "key": "hero6",
       "instances": [
         {
@@ -269,8 +263,6 @@
     {
       "name": "Cards",
       "cluster": 7,
-      "source": "null",
-      "target": "null (cards7)",
       "key": "cards7",
       "instances": [
         {
@@ -377,7 +369,6 @@
     {
       "name": "Columns",
       "cluster": 9,
-      "source": "",
       "key": "columns9",
       "instances": [
         {
@@ -462,7 +453,6 @@
     {
       "name": "Cards",
       "cluster": 10,
-      "source": "",
       "key": "cards10",
       "instances": [
         {
@@ -491,8 +481,6 @@
     {
       "name": "Columns",
       "cluster": 11,
-      "source": "null",
-      "target": "null (columns11)",
       "key": "columns11",
       "instances": [
         {
@@ -506,7 +494,6 @@
     {
       "name": "Hero",
       "cluster": 12,
-      "source": "",
       "key": "hero12",
       "instances": [
         {
@@ -528,7 +515,6 @@
     {
       "name": "Accordion",
       "cluster": 13,
-      "source": "",
       "key": "accordion13",
       "instances": [
         {
@@ -543,8 +529,6 @@
     {
       "name": "Columns",
       "cluster": 14,
-      "source": "null",
-      "target": "null (columns14)",
       "key": "columns14",
       "instances": [
         {
@@ -564,8 +548,6 @@
     {
       "name": "Columns",
       "cluster": 15,
-      "source": "null",
-      "target": "null (columns15)",
       "key": "columns15",
       "instances": [
         {
@@ -580,7 +562,6 @@
     {
       "name": "Carousel",
       "cluster": 16,
-      "source": "",
       "key": "carousel16",
       "instances": [
         {
@@ -594,7 +575,6 @@
     {
       "name": "Cards",
       "cluster": 17,
-      "source": "",
       "key": "cards17",
       "instances": [
         {
@@ -614,7 +594,6 @@
     {
       "name": "Columns",
       "cluster": 18,
-      "source": "",
       "key": "columns18",
       "instances": [
         {
@@ -626,10 +605,9 @@
       ]
     },
     {
-      "name": "Columns",
+      "name": "Cards",
       "cluster": 19,
-      "source": "",
-      "key": "columns19",
+      "key": "cards19",
       "instances": [
         {
           "url": "https://www.wknd-trendsetters.site/",
@@ -642,7 +620,6 @@
     {
       "name": "Hero",
       "cluster": 20,
-      "source": "",
       "key": "hero20",
       "instances": [
         {
@@ -657,7 +634,6 @@
     {
       "name": "Carousel",
       "cluster": 21,
-      "source": "",
       "key": "carousel21",
       "instances": [
         {
@@ -672,7 +648,8 @@
     {
       "name": "Tabs",
       "cluster": 22,
-      "source": "",
+      "source": "Metadata",
+      "target": "Metadata",
       "key": "tabs22",
       "instances": [
         {
@@ -687,8 +664,6 @@
     {
       "name": "Cards",
       "cluster": 23,
-      "source": "null",
-      "target": "null (cards23)",
       "key": "cards23",
       "instances": [
         {
@@ -703,7 +678,6 @@
     {
       "name": "Cards",
       "cluster": 24,
-      "source": "",
       "key": "cards24",
       "instances": [
         {
@@ -725,7 +699,6 @@
     {
       "name": "Cards",
       "cluster": 25,
-      "source": "",
       "key": "cards25",
       "instances": [
         {
@@ -745,8 +718,6 @@
     {
       "name": "Columns",
       "cluster": 26,
-      "source": "null",
-      "target": "null (columns26)",
       "key": "columns26",
       "instances": [
         {
@@ -761,7 +732,6 @@
     {
       "name": "Columns",
       "cluster": 27,
-      "source": "",
       "key": "columns27",
       "instances": [
         {
@@ -776,7 +746,6 @@
     {
       "name": "Hero",
       "cluster": 28,
-      "source": "",
       "key": "hero28",
       "instances": [
         {
@@ -791,7 +760,6 @@
     {
       "name": "Columns",
       "cluster": 29,
-      "source": "",
       "key": "columns29",
       "instances": [
         {
@@ -806,7 +774,6 @@
     {
       "name": "Columns",
       "cluster": 30,
-      "source": "",
       "key": "columns30",
       "instances": [
         {
@@ -820,7 +787,6 @@
     {
       "name": "Columns",
       "cluster": 31,
-      "source": "",
       "key": "columns31",
       "instances": [
         {
@@ -835,7 +801,6 @@
     {
       "name": "Columns",
       "cluster": 32,
-      "source": "",
       "key": "columns32",
       "instances": [
         {
@@ -849,8 +814,6 @@
     {
       "name": "Cards",
       "cluster": 33,
-      "source": "null",
-      "target": "null (cards33)",
       "key": "cards33",
       "instances": [
         {
@@ -865,8 +828,6 @@
     {
       "name": "Accordion",
       "cluster": 34,
-      "source": "null",
-      "target": "null (accordion34)",
       "key": "accordion34",
       "instances": [
         {
@@ -879,10 +840,9 @@
       ]
     },
     {
-      "name": "Columns",
+      "name": "Hero",
       "cluster": 35,
-      "source": "",
-      "key": "columns35",
+      "key": "hero35",
       "instances": [
         {
           "url": "https://www.wknd-trendsetters.site/blog/fashion-trends-young-culture",
@@ -895,7 +855,6 @@
     {
       "name": "Columns",
       "cluster": 36,
-      "source": "",
       "key": "columns36",
       "instances": [
         {
@@ -910,7 +869,6 @@
     {
       "name": "Cards",
       "cluster": 37,
-      "source": "",
       "key": "cards37",
       "instances": [
         {
@@ -925,7 +883,6 @@
     {
       "name": "Columns",
       "cluster": 38,
-      "source": "",
       "key": "columns38",
       "instances": [
         {
@@ -939,7 +896,6 @@
     {
       "name": "Hero",
       "cluster": 39,
-      "source": "",
       "key": "hero39",
       "instances": [
         {
