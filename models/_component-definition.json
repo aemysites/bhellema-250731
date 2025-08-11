@@ -35,6 +35,15 @@
           "...": "../blocks/*/_*.json#/definitions"
         }
       ]
+    },
+    {
+      "title": "Tabs",
+      "id": "tabs",
+      "components": [
+        {
+          "...": "../blocks/tab-list/_*.json#/definitions"
+        }
+      ]
     }
   ]
 }
