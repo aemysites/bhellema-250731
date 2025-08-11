@@ -459,6 +459,12 @@
         "name": "classes_showAll",
         "label": "Show All?",
         "description": "When enabled, the tab list will prepend a show all button."
+      },
+      {
+        "component": "text",
+        "name": "tab-labels",
+        "multi": true,
+        "label": "Labels"
       }
     ]
   },

@@ -77,7 +77,13 @@ function buildTabs(main) {
       // found first tab panel of a list of consecutive tab panels
       // create a tab list block if non exists as last child
       let previousBlock = previousSection?.lastElementChild;
-      if (previousBlock?.matches('.section-metadata')) previousBlock = previousBlock.previousElementSibling;
+
+      // if the previous block is a section metadata, get the previous block
+      if (previousBlock?.matches('.section-metadata')) {
+        previousBlock = previousBlock.previousElementSibling;
+      }
+
+      // if the previous block is not a tab list, create one
       if (!previousBlock?.matches('.tab-list')) {
         const tabListBlock = document.createElement('div');
         tabListBlock.className = 'tab-list block';
