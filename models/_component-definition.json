@@ -32,7 +32,43 @@
       "id": "blocks",
       "components": [
         {
-          "...": "../blocks/*/_*.json#/definitions"
+          "...": "../blocks/accordion/_*.json#/definitions"
+        },
+        {
+          "...": "../blocks/cards/_*.json#/definitions"
+        },
+        {
+          "...": "../blocks/carousel/_*.json#/definitions"
+        },
+        {
+          "...": "../blocks/columns/_*.json#/definitions"
+        },
+        {
+          "...": "../blocks/embed/_*.json#/definitions"
+        },
+        {
+          "...": "../blocks/fragment/_*.json#/definitions"
+        },
+        {
+          "...": "../blocks/hero/_*.json#/definitions"
+        },
+        {
+          "...": "../blocks/library-metadata/_*.json#/definitions"
+        },
+        {
+          "...": "../blocks/modal/_*.json#/definitions"
+        },
+        {
+          "...": "../blocks/quote/_*.json#/definitions"
+        },
+        {
+          "...": "../blocks/search/_*.json#/definitions"
+        },
+        {
+          "...": "../blocks/table/_*.json#/definitions"
+        },
+        {
+          "...": "../blocks/video/_*.json#/definitions"
         }
       ]
     },
