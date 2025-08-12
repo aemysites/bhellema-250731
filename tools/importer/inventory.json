@@ -1000,6 +1000,19 @@
           "xpath": "/html[1]/body[1]/section[1]"
         }
       ]
+    },
+    {
+      "name": "Hero",
+      "cluster": 43,
+      "instances": [
+        {
+          "url": "https://www.wknd-trendsetters.site/faq",
+          "urlHash": "429d6f000c5a6e38a121160bf56d01b17365cffe",
+          "uuid": "429d6f00-04-f1fc93ab3e21904951fd9ec2cb1dd9218e350e1d",
+          "xpath": "/html[1]/body[1]/section[3]",
+          "section": "section-2"
+        }
+      ]
     }
   ],
   "outliers": [
@@ -1062,13 +1075,6 @@
       "uuid": "429d6f00-01-69306c16bac5563398ce327c71e7f1e9493b6265",
       "xpath": "/html[1]/body[1]/section[1]/div[1]/div[1]",
       "section": "section-1"
-    },
-    {
-      "url": "https://www.wknd-trendsetters.site/faq",
-      "urlHash": "429d6f000c5a6e38a121160bf56d01b17365cffe",
-      "uuid": "429d6f00-04-f1fc93ab3e21904951fd9ec2cb1dd9218e350e1d",
-      "xpath": "/html[1]/body[1]/section[3]",
-      "section": "section-2"
     },
     {
       "url": "https://www.wknd-trendsetters.site/fashion-insights",
