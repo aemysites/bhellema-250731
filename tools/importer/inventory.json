@@ -988,6 +988,18 @@
           "section": "section-1"
         }
       ]
+    },
+    {
+      "name": "Columns",
+      "cluster": 42,
+      "instances": [
+        {
+          "url": "https://www.wknd-trendsetters.site/fashion-trends-of-the-season",
+          "urlHash": "1cfeb2756419a8f56a89a355f5557c3321845adb",
+          "uuid": "1cfeb275-02-c498d593a5bc97467d867eb87705c763456c87bd",
+          "xpath": "/html[1]/body[1]/section[1]"
+        }
+      ]
     }
   ],
   "outliers": [
@@ -1023,12 +1035,6 @@
       "uuid": "1b9ba84f-09-fa7cfbd97e67d1a5b40f91d24997450830c17770",
       "xpath": "/html[1]/body[1]/section[4]/div[1]/div[1]",
       "section": "section-1"
-    },
-    {
-      "url": "https://www.wknd-trendsetters.site/fashion-trends-of-the-season",
-      "urlHash": "1cfeb2756419a8f56a89a355f5557c3321845adb",
-      "uuid": "1cfeb275-02-c498d593a5bc97467d867eb87705c763456c87bd",
-      "xpath": "/html[1]/body[1]/section[1]"
     },
     {
       "url": "https://www.wknd-trendsetters.site/fashion-trends-of-the-season",
