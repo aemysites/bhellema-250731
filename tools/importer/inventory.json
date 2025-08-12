@@ -156,9 +156,9 @@
   ],
   "blocks": [
     {
-      "name": "Cards",
+      "name": "Columns",
       "cluster": 1,
-      "key": "cards1",
+      "key": "columns1",
       "instances": [
         {
           "url": "https://www.wknd-trendsetters.site/blog/fashion-trends-young-culture",
@@ -560,9 +560,9 @@
       ]
     },
     {
-      "name": "Carousel",
+      "name": "Cards",
       "cluster": 16,
-      "key": "carousel16",
+      "key": "cards16",
       "instances": [
         {
           "url": "https://www.wknd-trendsetters.site/fashion-trends-young-adults-casual-sport",
@@ -648,8 +648,8 @@
     {
       "name": "Tabs",
       "cluster": 22,
-      "source": "Metadata",
-      "target": "Metadata",
+      "source": "Tabs",
+      "target": "Tabs",
       "key": "tabs22",
       "instances": [
         {
