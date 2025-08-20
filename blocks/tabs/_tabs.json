@@ -25,7 +25,8 @@
             "template": {
               "name": "Tab",
               "model": "tabs-item",
-              "tabName": "Tab Name"
+              "tabname": "Tab Name",
+              "tabnameType": "h2"
             }
           }
         }
@@ -39,14 +40,14 @@
         {
           "component": "text",
           "valueType": "string",
-          "name": "tabName",
+          "name": "tabname",
           "value": "",
           "label": "Tab Name"
         },
         {
           "component": "text",
           "valueType": "string",
-          "name": "tabNameType"
+          "name": "tabnameType"
         },
         {
           "component": "reference",
