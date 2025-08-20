@@ -624,6 +624,13 @@
         "label": "Tab Name"
       },
       {
+        "component": "text",
+        "valueType": "string",
+        "name": "tabNameType",
+        "value": "",
+        "label": "Tab Name"
+      },
+      {
         "component": "reference",
         "valueType": "string",
         "name": "image",
