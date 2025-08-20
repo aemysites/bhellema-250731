@@ -410,8 +410,7 @@
                 "template": {
                   "name": "Tab",
                   "model": "tabs-item",
-                  "tabname": "Tab Name",
-                  "tabnameType": "h2"
+                  "tabname": "Tab Name"
                 }
               }
             }
