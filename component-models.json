@@ -619,14 +619,9 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "tabname",
+        "name": "tabName",
         "value": "",
         "label": "Tab Name"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "tabnameText"
       },
       {
         "component": "reference",
