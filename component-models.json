@@ -448,6 +448,18 @@
         "component": "text",
         "name": "tab-label",
         "label": "Label"
+      },
+      {
+        "component": "text",
+        "name": "name",
+        "label": "Section Name",
+        "description": "The label shown for this section in the Content Tree"
+      },
+      {
+        "component": "text",
+        "name": "style",
+        "label": "Style",
+        "valueType": "string"
       }
     ]
   },
@@ -459,12 +471,6 @@
         "name": "classes_showAll",
         "label": "Show All?",
         "description": "When enabled, the tab list will prepend a show all button."
-      },
-      {
-        "component": "text",
-        "name": "tab-labels",
-        "multi": true,
-        "label": "Labels"
       }
     ]
   },
@@ -610,6 +616,37 @@
         "valueType": "string",
         "name": "column4text",
         "label": "Column4"
+      }
+    ]
+  },
+  {
+    "id": "tabs-item",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "value": "",
+        "label": "Tab Name"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "titleType"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "name": "content",
+        "value": "",
+        "label": "Content",
+        "valueType": "string"
       }
     ]
   },

@@ -68,16 +68,10 @@
           "...": "../blocks/table/_*.json#/definitions"
         },
         {
-          "...": "../blocks/video/_*.json#/definitions"
-        }
-      ]
-    },
-    {
-      "title": "Tabs",
-      "id": "tabs",
-      "components": [
+          "...": "../blocks/tabs/_*.json#/definitions"
+        },
         {
-          "...": "../blocks/tab-list/_*.json#/definitions"
+          "...": "../blocks/video/_*.json#/definitions"
         }
       ]
     }

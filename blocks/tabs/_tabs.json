@@ -1,0 +1,76 @@
+{
+  "definitions": [
+    {
+      "title": "Tabs",
+      "id": "tabs",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Tabs",
+              "filter": "tabs"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Tabs Item",
+      "id": "tabs-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Tab",
+              "model": "tabs-item",
+              "tabName": "Tab Name"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "tabs-item",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "title",
+          "value": "",
+          "label": "Tab Name"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "titleType"
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "image",
+          "label": "Image",
+          "multi": false
+        },
+        {
+          "component": "richtext",
+          "name": "content",
+          "value": "",
+          "label": "Content",
+          "valueType": "string"
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "tabs",
+      "components": [
+        "tabs-item"
+      ]
+    }
+  ]
+}

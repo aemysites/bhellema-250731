@@ -23,6 +23,7 @@
       "quote",
       "search",
       "table",
+      "tabs",
       "video",
       "tab-list",
       "library-metadata"
@@ -87,6 +88,12 @@
     "id": "table-4-columns",
     "components": [
       "table-col-4"
+    ]
+  },
+  {
+    "id": "tabs",
+    "components": [
+      "tabs-item"
     ]
   },
   {
