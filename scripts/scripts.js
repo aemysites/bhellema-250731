@@ -3,11 +3,9 @@ import {
   loadFooter,
   decorateButtons,
   decorateIcons,
-  decorateLinkedPictures,
   decorateSections,
   decorateBlocks,
   decorateTemplateAndTheme,
-  readBlockConfig,
   waitForFirstImage,
   loadSection,
   loadSections,
@@ -27,7 +25,7 @@ export function moveAttributes(from, to, attributes) {
   attributes.forEach((attr) => {
     const value = from.getAttribute(attr);
     if (value) {
-      to.setAttribute(attr, value);
+      to?.setAttribute(attr, value);
       from.removeAttribute(attr);
     }
   });
@@ -60,50 +58,13 @@ async function loadFonts() {
   }
 }
 
-function buildTabs(main) {
-  function getTabLabel(section) {
-    const metadataBlock = section.querySelector('.section-metadata');
-    const metadata = metadataBlock ? readBlockConfig(metadataBlock) : {};
-    return metadata['tab-label'];
-  }
-
-  for (let i = 0; i < main.children.length; i += 1) {
-    const section = main.children[i];
-    const tabLabel = getTabLabel(section);
-    const previousSection = i > 0 ? main.children[i - 1] : null;
-    const previousTabLabel = previousSection ? getTabLabel(previousSection) : null;
-
-    if (tabLabel && !previousTabLabel) {
-      // found first tab panel of a list of consecutive tab panels
-      // create a tab list block if non exists as last child
-      let previousBlock = previousSection?.lastElementChild;
-
-      // if the previous block is a section metadata, get the previous block
-      if (previousBlock?.matches('.section-metadata')) {
-        previousBlock = previousBlock.previousElementSibling;
-      }
-
-      // if the previous block is not a tab list, create one
-      if (!previousBlock?.matches('.tab-list')) {
-        const tabListBlock = document.createElement('div');
-        tabListBlock.className = 'tab-list block';
-        const newSection = document.createElement('div');
-        newSection.className = 'section';
-        newSection.appendChild(tabListBlock);
-        section.before(newSection);
-      }
-    }
-  }
-}
-
 /**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
  */
-function buildAutoBlocks(main) {
+function buildAutoBlocks() {
   try {
     // TODO: add auto block, if needed
-    buildTabs(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
@@ -119,7 +80,6 @@ export function decorateMain(main) {
   // hopefully forward compatible button decoration
   decorateButtons(main);
   decorateIcons(main);
-  decorateLinkedPictures(main);
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
@@ -185,19 +145,3 @@ async function loadPage() {
 }
 
 loadPage();
-
-const { searchParams, origin } = new URL(window.location.href);
-const branch = searchParams.get('nx') || 'main';
-
-export const NX_ORIGIN = branch === 'local' || origin.includes('localhost') ? 'http://localhost:6456/nx' : 'https://da.live/nx';
-
-(async function loadDa() {
-  /* eslint-disable import/no-unresolved */
-  if (searchParams.get('dapreview')) {
-    import('https://da.live/scripts/dapreview.js')
-      .then(({ default: daPreview }) => daPreview(loadPage));
-  }
-  if (searchParams.get('daexperiment')) {
-    import(`${NX_ORIGIN}/public/plugins/exp/exp.js`);
-  }
-}());
