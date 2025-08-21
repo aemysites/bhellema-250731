@@ -11,6 +11,36 @@ import {
 import { decorateRichtext } from './editor-support-rte.js';
 import { decorateMain } from './scripts.js';
 
+function handleSelection(event) {
+  const { detail, target } = event;
+  if (!detail.selected) return;
+
+  const tabPanel = target.closest('[role="tabpanel"]');
+  if (tabPanel) {
+    // select the tab item that controls this tab panel
+    const tabItem = document.querySelector(`[aria-controls="${tabPanel.id}"]`);
+    if (tabItem) tabItem.click();
+  }
+}
+
+function updateTabLabels(main) {
+  setTimeout(() => {
+    const tabPanels = main.querySelectorAll('[role="tabpanel"]');
+    tabPanels.forEach((tabPanel) => {
+      const label = tabPanel.dataset.tabLabel;
+      const suffix = ` (${label})`;
+      if (!tabPanel.dataset.aueLabel.endsWith(suffix)) {
+        tabPanel.dataset.aueLabel += suffix;
+      }
+      const tabId = tabPanel.getAttribute('aria-labelledby');
+      const tab = main.querySelector(`#${tabId}`);
+      if (tab) {
+        tab.textContent = label;
+      }
+    });
+  }, 100);
+}
+
 async function applyChanges(event) {
   // redecorate default content and blocks on patches (in the properties rail)
   const { detail } = event;
@@ -104,11 +134,19 @@ function attachEventListners(main) {
   ].forEach((eventType) => main?.addEventListener(eventType, async (event) => {
     event.stopPropagation();
     const applied = await applyChanges(event);
-    if (!applied) window.location.reload();
+    if (applied) {
+      updateTabLabels(main);
+    } else {
+      window.location.reload();
+    }
   }));
+
+  main.addEventListener('aue:ui-select', handleSelection);
 }
 
-attachEventListners(document.querySelector('main'));
+const main = document.querySelector('main');
+attachEventListners(main);
+updateTabLabels(main);
 
 // decorate rich text
 // this has to happen after decorateMain(), and everythime decorateBlocks() is called
