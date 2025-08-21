@@ -26,7 +26,7 @@ export default async function decorate(block) {
     button.className = 'tabs-tab';
     button.id = `tab-${id}`;
 
-    // moveInstrumentation(tab.parentElement, tabpanel.lastElementChild);
+    moveInstrumentation(tab.parentElement, tabpanel.lastElementChild);
 
     button.innerHTML = tab.innerHTML;
 
