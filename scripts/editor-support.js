@@ -22,24 +22,6 @@ function preserveSectionAttributes(oldSection, newSection) {
   ]);
 }
 
-function updateLabels(main) {
-  setTimeout(() => {
-    const tabPanels = main.querySelectorAll('[role="tabpanel"]');
-    tabPanels.forEach((tabPanel) => {
-      const label = tabPanel.dataset.tabLabel;
-      const suffix = ` (${label})`;
-      if (!tabPanel.dataset.aueLabel.endsWith(suffix)) {
-        tabPanel.dataset.aueLabel += suffix;
-      }
-      const tabId = tabPanel.getAttribute('aria-labelledby');
-      const tab = main.querySelector(`#${tabId}`);
-      if (tab) {
-        tab.textContent = label;
-      }
-    });
-  }, 100);
-}
-
 /**
  *
  * @param {Element} block
@@ -164,18 +146,6 @@ async function applyChanges(event) {
   return false;
 }
 
-function handleSelection(event) {
-  const { detail, target } = event;
-  if (!detail.selected) return;
-
-  const tabPanel = target.closest('[role="tabpanel"]');
-  if (tabPanel) {
-    // select the tab item that controls this tab panel
-    const tabItem = document.querySelector(`[aria-controls="${tabPanel.id}"]`);
-    if (tabItem) tabItem.click();
-  }
-}
-
 function attachEventListners(main) {
   [
     'aue:content-patch',
@@ -187,16 +157,11 @@ function attachEventListners(main) {
   ].forEach((eventType) => main?.addEventListener(eventType, async (event) => {
     event.stopPropagation();
     const applied = await applyChanges(event);
-    if (applied) {
-      updateLabels(document.querySelector('main'));
-    } else {
+    if (!applied) {
       window.location.reload();
     }
   }));
-
-  main.addEventListener('aue:ui-select', handleSelection);
 }
 
 const m = document.querySelector('main');
 attachEventListners(m);
-updateLabels(m);
