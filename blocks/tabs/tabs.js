@@ -43,7 +43,10 @@ export default async function decorate(block) {
       tabpanel.setAttribute('aria-hidden', false);
       button.setAttribute('aria-selected', true);
     });
-    // tablist.append(button);
+
+    // add the new tab list button, to the tablist
+    tablist.append(button);
+
     // tab.remove();
     // moveInstrumentation(button.querySelector('p'), null);
   });
