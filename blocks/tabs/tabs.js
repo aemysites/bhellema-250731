@@ -2,126 +2,62 @@
 import { toClassName } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
-let tabsIdx = 0;
-
-export function changeTabs(e) {
-  const targetTab = e.target;
-  const targetTabPanelIds = targetTab.getAttribute('aria-controls').split(' ');
-  const [tabGroupPrefix] = targetTabPanelIds[0].split('-panel-');
-  const tabList = targetTab.parentNode;
-
-  // Remove all current selected tabs
-  tabList
-    .querySelectorAll(':scope > [aria-selected="true"]')
-    .forEach((t) => t.setAttribute('aria-selected', false));
-
-  // Set this tab as selected
-  targetTab.setAttribute('aria-selected', true);
-
-  // Hide all tab panels
-  document
-    .querySelectorAll(`[role="tabpanel"][id^="${tabGroupPrefix}-panel-"]`)
-    .forEach((p) => p.setAttribute('hidden', true));
-
-  // Show the selected panel
-  targetTabPanelIds.forEach((id) => {
-    document.querySelector(`#${id}`).removeAttribute('hidden');
-  });
-}
-
 export default async function decorate(block) {
-  // create the tab-list DOM iteslf
-  const tabsPrefix = `tabs-${tabsIdx += 1}`;
-  const tabList = document.createElement('ul');
-  tabList.role = 'tablist';
-  tabList.id = `${tabsPrefix}-tablist`;
+  // build tablist
+  const tablist = document.createElement('div');
+  tablist.className = 'tabs-list';
+  tablist.setAttribute('role', 'tablist');
 
-  const tabPanels = [...block.children];
+  // the first cell of each row is the title of the tab
+  const tabHeadings = [...block.children]
+    .filter((child) => child.firstElementChild && child.firstElementChild.children.length > 0)
+    .map((child) => child.firstElementChild);
 
-  tabPanels.forEach((tabPanel, i) => {
-    const tabLabel = tabPanel.querySelector(':scope > div').textContent;
-    const tabId = `${tabsPrefix}-tab-${toClassName(tabLabel)}`;
-    const tabPanelId = `${tabsPrefix}-panel-${toClassName(tabLabel)}`;
+  tabHeadings.forEach((tab, i) => {
+    const id = toClassName(`${tab.textContent}-${i}`);
 
-    // build the tabs as buttons and append them to the tab list
-    const tabItem = document.createElement('button');
-    tabItem.id = tabId;
-    tabItem.role = 'tab';
-    tabItem.ariaSelected = i === 0;
-    tabItem.tabIndex = i === 0 ? 0 : -1;
-    tabItem.setAttribute('aria-controls', tabPanelId);
-    tabItem.textContent = tabLabel;
-    tabItem.addEventListener('click', changeTabs);
+    // decorate tabpanel
+    const tabpanel = block.children[i];
+    tabpanel.className = 'tabs-panel';
+    tabpanel.id = `tabpanel-${id}`;
+    tabpanel.setAttribute('aria-hidden', !!i);
+    tabpanel.setAttribute('aria-labelledby', `tab-${id}`);
+    tabpanel.setAttribute('role', 'tabpanel');
 
-    const li = document.createElement('li');
-    li.appendChild(tabItem);
-    tabList.appendChild(li);
+    // build tab button
+    const button = document.createElement('button');
+    button.className = 'tabs-tab';
+    button.id = `tab-${id}`;
 
-    // update the tab panel to use the tab id
-    tabPanel.id = tabPanelId;
-    tabPanel.setAttribute('aria-labelledby', tabId);
-    tabPanel.classList.add('hidden');
+    button.innerHTML = tab.innerHTML;
 
-    // update the tab panel to use the tab id
-    tabPanel.id = tabPanelId;
-    tabPanel.role = 'tabpanel';
-    tabPanel.tabIndex = 0;
-    tabPanel.setAttribute('aria-labelledby', tabId);
-    if (i > 0) tabPanel.setAttribute('hidden', '');
-  });
+    button.setAttribute('aria-controls', `tabpanel-${id}`);
+    button.setAttribute('aria-selected', !i);
+    button.setAttribute('role', 'tab');
+    button.setAttribute('type', 'button');
 
-  const tabs = [...tabList.querySelectorAll('[role="tab"]')];
+    button.addEventListener('click', () => {
+      block.querySelectorAll('[role=tabpanel]').forEach((panel) => {
+        panel.setAttribute('aria-hidden', true);
+      });
+      tablist.querySelectorAll('button').forEach((btn) => {
+        btn.setAttribute('aria-selected', false);
+      });
+      tabpanel.setAttribute('aria-hidden', false);
+      button.setAttribute('aria-selected', true);
+    });
 
-  // if the tab-list has the showall class, add a tab for all the tabs
-  if (block.classList.contains('showall')) {
-    const tabId = `${tabsPrefix}-tab-all`;
-    const tabPanelIds = [...tabs].map((t) => t.getAttribute('aria-controls')).join(' ');
+    // add the new tab list button, to the tablist
+    tablist.append(button);
 
-    // build the tabs as buttons and append them to the tab list
-    const tabItem = document.createElement('button');
-    tabItem.id = tabId;
-    tabItem.role = 'tab';
-    tabItem.tabIndex = 0;
-    tabItem.setAttribute('aria-controls', tabPanelIds);
-    tabItem.textContent = 'All';
-    tabItem.addEventListener('click', changeTabs);
+    // remove the tab heading from the dom, which also removes it from the UE tree
+    tab.remove();
 
-    const li = document.createElement('li');
-    li.appendChild(tabItem);
-    tabList.prepend(li);
-    tabs.unshift(tabItem);
-
-    // set tabIndex for the now second tab to -1
-    tabs[1].tabIndex = -1;
-    changeTabs({ target: tabItem });
-  }
-
-  // Enable arrow navigation between tabs in the tab list
-  let tabFocus = 0;
-
-  tabList.addEventListener('keydown', (e) => {
-    // Move right
-    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-      tabs[tabFocus].setAttribute('tabindex', -1);
-      if (e.key === 'ArrowRight') {
-        tabFocus += 1;
-        // If we're at the end, go to the start
-        if (tabFocus >= tabs.length) {
-          tabFocus = 0;
-        }
-        // Move left
-      } else if (e.key === 'ArrowLeft') {
-        tabFocus -= 1;
-        // If we're at the start, move to the end
-        if (tabFocus < 0) {
-          tabFocus = tabs.length - 1;
-        }
-      }
-
-      tabs[tabFocus].setAttribute('tabindex', 0);
-      tabs[tabFocus].focus();
+    // remove the instrumentation from the button's h1, h2 etc (this removes it from the tree)
+    if (button.firstElementChild) {
+      moveInstrumentation(button.firstElementChild, null);
     }
   });
 
-  block.replaceChildren(tabList);
+  block.prepend(tablist);
 }
