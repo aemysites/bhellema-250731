@@ -44,8 +44,6 @@ export default async function decorate(block) {
       button.setAttribute('aria-selected', true);
     });
     tablist.append(button);
-    // set display none to the tab
-    tab.style.display = 'none';
     // tab.remove();
     // moveInstrumentation(button.querySelector('p'), null);
   });
