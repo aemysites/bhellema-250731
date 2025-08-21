@@ -11,7 +11,7 @@ export default async function decorate(block) {
   // the first cell of each row is the title of the tab
   const tabHeadings = [...block.children].map((child) => child.firstElementChild);
   tabHeadings.forEach((tab, i) => {
-    const id = toClassName(tab.textContent);
+    const id = toClassName(tab.textContent || `tab-${i}`);
 
     // decorate tabpanel
     const tabpanel = block.children[i];
