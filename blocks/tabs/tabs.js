@@ -2,11 +2,19 @@
 import { toClassName } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
+let tabsIdx = 0;
+
 export default async function decorate(block) {
   // build tablist
-  const tablist = document.createElement('div');
-  tablist.className = 'tabs-list';
-  tablist.setAttribute('role', 'tablist');
+  // const tablist = document.createElement('div');
+  // tablist.className = 'tabs-list';
+  // tablist.setAttribute('role', 'tablist');
+
+  // create the tab-list DOM iteslf
+  const tabsPrefix = `tabs-${tabsIdx += 1}`;
+  const tablist = document.createElement('ul');
+  tablist.role = 'tablist';
+  tablist.id = `${tabsPrefix}-tablist`;
 
   // the first cell of each row is the title of the tab
   const tabHeadings = [...block.children]
@@ -14,24 +22,30 @@ export default async function decorate(block) {
     .map((child) => child.firstElementChild);
 
   tabHeadings.forEach((tab, i) => {
-    const id = toClassName(`${tab.textContent}-${i}`);
+    // const id = toClassName(`${tab.textContent}-${i}`);
+
+    const tabLabel = tab.textContent;
+    const tabId = `${tabsPrefix}-tab-${toClassName(tabLabel)}`;
+    const tabPanelId = `${tabsPrefix}-panel-${toClassName(tabLabel)}`;
 
     // decorate tabpanel
     const tabpanel = block.children[i];
     tabpanel.className = 'tabs-panel';
-    tabpanel.id = `tabpanel-${id}`;
+    tabpanel.id = tabId;
+    // tabpanel.id = `tabpanel-${id}`;
     tabpanel.setAttribute('aria-hidden', !!i);
-    tabpanel.setAttribute('aria-labelledby', `tab-${id}`);
+    tabpanel.setAttribute('aria-labelledby', tabId);
     tabpanel.setAttribute('role', 'tabpanel');
 
     // build tab button
     const button = document.createElement('button');
     button.className = 'tabs-tab';
-    button.id = `tab-${id}`;
+    button.id = tabId;
 
     button.innerHTML = tab.innerHTML;
 
-    button.setAttribute('aria-controls', `tabpanel-${id}`);
+    button.setAttribute('aria-controls', tabPanelId);
+    // button.setAttribute('aria-controls', `tabpanel-${id}`);
     button.setAttribute('aria-selected', !i);
     button.setAttribute('role', 'tab');
     button.setAttribute('type', 'button');
