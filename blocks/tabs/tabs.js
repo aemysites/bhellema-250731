@@ -8,7 +8,7 @@ export default async function decorate(block) {
   tablist.className = 'tabs-list';
   tablist.setAttribute('role', 'tablist');
 
-  // decorate tabs and tabpanels
+  // the first cell of each row is the title of the tab
   const tabs = [...block.children].map((child) => child.firstElementChild);
   tabs.forEach((tab, i) => {
     const id = toClassName(tab.textContent);
@@ -26,7 +26,7 @@ export default async function decorate(block) {
     button.className = 'tabs-tab';
     button.id = `tab-${id}`;
 
-    moveInstrumentation(tab.parentElement, tabpanel.lastElementChild);
+    // moveInstrumentation(tab.parentElement, tabpanel.lastElementChild);
     button.innerHTML = tab.innerHTML;
 
     button.setAttribute('aria-controls', `tabpanel-${id}`);
