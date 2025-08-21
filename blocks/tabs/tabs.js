@@ -44,7 +44,7 @@ export default async function decorate(block) {
       button.setAttribute('aria-selected', true);
     });
     tablist.append(button);
-    tab.remove();
+    // tab.remove();
     // moveInstrumentation(button.querySelector('p'), null);
   });
 
