@@ -47,7 +47,7 @@ export default async function decorate(block) {
     // add the new tab list button, to the tablist
     tablist.append(button);
 
-    // tab.remove();
+    tab.remove();
     // moveInstrumentation(button.querySelector('p'), null);
   });
 
