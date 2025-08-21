@@ -11,24 +11,6 @@ import {
 import { decorateRichtext } from './editor-support-rte.js';
 import { decorateMain } from './scripts.js';
 
-function updateLabels(main) {
-  setTimeout(() => {
-    const tabPanels = main.querySelectorAll('[role="tabpanel"]');
-    tabPanels.forEach((tabPanel) => {
-      const label = tabPanel.dataset.tabLabel;
-      const suffix = ` (${label})`;
-      if (!tabPanel.dataset.aueLabel.endsWith(suffix)) {
-        tabPanel.dataset.aueLabel += suffix;
-      }
-      const tabId = tabPanel.getAttribute('aria-labelledby');
-      const tab = main.querySelector(`#${tabId}`);
-      if (tab) {
-        tab.textContent = label;
-      }
-    });
-  }, 100);
-}
-
 async function applyChanges(event) {
   // redecorate default content and blocks on patches (in the properties rail)
   const { detail } = event;
@@ -122,17 +104,11 @@ function attachEventListners(main) {
   ].forEach((eventType) => main?.addEventListener(eventType, async (event) => {
     event.stopPropagation();
     const applied = await applyChanges(event);
-    if (applied) {
-      updateLabels(document.querySelector('main'));
-    } else {
-      window.location.reload();
-    }
+    if (!applied) window.location.reload();
   }));
 }
 
-const m = document.querySelector('main');
-attachEventListners(m);
-updateLabels(m);
+attachEventListners(document.querySelector('main'));
 
 // decorate rich text
 // this has to happen after decorateMain(), and everythime decorateBlocks() is called
