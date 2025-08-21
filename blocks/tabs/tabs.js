@@ -59,10 +59,7 @@ export default async function decorate(block) {
     }
   });
 
-  if (tablist.children.length === 0) {
-    console.warn('No tabs found');
-    return;
+  if (tablist.children.length > 0) {
+    block.prepend(tablist);
   }
-
-  block.prepend(tablist);
 }
