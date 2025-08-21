@@ -10,7 +10,7 @@ export default async function decorate(block) {
 
   // decorate tabs and tabpanels
   [...block.children].forEach((tab, i) => {
-    const id = toClassName(tab.textContent);
+    const id = toClassName(tab.firstElementChild.textContent);
 
     // decorate tabpanel
     const tabpanel = block.children[i];
