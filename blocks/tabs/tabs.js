@@ -48,7 +48,7 @@ export default async function decorate(block) {
     tablist.append(button);
 
     tab.remove();
-    // moveInstrumentation(button.querySelector('p'), null);
+    moveInstrumentation(button.firstElementChild, null);
   });
 
   block.prepend(tablist);
