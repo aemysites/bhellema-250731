@@ -9,8 +9,7 @@ export default async function decorate(block) {
   tablist.setAttribute('role', 'tablist');
 
   // decorate tabs and tabpanels
-  const tabs = [...block.children].map((child) => child.firstElementChild);
-  tabs.forEach((tab, i) => {
+  [...block.children].forEach((tab, i) => {
     const id = toClassName(tab.textContent);
 
     // decorate tabpanel
