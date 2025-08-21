@@ -27,6 +27,7 @@ export default async function decorate(block) {
     button.id = `tab-${id}`;
 
     // moveInstrumentation(tab.parentElement, tabpanel.lastElementChild);
+
     button.innerHTML = tab.innerHTML;
 
     button.setAttribute('aria-controls', `tabpanel-${id}`);
@@ -48,6 +49,8 @@ export default async function decorate(block) {
     tablist.append(button);
 
     tab.remove();
+
+    // remove the instrumentation from the button's h1, h2 etc (this removes it from the tree)
     moveInstrumentation(button.firstElementChild, null);
   });
 
