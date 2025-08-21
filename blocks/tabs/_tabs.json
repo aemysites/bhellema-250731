@@ -40,7 +40,7 @@
         {
           "component": "text",
           "valueType": "string",
-          "name": "tabtitle",
+          "name": "title",
           "value": "",
           "label": "Tab Title"
         },
