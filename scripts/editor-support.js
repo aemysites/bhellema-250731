@@ -27,7 +27,8 @@ function updateTabLabels(main) {
   setTimeout(() => {
     const tabPanels = main.querySelectorAll('[role="tabpanel"]');
     tabPanels.forEach((tabPanel) => {
-      const label = tabPanel.dataset.tabLabel;
+      // const label = tabPanel.dataset.tabLabel;
+      const label = tabPanel.querySelector(':scope > div').textContent;
       const suffix = ` (${label})`;
       if (!tabPanel.dataset.aueLabel.endsWith(suffix)) {
         tabPanel.dataset.aueLabel += suffix;
