@@ -621,7 +621,7 @@
         "valueType": "string",
         "name": "title",
         "value": "",
-        "label": "Tab Name"
+        "label": "Tab Title"
       },
       {
         "component": "text",
