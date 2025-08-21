@@ -130,7 +130,9 @@ function attachEventListners(main) {
   }));
 }
 
-attachEventListners(document.querySelector('main'));
+const m = document.querySelector('main');
+attachEventListners(m);
+updateLabels(m);
 
 // decorate rich text
 // this has to happen after decorateMain(), and everythime decorateBlocks() is called
