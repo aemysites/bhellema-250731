@@ -26,12 +26,13 @@ export default async function decorate(block) {
     button.id = `tab-${id}`;
 
     moveInstrumentation(tab, tabpanel);
-    button.innerHTML = tab.innerHTML;
+    button.innerHTML = tab.firstElementChild.innerHTML;
 
     button.setAttribute('aria-controls', `tabpanel-${id}`);
     button.setAttribute('aria-selected', !i);
     button.setAttribute('role', 'tab');
     button.setAttribute('type', 'button');
+
     button.addEventListener('click', () => {
       block.querySelectorAll('[role=tabpanel]').forEach((panel) => {
         panel.setAttribute('aria-hidden', true);
@@ -42,6 +43,7 @@ export default async function decorate(block) {
       tabpanel.setAttribute('aria-hidden', false);
       button.setAttribute('aria-selected', true);
     });
+
     tablist.append(button);
     tab.remove();
     // moveInstrumentation(button.querySelector('p'), null);
