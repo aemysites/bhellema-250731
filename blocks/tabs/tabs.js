@@ -54,9 +54,9 @@ export default async function decorate(block) {
     tab.remove();
 
     // remove the instrumentation from the button's h1, h2 etc (this removes it from the tree)
-    if (button.firstElementChild) {
-      moveInstrumentation(button.firstElementChild, null);
-    }
+    // if (button.firstElementChild) {
+    //   moveInstrumentation(button.firstElementChild, null);
+    // }
   });
 
   block.prepend(tablist);
