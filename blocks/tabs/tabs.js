@@ -9,7 +9,10 @@ export default async function decorate(block) {
   tablist.setAttribute('role', 'tablist');
 
   // the first cell of each row is the title of the tab
-  const tabHeadings = [...block.children].map((child) => child.firstElementChild);
+  const tabHeadings = [...block.children]
+    .filter((child) => child.firstElementChild && child.firstElementChild.children.length > 0)
+    .map((child) => child.firstElementChild);
+
   tabHeadings.forEach((tab, i) => {
     const id = toClassName(tab.textContent || `tab-${i}`);
 
