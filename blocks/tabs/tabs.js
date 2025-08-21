@@ -48,7 +48,10 @@ export default async function decorate(block) {
     // add the new tab list button, to the tablist
     tablist.append(button);
 
-    tab.remove();
+    // set the tab to display none
+    tab.style.display = 'none';
+
+    // tab.remove();
 
     // remove the instrumentation from the button's h1, h2 etc (this removes it from the tree)
     moveInstrumentation(button.firstElementChild, null);
