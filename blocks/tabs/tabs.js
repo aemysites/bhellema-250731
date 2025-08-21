@@ -9,8 +9,8 @@ export default async function decorate(block) {
   tablist.setAttribute('role', 'tablist');
 
   // the first cell of each row is the title of the tab
-  const tabs = [...block.children].map((child) => child.firstElementChild);
-  tabs.forEach((tab, i) => {
+  const tabHeadings = [...block.children].map((child) => child.firstElementChild);
+  tabHeadings.forEach((tab, i) => {
     const id = toClassName(tab.textContent);
 
     // decorate tabpanel
@@ -26,14 +26,13 @@ export default async function decorate(block) {
     button.className = 'tabs-tab';
     button.id = `tab-${id}`;
 
-    // moveInstrumentation(tab.parentElement, tabpanel.lastElementChild);
-
     button.innerHTML = tab.innerHTML;
 
     button.setAttribute('aria-controls', `tabpanel-${id}`);
     button.setAttribute('aria-selected', !i);
     button.setAttribute('role', 'tab');
     button.setAttribute('type', 'button');
+
     button.addEventListener('click', () => {
       block.querySelectorAll('[role=tabpanel]').forEach((panel) => {
         panel.setAttribute('aria-hidden', true);
@@ -48,10 +47,8 @@ export default async function decorate(block) {
     // add the new tab list button, to the tablist
     tablist.append(button);
 
-    // set the tab to display none
-    tab.style.display = 'none';
-
-    // tab.remove();
+    // remove the tab heading from the dom, which also removes it from the UE tree
+    tab.remove();
 
     // remove the instrumentation from the button's h1, h2 etc (this removes it from the tree)
     moveInstrumentation(button.firstElementChild, null);
