@@ -1,16 +1,15 @@
 // eslint-disable-next-line import/no-unresolved
-import { toClassName } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
-let tabsIdx = 0;
+// keep track globally of the number of tab blocks on the page
+let tabBlockCnt = 0;
 
 export default async function decorate(block) {
   // build tablist
-  const tabsPrefix = `tab-${tabsIdx += 1}`;
   const tablist = document.createElement('div');
   tablist.className = 'tabs-list';
   tablist.setAttribute('role', 'tablist');
-  tablist.id = `${tabsPrefix}-tablist`;
+  tablist.id = `tablist-${tabBlockCnt += 1}`;
 
   // the first cell of each row is the title of the tab
   const tabHeadings = [...block.children]
@@ -18,16 +17,14 @@ export default async function decorate(block) {
     .map((child) => child.firstElementChild);
 
   tabHeadings.forEach((tab, i) => {
-    const title = tab.textContent;
-    const id = `${tabsPrefix}-tab-${toClassName(title)}`;
-    const tabPanelId = `${tabsPrefix}-panel-${toClassName(title)}`;
+    const id = `tabpanel-${i}-tab-${i}`;
 
     // decorate tabpanel
     const tabpanel = block.children[i];
     tabpanel.className = 'tabs-panel';
-    tabpanel.id = tabsPrefix;
+    tabpanel.id = id;
     tabpanel.setAttribute('aria-hidden', !!i);
-    tabpanel.setAttribute('aria-labelledby', tabPanelId);
+    tabpanel.setAttribute('aria-labelledby', id);
     tabpanel.setAttribute('role', 'tabpanel');
 
     // build tab button
