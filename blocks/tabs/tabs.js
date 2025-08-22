@@ -5,11 +5,12 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 let tabsIdx = 0;
 
 export default async function decorate(block) {
-  const tabsPrefix = `tabpanel-${tabsIdx += 1}`;
   // build tablist
+  const tabsPrefix = `tab-${tabsIdx += 1}`;
   const tablist = document.createElement('div');
   tablist.className = 'tabs-list';
   tablist.setAttribute('role', 'tablist');
+  tablist.id = `${tabsPrefix}-tablist`;
 
   // the first cell of each row is the title of the tab
   const tabHeadings = [...block.children]
@@ -17,14 +18,16 @@ export default async function decorate(block) {
     .map((child) => child.firstElementChild);
 
   tabHeadings.forEach((tab, i) => {
-    const id = toClassName(`${tab.textContent}-${i}`);
+    const title = tab.textContent;
+    const id = `${tabsPrefix}-tab-${toClassName(title)}`;
+    const tabPanelId = `${tabsPrefix}-panel-${toClassName(title)}`;
 
     // decorate tabpanel
     const tabpanel = block.children[i];
     tabpanel.className = 'tabs-panel';
     tabpanel.id = tabsPrefix;
     tabpanel.setAttribute('aria-hidden', !!i);
-    tabpanel.setAttribute('aria-labelledby', `tab-${id}`);
+    tabpanel.setAttribute('aria-labelledby', tabPanelId);
     tabpanel.setAttribute('role', 'tabpanel');
 
     // build tab button
