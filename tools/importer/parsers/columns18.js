@@ -1,46 +1,42 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: check expected structure
+  // Find the grid layout that structures the section
   const grid = element.querySelector('.w-layout-grid');
   if (!grid) return;
-  const gridChildren = Array.from(grid.children);
 
-  // Identify columns
+  // Get left column (text and contact info) and right column (image)
   let leftCol = null;
   let rightCol = null;
-  let img = null;
 
-  for (const child of gridChildren) {
-    if (child.tagName === 'DIV' && child.querySelector('h2') && child.querySelector('h3')) {
-      leftCol = child;
-    } else if (child.tagName === 'UL') {
-      rightCol = child;
-    } else if (child.tagName === 'IMG') {
-      img = child;
-    }
+  const children = Array.from(grid.children);
+
+  // Identify leftCol (contains h2, h3, p) and contact list (ul)
+  const introBlock = children.find(child => child.querySelector('h2,h3,p'));
+  const contactList = children.find(child => child.tagName === 'UL');
+  const imgBlock = children.find(child => child.tagName === 'IMG');
+
+  // Compose left cell by appending intro + contact list
+  if (introBlock || contactList) {
+    leftCol = document.createElement('div');
+    if (introBlock) leftCol.appendChild(introBlock);
+    if (contactList) leftCol.appendChild(contactList);
   }
 
-  // Header row: ONLY one column, per guidelines
+  // Compose right cell (just the image)
+  if (imgBlock) {
+    rightCol = imgBlock;
+  }
+
+  // Prepare table rows
   const headerRow = ['Columns (columns18)'];
-  // The number of columns is determined by the first content row
-  const columnsCount = rightCol ? 2 : 1;
+  const contentRow = [leftCol || '', rightCol || ''];
 
-  // All content rows must have the same number of columns as the first content row
-  const row1 = columnsCount === 2 ? [leftCol, rightCol] : [leftCol];
-  // For the row with the image, only include a cell for the image if there is no rightCol; otherwise, do NOT add an empty cell
-  const row2 = columnsCount === 2 ? [img, rightCol ? null : ''] : [img];
+  // Build the output table
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    contentRow,
+  ], document);
 
-  // Only include the second cell in row2 if there is a rightCol, otherwise keep to one column
-  const cells = [headerRow, row1];
-  // Only push row2 if the image exists
-  if(img) cells.push(row2);
-
-  // Clean up any unnecessary empty column in row2
-  if (columnsCount === 2 && row2.length === 2 && (row2[1] === '' || row2[1] === null)) {
-    // If second cell is empty/null, remove it
-    row2.pop();
-  }
-
-  const table = WebImporter.DOMUtils.createTable(cells, document);
+  // Replace element with new table
   element.replaceWith(table);
 }

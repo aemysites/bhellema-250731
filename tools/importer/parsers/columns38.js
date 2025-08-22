@@ -1,20 +1,33 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Ensure we only target the direct child divs (columns)
-  const columns = Array.from(element.querySelectorAll(':scope > div'));
+  if (!element) return;
 
-  // Each column's DOM node itself becomes a TD cell content (preserving images, etc)
-  const contentRow = columns.map(div => div);
-
-  // The header row uses the required block name
+  // Set table header as per strict instructions
   const headerRow = ['Columns (columns38)'];
 
-  // Use the web-importer utility to create the correct table
-  const table = WebImporter.DOMUtils.createTable([
-    headerRow,
-    contentRow
-  ], document);
+  // Find direct column divs only (no nested divs)
+  const columns = Array.from(element.querySelectorAll(':scope > div'));
 
-  // Replace the original grid with the table
+  // Build the content row: each column cell gets its main image
+  const contentRow = columns.map(col => {
+    // Try to get the first img for each column
+    const img = col.querySelector('img');
+    // If no image, fallback to text content, else empty cell
+    if (img) return img;
+    if (col.textContent && col.textContent.trim()) {
+      const span = document.createElement('span');
+      span.textContent = col.textContent.trim();
+      return span;
+    }
+    return document.createTextNode('');
+  });
+
+  // Construct table rows
+  const rows = [headerRow, contentRow];
+
+  // Create table using provided API
+  const table = WebImporter.DOMUtils.createTable(rows, document);
+
+  // Replace original block with the block table
   element.replaceWith(table);
 }

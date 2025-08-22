@@ -1,31 +1,41 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: get all immediate child accordion items
-  const accordions = Array.from(element.querySelectorAll(':scope > .accordion'));
-  const rows = [];
-  // Header row for block table
-  rows.push(['Accordion']);
-  // For each accordion item, extract title and content
+  if (!element) return;
+
+  // Find all accordion items that are direct children
+  const accordions = Array.from(element.querySelectorAll(':scope > .accordion.w-dropdown'));
+
+  // Build rows: first row is header ('Accordion'), then each item is [title, content]
+  const rows = [
+    ['Accordion'],
+  ];
+
   accordions.forEach(acc => {
-    // Title: find paragraph-lg inside w-dropdown-toggle
-    const toggle = acc.querySelector('.w-dropdown-toggle');
-    let title = '';
-    if (toggle) {
-      const titleElem = toggle.querySelector('.paragraph-lg');
-      title = titleElem ? titleElem.textContent.trim() : '';
+    // Title cell: get as much of the full title block as possible
+    let title = acc.querySelector('.w-dropdown-toggle .paragraph-lg');
+    if (!title) {
+      // fallback: try first div under .w-dropdown-toggle
+      title = acc.querySelector('.w-dropdown-toggle div');
     }
-    // Content: rich-text inside w-dropdown-list nav
-    const nav = acc.querySelector('nav');
-    let content = '';
-    if (nav) {
-      const richText = nav.querySelector('.rich-text');
-      content = richText ? richText : nav; // fallback to full nav if not found
+    // Always use the DOM node for cell, not its textContent
+    const titleCell = title || '';
+
+    // Content cell: prefer .w-richtext if present, else the inner div, else .w-dropdown-list itself
+    const contentWrapper = acc.querySelector('.w-dropdown-list');
+    let contentCell = '';
+    if (contentWrapper) {
+      const rich = contentWrapper.querySelector('.w-richtext');
+      if (rich) {
+        contentCell = rich;
+      } else {
+        const inner = contentWrapper.querySelector('div');
+        contentCell = inner || contentWrapper;
+      }
     }
-    // Defensive: ensure both cells are present
-    rows.push([title, content]);
+    rows.push([titleCell, contentCell]);
   });
-  // Create the Accordion block table
+
+  // Create and replace with the table
   const table = WebImporter.DOMUtils.createTable(rows, document);
-  // Replace original element with block table
   element.replaceWith(table);
 }

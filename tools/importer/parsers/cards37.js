@@ -1,30 +1,76 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Extract all card links - these are the card containers
-  const cards = Array.from(element.querySelectorAll('.utility-link-content-block'));
+  // Helper to extract main cards from grid
+  function getCardRows(element) {
+    // Outermost grid: first card is a, then a nested grid for others
+    const cards = [];
+    // Immediate child divs in the container
+    const container = element.querySelector('.container');
+    if (!container) return cards;
+    const outerGrid = container.querySelector('.grid-layout');
+    if (!outerGrid) return cards;
+    // The grid contains: 1st card (a), then nested grid with the remaining cards
+    const gridChildren = Array.from(outerGrid.children);
+    if (!gridChildren.length) return cards;
+    // First card (large)
+    const firstCard = gridChildren.find(child => child.matches('a.utility-link-content-block'));
+    if (firstCard) cards.push(firstCard);
+    // Find the nested grid which contains more cards
+    const nestedGrid = gridChildren.find(child => child.classList.contains('grid-layout'));
+    if (nestedGrid) {
+      // All cards (a.utility-link-content-block) in nested grid
+      const nestedCards = Array.from(nestedGrid.querySelectorAll('a.utility-link-content-block'));
+      cards.push(...nestedCards);
+    }
+    return cards;
+  }
 
-  // Header row: block name only (1 column)
+  // Helper to extract card info
+  function extractCardInfo(card) {
+    let imageElem = null;
+    let textElem = null;
+    let ctaElem = null;
+    // Try to find image: look for img inside 2x3 or 1x1 aspect divs
+    const aspectImg = card.querySelector('.utility-aspect-2x3 img, .utility-aspect-1x1 img');
+    if (aspectImg) {
+      imageElem = aspectImg;
+    }
+    // Text and CTA
+    // Text is inside .utility-padding-all-2rem (first card), or directly under the card (others)
+    const textContainer = card.querySelector('.utility-padding-all-2rem') || card;
+    // Title: h3 (can be h2-heading or h4-heading), find first h3/h4 inside text container
+    const title = textContainer.querySelector('h2, h3, h4');
+    // Description: p element (first one)
+    const desc = textContainer.querySelector('p');
+    // CTA: .button (as div or a)
+    let ctaBtn = textContainer.querySelector('.button');
+    // If not found as .button, try to find button or a with suitable classes
+    if (!ctaBtn) {
+      ctaBtn = textContainer.querySelector('a.button, button.button');
+    }
+    // Compose text content element array
+    const textContent = [];
+    if (title) textContent.push(title);
+    if (desc) textContent.push(desc);
+    if (ctaBtn) textContent.push(ctaBtn);
+    return [
+      '', // Style column (empty)
+      imageElem || '', // Image column
+      textContent.length ? textContent : '', // Text column (array if content, else empty string)
+    ];
+  }
+
+  // Build the table rows
   const headerRow = ['Cards (cards37)'];
   const rows = [headerRow];
-
-  // For each card, extract and build row
-  cards.forEach(cardEl => {
-    // Image: find inside .utility-aspect-2x3 or .utility-aspect-1x1
-    let imgDiv = cardEl.querySelector('.utility-aspect-2x3, .utility-aspect-1x1');
-    let img = imgDiv ? imgDiv.querySelector('img') : null;
-    // Rich text content: get h3, p, and button (but no image)
-    const richDiv = document.createElement('div');
-    let heading = cardEl.querySelector('h3');
-    let desc = cardEl.querySelector('p');
-    let button = cardEl.querySelector('.button');
-    if (heading) richDiv.appendChild(heading);
-    if (desc) richDiv.appendChild(desc);
-    if (button) richDiv.appendChild(button);
-    // Only image and rich text columns, no unnecessary empty style column
-    rows.push([img || '', richDiv]);
+  const cards = getCardRows(element);
+  cards.forEach(card => {
+    rows.push(extractCardInfo(card));
   });
 
-  // Replace element with table
+  // Create the table block
   const table = WebImporter.DOMUtils.createTable(rows, document);
+
+  // Replace the element with the new block table
   element.replaceWith(table);
 }

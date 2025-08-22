@@ -1,23 +1,26 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: Get the grid container (should be main layout)
+  // Defensive: Find the multi-column grid container (should be the direct child of the element)
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
-  // Get all immediate children of the grid (these should be the columns)
-  const columns = Array.from(grid.children);
 
-  // Defensive: If no columns found, bail
-  if (columns.length === 0) return;
+  // Get all direct children (columns)
+  const columnEls = Array.from(grid.children);
+  if (columnEls.length === 0) return;
 
-  // For each column, gather all its direct children (preserving elements)
-  // In this HTML, each column is already a div, so just reference them directly
-  const cellRow = columns.map(col => col);
-
-  // Compose the table
+  // Build the header row as required
   const headerRow = ['Columns block (columns31)'];
-  const tableArray = [headerRow, cellRow];
 
-  // Create and inject the block
-  const block = WebImporter.DOMUtils.createTable(tableArray, document);
-  element.replaceWith(block);
+  // Second row: each column's content in its own cell
+  // For robustness, use the column element itself (as it may contain complex markup)
+  const columnsRow = columnEls.map(col => col);
+
+  // Build the table
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    columnsRow
+  ], document);
+
+  // Replace the original element with the new block table
+  element.replaceWith(table);
 }

@@ -1,61 +1,56 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Block header row: must match target block name exactly
+  // Header row (per guidelines)
   const headerRow = ['Hero (hero12)'];
 
-  // Find grid layout root
-  const grid = element.querySelector('.grid-layout.desktop-1-column');
-  if (!grid) return;
-  const gridDivs = grid.querySelectorAll(':scope > div');
-
-  // --- Background Image Row ---
-  let bgImageElem = null;
-  if (gridDivs.length > 0) {
-    bgImageElem = gridDivs[0].querySelector('img');
-  }
-  if (!bgImageElem) {
-    bgImageElem = element.querySelector('img');
+  // --- 1. Find background image (block's background) ---
+  let bgImg = null;
+  const gridContainers = element.querySelectorAll(':scope > div');
+  if (gridContainers.length > 0) {
+    const img = gridContainers[0].querySelector('img.cover-image');
+    if (img) bgImg = img;
   }
 
-  // --- Content Row ---
-  let contentElem = gridDivs.length > 1 ? gridDivs[1] : null;
-  let cardGrid = contentElem ? contentElem.querySelector('.card-body .grid-layout') : null;
-  if (!cardGrid && contentElem) cardGrid = contentElem.querySelector('.card-body') || contentElem;
-
-  // The grid contains text (headings, list, button) and one image
-  let title = '', bulletItems = [], cta = null, squareImg = null;
-
-  if (cardGrid) {
-    // Try to get title
-    const h2 = cardGrid.querySelector('h2');
-    if (h2) title = h2;
-
-    // Try to get bullet list (all p inside .flex-horizontal)
-    const bullets = Array.from(cardGrid.querySelectorAll('.flex-horizontal p'));
-    bulletItems = bullets;
-
-    // Try to get CTA button
-    const button = cardGrid.querySelector('a.button');
-    if (button) cta = button;
-
-    // Try to get square image (img.cover-image.utility-aspect-1x1)
-    squareImg = cardGrid.querySelector('img.cover-image.utility-aspect-1x1');
+  // --- 2. Find content: title, subheading, CTA, and inner image ---
+  let contentElems = [];
+  if (gridContainers.length > 1) {
+    const cardBody = gridContainers[1].querySelector('.card-body');
+    if (cardBody) {
+      const grid = cardBody.querySelector('.w-layout-grid');
+      if (grid) {
+        // The secondary image (left column)
+        const innerImage = grid.querySelector('img.image');
+        if (innerImage) contentElems.push(innerImage);
+        // The text column: h2, list, button
+        const textCol = Array.from(grid.querySelectorAll('div')).find(div => div.querySelector('h2'));
+        if (textCol) {
+          // 1. Heading
+          const h2 = textCol.querySelector('h2');
+          if (h2) contentElems.push(h2);
+          // 2. All subheading/list lines (include icons)
+          textCol.querySelectorAll('.flex-horizontal').forEach(fh => {
+            if (fh.textContent.trim()) contentElems.push(fh);
+          });
+          // 3. CTA Button
+          const btn = textCol.querySelector('a.button');
+          if (btn) contentElems.push(btn);
+        }
+      }
+    }
   }
 
-  // Compose content cell: create a DOM fragment with all pieces
-  const frag = document.createElement('div');
-  if (title) frag.appendChild(title.cloneNode(true));
-  bulletItems.forEach(b => frag.appendChild(b.cloneNode(true)));
-  if (cta) frag.appendChild(cta.cloneNode(true));
-  if (squareImg) frag.appendChild(squareImg.cloneNode(true));
-
-  // --- Table Assembly ---
-  // Each table row is a single cell
-  const cells = [
+  // --- 3. Build table: Always create 3 rows as per block spec, but do not create an empty cell in row three ---
+  const rows = [
     headerRow,
-    [bgImageElem],
-    [frag]
-  ];
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-  element.replaceWith(block);
+    [bgImg ? bgImg : ''],
+    contentElems.length > 0 ? [contentElems] : []
+  ].filter(row => row.length > 0);
+  
+  // Guarantee 3 rows (header, image, content), but do NOT add a blank row if content is empty.
+  while (rows.length < 3) {
+    rows.push(['']);
+  }
+
+  const table = WebImporter.DOMUtils.createTable(rows, document);
+  element.replaceWith(table);
 }

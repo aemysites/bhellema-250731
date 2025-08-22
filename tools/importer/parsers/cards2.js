@@ -1,88 +1,98 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper function to extract variant/tag text
-  function getTagText(link) {
-    const tagGroup = link.querySelector('.tag-group');
-    if (tagGroup) {
-      const tag = tagGroup.querySelector('.tag');
-      if (tag) return tag.textContent.trim();
-    }
-    return '';
-  }
-
-  // Helper function to extract image element
-  function getImage(link) {
-    const img = link.querySelector('img');
-    return img || '';
-  }
-
-  // Helper function to extract rich text content (excluding images)
-  function getRichText(link) {
-    const nodes = [];
-    // Get heading
-    const h3 = link.querySelector('h3');
-    if (h3) nodes.push(h3);
-    // Get paragraph
-    const p = link.querySelector('p');
-    if (p) nodes.push(p);
-    if (nodes.length === 1) return nodes[0];
-    if (nodes.length > 1) return nodes;
-    return '';
-  }
-
-  // Get the grid area
-  const grid = element.querySelector('.w-layout-grid.grid-layout');
-  if (!grid) return;
-
+  // Helper to extract elements in a robust way, given block layout
   const cards = [];
 
-  // Big card on left (first child link, should have image, style, text)
-  const gridChildren = Array.from(grid.children);
-  let i = 0;
-  if (gridChildren[i].matches('a.utility-link-content-block')) {
-    const link = gridChildren[i];
+  // Header row as per instruction
+  const headerRow = ['Cards (cards2)'];
+  cards.push(headerRow);
+
+  // Find the card grid
+  const grid = element.querySelector('.w-layout-grid');
+  if (!grid) return;
+
+  // Card 1: Large card (the first direct child, an <a>)
+  const [firstCardLink, ...rest] = grid.children;
+  if (firstCardLink && firstCardLink.classList.contains('utility-link-content-block')) {
+    // Image (second card cell)
+    const imageWrap = firstCardLink.querySelector('.utility-aspect-1x1, .utility-aspect-3x2');
+    let image = null;
+    if (imageWrap) image = imageWrap.querySelector('img');
+
+    // Text block (third card cell)
+    // We'll gather all the content except the image
+    const textNodes = [];
+    // tag group
+    const tagGroup = firstCardLink.querySelector('.tag-group');
+    if (tagGroup) textNodes.push(tagGroup);
+    // heading
+    const heading = firstCardLink.querySelector('h2, h3, h4, h1');
+    if (heading) textNodes.push(heading);
+    // description
+    const desc = firstCardLink.querySelector('p');
+    if (desc) textNodes.push(desc);
+
     cards.push([
-      getTagText(link),
-      getImage(link),
-      getRichText(link),
+      '',
+      image || '',
+      textNodes
     ]);
-    i++;
   }
 
-  // Next column: two image cards
-  if (gridChildren[i] && gridChildren[i].matches('.flex-horizontal.flex-vertical.flex-gap-sm')) {
-    const col = gridChildren[i];
-    const cardLinks = col.querySelectorAll('a.utility-link-content-block');
-    cardLinks.forEach(link => {
+  // Card 2 & 3: Two cards in flex-horizontal.flex-vertical.flex-gap-sm
+  const flexRows = grid.querySelectorAll('.flex-horizontal.flex-vertical.flex-gap-sm');
+  if (flexRows.length >= 1) {
+    // The first .flex-horizontal... contains the next two image cards
+    const flex1 = flexRows[0];
+    const flexCardLinks = flex1.querySelectorAll(':scope > a.utility-link-content-block');
+    flexCardLinks.forEach(link => {
+      // image
+      const imageWrap = link.querySelector('.utility-aspect-1x1, .utility-aspect-3x2');
+      let image = null;
+      if (imageWrap) image = imageWrap.querySelector('img');
+      // text block
+      const textNodes = [];
+      // tag group
+      const tagGroup = link.querySelector('.tag-group');
+      if (tagGroup) textNodes.push(tagGroup);
+      // heading
+      const heading = link.querySelector('h2, h3, h4, h1');
+      if (heading) textNodes.push(heading);
+      // description
+      const desc = link.querySelector('p');
+      if (desc) textNodes.push(desc);
       cards.push([
-        getTagText(link),
-        getImage(link),
-        getRichText(link),
+        '',
+        image || '',
+        textNodes
       ]);
     });
-    i++;
   }
 
-  // Final column: text-only cards (no image, no tag)
-  if (gridChildren[i] && gridChildren[i].matches('.flex-horizontal.flex-vertical.flex-gap-sm')) {
-    const col = gridChildren[i];
-    const cardLinks = col.querySelectorAll('a.utility-link-content-block');
+  // Remaining cards: small text-only cards in the second .flex-horizontal...
+  if (flexRows.length >= 2) {
+    const flex2 = flexRows[1];
+    // Each card is an <a>, separated by <div class="divider">
+    const cardLinks = flex2.querySelectorAll(':scope > a.utility-link-content-block');
     cardLinks.forEach(link => {
-      // Only push if there is actual content in the rich text, not empty
-      const content = getRichText(link);
-      // Only include this row if there is some visible content
-      if (
-        (typeof content === 'string' && content.trim() !== '') ||
-        (Array.isArray(content) && content.length > 0) ||
-        (content && content.textContent && content.textContent.trim() !== '')
-      ) {
-        cards.push(['', '', content]);
-      }
+      // No image for these cards
+      // text block
+      const textNodes = [];
+      // heading
+      const heading = link.querySelector('h2, h3, h4, h1');
+      if (heading) textNodes.push(heading);
+      // description
+      const desc = link.querySelector('p');
+      if (desc) textNodes.push(desc);
+      cards.push([
+        '',
+        '',
+        textNodes
+      ]);
     });
   }
 
-  const headerRow = ['Cards (cards2)'];
-  const cells = [headerRow, ...cards];
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-  element.replaceWith(block);
+  // Build the block table
+  const table = WebImporter.DOMUtils.createTable(cards, document);
+  element.replaceWith(table);
 }

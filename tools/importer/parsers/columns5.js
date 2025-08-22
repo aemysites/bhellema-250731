@@ -1,34 +1,42 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Locate the grid layout containing the two columns
-  const grid = element.querySelector('.grid-layout');
+  // Helper: get the top-level grid containing both columns
+  // We want the two direct children of the grid (left content, right image)
+  const grid = element.querySelector('.w-layout-grid.grid-layout.tablet-1-column');
   if (!grid) return;
 
-  // There are two grid items: left is text/buttons, right is image
-  let leftCol, rightCol;
-  const gridChildren = Array.from(grid.children);
-  // Find left column by heading, right column by image
-  gridChildren.forEach(child => {
-    if (child.querySelector('h2')) leftCol = child;
-    if (child.tagName === 'IMG') rightCol = child;
-  });
-  if (!leftCol || !rightCol) return;
+  // Usually two children: content col (div), image col (img)
+  const children = Array.from(grid.children);
 
-  // Compose left column: heading, paragraph, buttons
-  const leftContent = [];
-  const heading = leftCol.querySelector('h2');
-  if (heading) leftContent.push(heading);
-  const paragraph = leftCol.querySelector('.rich-text, .w-richtext, p');
-  if (paragraph) leftContent.push(paragraph);
-  const buttonGroup = leftCol.querySelector('.button-group');
-  if (buttonGroup) leftContent.push(buttonGroup);
+  // Defensive: Find the main content div and image
+  let leftContent = null;
+  let rightImage = null;
+  for (const child of children) {
+    if (child.tagName === 'DIV') {
+      leftContent = child;
+    } else if (child.tagName === 'IMG') {
+      rightImage = child;
+    }
+  }
 
-  // Compose right column: image
-  const rightContent = [rightCol];
+  // Defensive: If leftContent contains more than one nested grid (e.g. accidental wrapper)
+  if (leftContent && leftContent.querySelector('.section')) {
+    // The inner '.section' contains the actual content
+    leftContent = leftContent.querySelector('.section');
+  }
 
-  // Construct table: header and single row
+  // Compose the left column: include the inner content container div if present
+  // (containing h2, paragraph, buttons)
+  let leftCell = leftContent ? leftContent : '';
+  // Compose the right column: just the image element
+  let rightCell = rightImage ? rightImage : '';
+
+  // Build the table rows
   const headerRow = ['Columns (columns5)'];
-  const tableRows = [headerRow, [leftContent, rightContent]];
-  const table = WebImporter.DOMUtils.createTable(tableRows, document);
+  const contentRow = [leftCell, rightCell];
+  const cells = [headerRow, contentRow];
+
+  // Make the table and replace
+  const table = WebImporter.DOMUtils.createTable(cells, document);
   element.replaceWith(table);
 }

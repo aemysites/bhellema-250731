@@ -1,72 +1,60 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  function getVariant(card) {
-    if (card.classList.contains('card-link') && card.classList.contains('secondary-card-link')) {
-      return 'card, dark';
+  // Helper to extract card info
+  function extractCardInfo(cardEl) {
+    let styleCell = '';
+    let imageCell = '';
+    let textCell = '';
+
+    // Find image
+    const img = cardEl.querySelector('img');
+    if (img) {
+      imageCell = img;
     }
-    if (card.classList.contains('utility-link-content-block')) {
-      return 'card';
+
+    // Find title (h3) and description (div with class paragraph-sm)
+    let title, desc;
+    // Some cards are nested in .utility-text-align-center, others not
+    const textScope = cardEl.querySelector('.utility-text-align-center') || cardEl;
+    title = textScope.querySelector('h3');
+    desc = textScope.querySelector('.paragraph-sm');
+
+    // Combine title and description in text cell
+    const textFragments = [];
+    if (title) textFragments.push(title);
+    if (desc) textFragments.push(desc);
+    if (textFragments.length) {
+      textCell = textFragments;
     }
-    return '';
+
+    // Always return exactly 3 cells
+    return [styleCell, imageCell, textCell];
   }
 
-  function getImage(card) {
-    const img = card.querySelector('img');
-    return img || '';
-  }
-
-  function getRichText(card) {
-    // Collect all text content except images
-    const texts = [];
-    // For standard cards
-    const h3 = card.querySelector('h3');
-    if (h3) {
-      const h3clone = h3.cloneNode(true);
-      texts.push(h3clone);
-    }
-    // Find all paragraph-sm under card
-    const descs = card.querySelectorAll('div.paragraph-sm');
-    descs.forEach((desc, i) => {
-      if (texts.length > 0) {
-        texts.push(document.createElement('br'));
-      }
-      texts.push(desc.cloneNode(true));
-    });
-    // For secondary card (with flex-horizontal container), also extract from nested .utility-text-align-center
-    if (texts.length === 0) {
-      const altH3 = card.querySelector('.utility-text-align-center h3');
-      if (altH3) {
-        texts.push(altH3.cloneNode(true));
-      }
-      const altDesc = card.querySelector('.utility-text-align-center .paragraph-sm');
-      if (altDesc) {
-        if (texts.length > 0) {
-          texts.push(document.createElement('br'));
-        }
-        texts.push(altDesc.cloneNode(true));
-      }
-    }
-    return texts.length > 0 ? texts : '';
-  }
-
-  const tabPanes = element.querySelectorAll(':scope > .w-tab-pane');
+  // Find all tab panes (blocks of cards)
+  const tabPanes = element.querySelectorAll(':scope > div');
   tabPanes.forEach((tabPane) => {
+    // Find the grid containing card links
     const grid = tabPane.querySelector('.w-layout-grid');
     if (!grid) return;
-    // Select all direct card links (both variants, as structure differs)
-    const cards = Array.from(grid.querySelectorAll('a.utility-link-content-block, a.card-link'));
-    const rows = [['Cards (cards23)']];
-    cards.forEach((card) => {
-      const variant = getVariant(card);
-      const image = getImage(card);
-      const richText = getRichText(card);
-      rows.push([
-        variant,
-        image,
-        richText
-      ]);
+
+    // Only process direct children that are <a>
+    const cards = Array.from(grid.children).filter((el) => el.tagName === 'A');
+    if (!cards.length) return;
+
+    // Start table data: header row
+    const tableRows = [ ['Cards (cards23)'] ];
+    
+    cards.forEach((cardEl) => {
+      const cardRow = extractCardInfo(cardEl);
+      // Ensure exactly 3 cells
+      if (cardRow.length > 3) cardRow.length = 3;
+      while (cardRow.length < 3) cardRow.push('');
+      tableRows.push(cardRow);
     });
-    const table = WebImporter.DOMUtils.createTable(rows, document);
-    tabPane.replaceWith(table);
+
+    const block = WebImporter.DOMUtils.createTable(tableRows, document);
+    // Replace the grid with the block table
+    grid.replaceWith(block);
   });
 }

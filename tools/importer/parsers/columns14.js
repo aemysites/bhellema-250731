@@ -1,32 +1,25 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: find the grid containing the columns
+  // Defensive: Find the grid row with two columns
   const grid = element.querySelector('.w-layout-grid');
   if (!grid) return;
-
-  // Get immediate children of the grid layout
+  // Get all immediate children of the grid
   const gridChildren = Array.from(grid.children);
+  if (gridChildren.length < 2) return;
 
-  // There should be two columns: first is the h2, second is the content div
-  const col1 = gridChildren[0]; // h2 (Fresh looks, bold moves)
-  const col2 = gridChildren[1]; // div with paragraph and button
+  // First column: the heading (h2)
+  const col1 = gridChildren[0];
+  // Second column: the div with paragraph and button
+  const col2 = gridChildren[1];
 
-  // Defensive: ensure both columns exist
-  if (!col1 || !col2) return;
-
-  // Table header row
+  // Build the table rows
   const headerRow = ['Columns (columns14)'];
+  const contentRow = [col1, col2];
 
-  // Content row: each cell is one column's content
-  // Wrap col2 children in a fragment for one cell
-  const col2Content = Array.from(col2.childNodes);
-
-  const contentRow = [col1, col2Content];
-
-  const cells = [headerRow, contentRow];
-
-  // Create the block table
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-  // Replace the original element with the block table
-  element.replaceWith(block);
+  // Create the table and replace the element
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    contentRow
+  ], document);
+  element.replaceWith(table);
 }

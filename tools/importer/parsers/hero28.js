@@ -1,40 +1,34 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Get references to image and heading content using the grid structure
+  // The header contains a w-layout-grid with two main divs
   const grid = element.querySelector('.w-layout-grid');
-  let imageEl = null;
-  let headingContent = [];
+  let imgEl = null;
+  let headingEl = null;
 
   if (grid) {
-    const gridChildren = grid.querySelectorAll(':scope > div');
-    for (const child of gridChildren) {
-      // Find image (must be actual img element)
-      const img = child.querySelector('img');
-      if (!imageEl && img) {
-        imageEl = img;
-      }
-      // Find heading area: look for h1, include any visible relevant children
-      const h1 = child.querySelector('h1');
-      if (h1) {
-        headingContent.push(h1);
-      }
-      // If there's a button group or other relevant element (none present here)
-      const buttonGroup = child.querySelector('.button-group');
-      if (buttonGroup && buttonGroup.childElementCount > 0) {
-        headingContent.push(buttonGroup);
-      }
+    // First div: background image
+    const bgWrapper = grid.children[0];
+    if (bgWrapper) {
+      imgEl = bgWrapper.querySelector('img'); // reference the existing image element
+    }
+    // Second div: text
+    const textWrapper = grid.children[1];
+    if (textWrapper) {
+      headingEl = textWrapper.querySelector('h1'); // reference the existing h1 element
     }
   }
 
-  // Table header must exactly match block name
+  // Block header: must use block name exactly
   const headerRow = ['Hero (hero28)'];
-  const imageRow = [imageEl ? imageEl : ''];
-  const contentRow = [headingContent.length > 0 ? headingContent : ''];
+  // Second row: background image (element or empty string)
+  const imageRow = [imgEl ? imgEl : ''];
+  // Third row: main content (h1 in this case, as in the markdown example)
+  const contentRow = [headingEl ? headingEl : ''];
 
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
     imageRow,
-    contentRow
+    contentRow,
   ], document);
 
   element.replaceWith(table);

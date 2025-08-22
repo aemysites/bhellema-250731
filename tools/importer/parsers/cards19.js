@@ -1,29 +1,50 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  if (!element || !element.querySelectorAll) return;
-
-  // Header row with block name only
+  // Header row as specified
   const headerRow = ['Cards (cards19)'];
-  const rows = [headerRow];
 
-  // Each card
-  const cardDivs = element.querySelectorAll(':scope > div');
-  cardDivs.forEach((cardDiv) => {
-    // Always 3 columns: style (not present, so empty), icon, rich text
-    const styleCell = '';
-    let iconCell = '';
-    const iconDiv = cardDiv.querySelector('.icon');
-    if (iconDiv && iconDiv.firstElementChild) {
-      iconCell = iconDiv.firstElementChild;
+  // Collect the immediate card elements (each child div is a card)
+  const cardDivs = Array.from(element.querySelectorAll(':scope > div'));
+
+  // Build rows for each card
+  const rows = cardDivs.map((cardDiv) => {
+    // Find icon or image (in div.icon)
+    let iconOrImage = '';
+    const iconWrapper = cardDiv.querySelector('div.icon');
+    if (iconWrapper) {
+      iconOrImage = iconWrapper;
+    } else {
+      const img = cardDiv.querySelector('img');
+      if (img) iconOrImage = img;
     }
-    let contentCell = '';
-    const p = cardDiv.querySelector('p');
-    if (p) {
-      contentCell = p;
+
+    // Find text content (the paragraph)
+    let textContent = '';
+    const para = cardDiv.querySelector('p');
+    if (para) textContent = para;
+    else {
+      const fallbackText = Array.from(cardDiv.childNodes).find(
+        (node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim()
+      );
+      if (fallbackText) {
+        const span = document.createElement('span');
+        span.textContent = fallbackText.textContent.trim();
+        textContent = span;
+      }
     }
-    rows.push([styleCell, iconCell, contentCell]);
+
+    // Always three cells: [style, icon/image, text]
+    return [
+      '',                // Style cell - left blank
+      iconOrImage,       // Icon/Image cell
+      textContent        // Text cell
+    ];
   });
 
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(table);
+  // Construct the block table
+  const cells = [headerRow, ...rows];
+  const blockTable = WebImporter.DOMUtils.createTable(cells, document);
+
+  // Replace original element
+  element.replaceWith(blockTable);
 }

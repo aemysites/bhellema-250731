@@ -1,41 +1,58 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // 1. Extract the background image
-  let imageEl = null;
-  const img = element.querySelector('img.cover-image');
-  if (img && img.src) imageEl = img;
+  // Defensive: Get top-level grid layout children
+  const gridChildren = element.querySelectorAll(':scope > div.w-layout-grid > div');
 
-  // 2. Extract main heading
-  let headingEl = element.querySelector('h1, h2, h3, h4, h5, h6');
-
-  // 3. Extract subheading/paragraph
-  let paraEl = element.querySelector('p');
-
-  // 4. Extract call-to-action (CTA)
-  let ctaEl = null;
-  // Prefer button inside .button-group, fallback to .button or .w-button
-  const buttonGroup = element.querySelector('.button-group');
-  if (buttonGroup) {
-    ctaEl = buttonGroup.querySelector('a.button, a.w-button');
+  // Find image section (usually contains the background image)
+  let imageSection = null;
+  let textSection = null;
+  if (gridChildren.length === 2) {
+    imageSection = gridChildren[0];
+    textSection = gridChildren[1];
+  } else {
+    // Fallback: Look for image and text by heuristics
+    gridChildren.forEach((child) => {
+      if (child.querySelector('img')) imageSection = child;
+      if (child.querySelector('h1, p, .button-group')) textSection = child;
+    });
   }
-  if (!ctaEl) ctaEl = element.querySelector('a.button, a.w-button');
 
-  // Compose the content cell: heading, para, cta (in order, in a div)
-  const contentCell = document.createElement('div');
-  if (headingEl) contentCell.appendChild(headingEl);
-  if (paraEl) contentCell.appendChild(paraEl);
-  if (ctaEl) contentCell.appendChild(ctaEl);
+  // Defensive: Get the background image (first img in imageSection)
+  let imageEl = null;
+  if (imageSection) {
+    imageEl = imageSection.querySelector('img');
+  }
 
-  // Compose table rows as per requirements
-  const headerRow = ['Hero (hero39)'];
-  const imageRow = [imageEl ? imageEl : ''];
-  const contentRow = [contentCell.childNodes.length ? contentCell : ''];
+  // Defensive: Get heading, paragraph, CTA from textSection
+  let headingEl = null;
+  let paragraphEl = null;
+  let ctaEl = null;
+  if (textSection) {
+    headingEl = textSection.querySelector('h1, h2, h3, h4, h5, h6');
+    paragraphEl = textSection.querySelector('p');
+    // Find call-to-action link
+    const ctaGroup = textSection.querySelector('.button-group');
+    if (ctaGroup) {
+      ctaEl = ctaGroup.querySelector('a');
+    }
+  }
 
-  const table = WebImporter.DOMUtils.createTable([
-    headerRow,
-    imageRow,
-    contentRow
-  ], document);
+  // Compose content cell for text section
+  const contentCell = [];
+  if (headingEl) contentCell.push(headingEl);
+  if (paragraphEl) contentCell.push(paragraphEl);
+  if (ctaEl) contentCell.push(ctaEl);
 
-  element.replaceWith(table);
+  // Compose the table rows
+  const rows = [
+    ['Hero (hero39)'], // header row
+    [imageEl ? imageEl : ''], // image row
+    [contentCell], // text + CTA row
+  ];
+
+  // Create the block table
+  const block = WebImporter.DOMUtils.createTable(rows, document);
+
+  // Replace the original element with the block
+  element.replaceWith(block);
 }

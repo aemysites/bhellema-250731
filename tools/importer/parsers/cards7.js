@@ -1,28 +1,31 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Always create a header row with only one column containing the block name
+  // Block header must match exactly
   const headerRow = ['Cards (cards7)'];
-  const rows = [headerRow];
 
-  // Select all card divs (direct children)
-  const cardDivs = element.querySelectorAll(':scope > div');
+  // Get all direct card containers
+  const cardElements = element.querySelectorAll(':scope > div');
 
-  cardDivs.forEach((cardDiv) => {
-    // Style/variant cell: not present, so empty string
-    let styleCell = '';
-    // Image/Icon cell: select the img element
-    let imgCell = '';
-    const img = cardDiv.querySelector('img');
-    if (img) {
-      imgCell = img;
-    }
-    // Rich Text cell: not present, so empty string
-    let richTextCell = '';
-    // All cards must have 3 columns, as required
-    rows.push([styleCell, imgCell, richTextCell]);
+  // Compose rows for each card
+  const rows = Array.from(cardElements).map(card => {
+    // Style cell (blank)
+    const styleCell = '';
+    // Image/Icon cell
+    const img = card.querySelector('img');
+    const imageCell = img ? img : '';
+    // Text content cell: ensure it is truly blank (no text in card)
+    let textCell = '';
+    // Remove the image and check if any text remains
+    const cardClone = card.cloneNode(true);
+    const imgClone = cardClone.querySelector('img');
+    if (imgClone) imgClone.remove();
+    // If there's text, add it, else keep as blank
+    const cardText = cardClone.textContent.trim();
+    if (cardText) textCell = cardText;
+    return [styleCell, imageCell, textCell];
   });
 
-  // Create the block table and replace the original element
-  const table = WebImporter.DOMUtils.createTable(rows, document);
+  const tableData = [headerRow, ...rows];
+  const table = WebImporter.DOMUtils.createTable(tableData, document);
   element.replaceWith(table);
 }

@@ -1,56 +1,60 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Header row for the block
-  const headerRow = ['Cards (cards10)'];
+  // Helper to extract all text content (tags, description, and title) from card body
+  function getCardTextContent(cardBody) {
+    const nodes = [];
+    // Tag (date and type)
+    const tag = cardBody.querySelector('.tag');
+    if (tag) {
+      nodes.push(tag.cloneNode(true));
+    }
+    // Title (h3)
+    const heading = cardBody.querySelector('h3');
+    if (heading) {
+      nodes.push(heading.cloneNode(true));
+    }
+    // Description (p)
+    const desc = cardBody.querySelector('p');
+    if (desc) {
+      nodes.push(desc.cloneNode(true));
+    }
+    return nodes;
+  }
 
-  // Get all direct children card links (each card)
-  const cardLinks = Array.from(element.querySelectorAll(':scope > a.card-link'));
+  // Get all card links (each is a card)
+  const cardLinks = element.querySelectorAll(':scope > a.card-link');
 
-  // We'll collect rows here
-  const rows = [headerRow];
+  const rows = [];
+  // Header row (must match block name exactly)
+  rows.push(['Cards (cards10)']);
 
+  // Parse each card
   cardLinks.forEach((card) => {
-    // Style cell: get the variant from the tag (first tag in tag-group), if present
-    let style = '';
-    const tagGroup = card.querySelector('.tag-group');
-    if (tagGroup) {
-      const tag = tagGroup.querySelector('.tag');
-      if (tag && tag.textContent) {
-        style = tag.textContent.trim();
+    // Style cell - always blank per spec
+    const styleCell = '';
+
+    // Image/Icon cell
+    let imageCell = '';
+    // Find first img inside card
+    const img = card.querySelector('img.card-image');
+    if (img) {
+      imageCell = img.cloneNode(true);
+    }
+
+    // Text content cell
+    let textCell = '';
+    const cardBody = card.querySelector('.utility-padding-all-1rem');
+    if (cardBody) {
+      const textContent = getCardTextContent(cardBody);
+      // If textContent is empty, keep cell blank
+      if (textContent.length > 0) {
+        textCell = textContent;
       }
     }
 
-    // Image cell: find the image in the first child div
-    let image = null;
-    const aspectDiv = card.querySelector('.utility-aspect-3x2');
-    if (aspectDiv) {
-      image = aspectDiv.querySelector('img');
-    }
-
-    // Rich text cell: title and description from the second main div
-    let richContent = [];
-    const contentDiv = card.querySelector('.utility-padding-all-1rem');
-    if (contentDiv) {
-      // Find title (h3)
-      const h3 = contentDiv.querySelector('h3');
-      if (h3) {
-        richContent.push(h3);
-      }
-      // Find description (p)
-      const p = contentDiv.querySelector('p');
-      if (p) {
-        richContent.push(p);
-      }
-    }
-    // Defensive: Always include three cells per row, even if some are empty
-    rows.push([
-      style || '',
-      image || '',
-      richContent.length ? richContent : ''
-    ]);
+    rows.push([styleCell, imageCell, textCell]);
   });
 
-  // Create and replace
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

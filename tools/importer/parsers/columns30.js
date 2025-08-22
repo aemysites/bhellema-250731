@@ -1,42 +1,23 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid container (the actual columns)
-  const grid = element.querySelector('.w-layout-grid');
+  // Find the main grid
+  const grid = element.querySelector('.grid-layout');
   if (!grid) return;
-
-  // Get all direct children of the grid as columns
+  // Get all grid columns
   const columns = Array.from(grid.children);
+  if (columns.length < 3) return;
 
-  // Defensive: ensure at least four columns (name, tags, heading, body)
-  if (columns.length < 4) return;
-
-  // Column 1: Name
-  const nameEl = columns[0];
-  // Column 2: Tags (vertical flex)
-  const tagsEl = columns[1];
-  // Column 3: Heading
-  const headingEl = columns[2];
-  // Column 4: Rich text body
-  const bodyEl = columns[3];
-
-  // Compose columns for row 2: name, tags, heading+body
-  // The visual shows three content columns:
-  // [name] | [tags] | [heading + body]
-  // We'll combine heading and body as one column as they are visually grouped.
-
-  const headingAndBody = document.createElement('div');
-  // Reference (move) the actual elements, not clones, to preserve semantics
-  headingAndBody.appendChild(headingEl);
-  headingAndBody.appendChild(bodyEl);
-
-  // Table rows
+  // Block header row: MUST match block name
   const headerRow = ['Columns (columns30)'];
-  const contentRow = [nameEl, tagsEl, headingAndBody];
+  // Content row, reference each existing column element
+  const contentRow = columns.map((col) => col);
 
-  // Build table block
-  const cells = [headerRow, contentRow];
-  const blockTable = WebImporter.DOMUtils.createTable(cells, document);
+  // Create the block table (no markdown or string literals)
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    contentRow,
+  ], document);
 
-  // Replace original element with block
-  element.replaceWith(blockTable);
+  // Replace the section with the block
+  element.replaceWith(table);
 }

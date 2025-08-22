@@ -1,69 +1,64 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Header row: must always be the block name
+  const tabMenu = element.querySelector('.w-tab-menu');
+  const tabContent = element.querySelector('.w-tab-content');
+
+  if (!tabMenu || !tabContent) return;
+
+  const tabLinks = Array.from(tabMenu.children).filter(e => e.matches('a,button,[role="tab"]'));
+  const panes = Array.from(tabContent.children).filter(e => e.classList.contains('w-tab-pane'));
+
+  const rows = [];
   const headerRow = ['Tabs'];
-  const cells = [headerRow];
+  rows.push(headerRow);
 
-  // Get all immediate children of the top-level element
-  const children = element.querySelectorAll(':scope > div');
-  if (children.length < 2) {
-    // Not enough structure to form tabs block
-    return;
-  }
-
-  // The first child is the tab menu (tab labels)
-  const tabMenu = children[0];
-  // The second child is the tab content container
-  const tabContents = children[1];
-
-  // Get all tab labels (titles)
-  const tabLinks = tabMenu.querySelectorAll('.w-tab-link');
-  // Get all tab panels
-  const tabPanes = tabContents.querySelectorAll('.w-tab-pane');
-
-  const numTabs = Math.min(tabLinks.length, tabPanes.length);
-
-  for (let i = 0; i < numTabs; i++) {
-    const link = tabLinks[i];
-    // Tab title (always present)
+  for (let i = 0; i < tabLinks.length; i++) {
+    const tabTitleEl = tabLinks[i];
+    // Tab Title
     let tabTitle = '';
-    const titleDiv = link.querySelector('div');
-    if (titleDiv) {
-      tabTitle = titleDiv;
+    const labelDiv = tabTitleEl.querySelector('.paragraph-lg, div');
+    if (labelDiv) {
+      tabTitle = labelDiv;
     } else {
-      tabTitle = link.textContent.trim();
+      tabTitle = tabTitleEl;
     }
-
-    const tabPane = tabPanes[i];
-    let tabHeading = null;
-    let tabImage = null;
-    let tabContent = null;
-
-    const grid = tabPane.querySelector('.grid-layout');
-    if (grid) {
-      tabHeading = grid.querySelector('h2,h3,h4');
-      tabImage = grid.querySelector('img');
-      // Tab content: only if a non-heading, non-image node exists
-      const contentNodes = Array.from(grid.childNodes).filter(node =>
-        !(node === tabHeading || node === tabImage) &&
-        (node.nodeType === Node.ELEMENT_NODE || (node.nodeType === Node.TEXT_NODE && node.textContent.trim()))
+    // Tab Pane
+    let tabPane = panes[i];
+    const wantedTab = tabTitleEl.getAttribute('data-w-tab');
+    if (wantedTab) {
+      const matchPane = panes.find(
+        p => p.getAttribute('data-w-tab') === wantedTab
       );
-      if (contentNodes.length) {
-        tabContent = contentNodes;
+      if (matchPane) tabPane = matchPane;
+    }
+    let heading = '';
+    let image = '';
+    let content = '';
+    if (tabPane) {
+      let grid = tabPane.querySelector('.w-layout-grid, .grid-layout');
+      if (!grid) grid = tabPane;
+      heading = grid.querySelector('h1, h2, h3, h4, .h2-heading, .h1-heading');
+      image = grid.querySelector('img');
+      // Tab content should not be the same as heading
+      const contentCandidates = Array.from(grid.childNodes).filter(
+        n => n.nodeType === 1 && n !== heading && n !== image
+      );
+      // Only assign content if there is content not equal to heading
+      if (contentCandidates.length > 0) {
+        content = contentCandidates.length === 1 ? contentCandidates[0] : contentCandidates;
+      } else {
+        content = '';
       }
     }
-
-    // Always create 4 columns (even if 4th is empty)
-    const row = [
-      tabTitle,
-      tabHeading || '',
-      tabImage || '',
-      tabContent || ''
-    ];
-    cells.push(row);
+    // Always output 4 columns per row for Tabs block
+    rows.push([
+      tabTitle || '',
+      heading || '',
+      image || '',
+      content || ''
+    ]);
   }
 
-  // Create the table block and replace the original element
-  const table = WebImporter.DOMUtils.createTable(cells, document);
+  const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

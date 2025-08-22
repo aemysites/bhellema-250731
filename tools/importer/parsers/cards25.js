@@ -1,54 +1,54 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to extract all text content from a card div, ensuring no missing text
-  function extractCardContent(cardDiv) {
-    // Prefer .utility-padding-all-2rem, fallback to cardDiv
-    let contentRoot = cardDiv.querySelector('.utility-padding-all-2rem') || cardDiv;
-    const richTextCell = [];
-    // Collect every direct child node of contentRoot that is a text element
-    contentRoot.childNodes.forEach((node) => {
-      // Accept h3 or p element nodes only (in proper order)
-      if (node.nodeType === Node.ELEMENT_NODE && (node.tagName === 'H3' || node.tagName === 'P')) {
-        richTextCell.push(node);
+  // Helper: extract text content from a container for the text cell
+  function extractTextContent(container) {
+    if (!container) return null;
+    const parts = [];
+    // Get heading
+    const heading = container.querySelector('h1, h2, h3, h4, h5, h6');
+    if (heading) parts.push(heading);
+    // Get paragraphs AFTER heading (if heading exists), else all ps
+    let ps = [];
+    if (heading) {
+      let sibling = heading.nextElementSibling;
+      while (sibling) {
+        if (sibling.tagName.toLowerCase() === 'p') ps.push(sibling);
+        sibling = sibling.nextElementSibling;
       }
-    });
-    // If no h3/p present, fallback to all text content
-    if (richTextCell.length === 0) {
-      const txt = contentRoot.textContent.trim();
-      if (txt) {
-        richTextCell.push(document.createTextNode(txt));
-      }
+    } else {
+      ps = Array.from(container.querySelectorAll('p'));
     }
-    return richTextCell.length > 0 ? richTextCell : '';
+    parts.push(...ps);
+    return parts.length ? parts : null;
   }
 
-  const rows = [
-    ['Cards (cards25)'], // Header row, exactly one column
-  ];
+  // Collect all top-level card containers
+  const cardContainers = Array.from(element.querySelectorAll(':scope > div'));
+  const rows = [];
+  rows.push(['Cards (cards25)']); // Block header row
 
-  // Each immediate child div is a card
-  const cardDivs = element.querySelectorAll(':scope > div');
-  cardDivs.forEach((cardDiv) => {
-    // Find the image for the card
-    const img = cardDiv.querySelector('img');
-    // Extract all rich text content
-    const cardContent = extractCardContent(cardDiv);
-    // Determine style/variant
-    let style = '';
-    const classList = cardDiv.classList;
-    if ([...classList].some(cl => cl.includes('section-image-wrapper'))) {
-      style = 'card, dark';
-    } else if ([...classList].some(cl => cl.includes('utility-aspect-1x1') || cl.includes('utility-aspect-3x2'))) {
-      style = 'card';
+  cardContainers.forEach(card => {
+    // Style cell: always blank unless a variant is present, which we don't see here
+    const style = '';
+    // Image cell: use the direct child img or img inside the primary container
+    const img = card.querySelector('img');
+    // Text content cell: use the .utility-padding-all-2rem if present, else look for heading/ps in card
+    let textContent = null;
+    const pad = card.querySelector('.utility-padding-all-2rem');
+    if (pad) {
+      textContent = extractTextContent(pad);
+    } else {
+      textContent = extractTextContent(card);
     }
-    // Always add 3 columns for each row
+    // Each row must have 3 cells: [style, image, textContent]
     rows.push([
       style,
       img || '',
-      cardContent,
+      (textContent && textContent.length) ? textContent : ''
     ]);
   });
 
+  // Build the table
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }
