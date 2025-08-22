@@ -1,4 +1,3 @@
-import { showSlide } from '../blocks/carousel/carousel.js';
 import {
   decorateBlock,
   decorateBlocks,
@@ -10,56 +9,7 @@ import {
   loadSections,
 } from './aem.js';
 import { decorateRichtext } from './editor-support-rte.js';
-import { decorateMain, moveAttributes } from './scripts.js';
-
-function preserveSectionAttributes(oldSection, newSection) {
-  moveAttributes(oldSection, newSection, [
-    'id',
-    'role',
-    'tabindex',
-    'aria-labelledby',
-    'hidden',
-  ]);
-}
-
-/**
- *
- * @param {Element} block
- * @param {HTMLElement} block
- * Use this function to trigger a mutation for the UI editor overlay when you
- * have a scrollable block
- */
-function createMutation(block) {
-  block.setAttribute('xwalk-scroll-mutation', 'true');
-  block.querySelector('.carousel-slides').onscrollend = () => {
-    block.removeAttribute('xwalk-scroll-mutation');
-  };
-}
-
-function getState(block) {
-  if (block.matches('.accordion')) {
-    return [...block.querySelectorAll('details[open]')].map(
-      (details) => details.dataset.aueResource,
-    );
-  }
-  if (block.matches('.carousel')) {
-    return block.dataset.activeSlide;
-  }
-  return null;
-}
-
-function setState(block, state) {
-  if (block.matches('.accordion')) {
-    block.querySelectorAll('details').forEach((details) => {
-      details.open = state.includes(details.dataset.aueResource);
-    });
-  }
-  if (block.matches('.carousel')) {
-    block.style.display = null;
-    createMutation(block);
-    showSlide(block, state);
-  }
-}
+import { decorateMain } from './scripts.js';
 
 async function applyChanges(event) {
   // redecorate default content and blocks on patches (in the properties rail)
@@ -101,7 +51,6 @@ async function applyChanges(event) {
       const blockResource = block.getAttribute('data-aue-resource');
       const newBlock = parsedUpdate.querySelector(`[data-aue-resource="${blockResource}"]`);
       if (newBlock) {
-        const state = getState(block);
         newBlock.style.display = 'none';
         block.insertAdjacentElement('afterend', newBlock);
         decorateButtons(newBlock);
@@ -110,7 +59,6 @@ async function applyChanges(event) {
         decorateRichtext(newBlock);
         await loadBlock(newBlock);
         block.remove();
-        setState(newBlock, state);
         newBlock.style.display = null;
         return true;
       }
@@ -123,7 +71,6 @@ async function applyChanges(event) {
           const [newSection] = newElements;
           newSection.style.display = 'none';
           element.insertAdjacentElement('afterend', newSection);
-          preserveSectionAttributes(element, newSection);
           decorateButtons(newSection);
           decorateIcons(newSection);
           decorateRichtext(newSection);
@@ -157,11 +104,16 @@ function attachEventListners(main) {
   ].forEach((eventType) => main?.addEventListener(eventType, async (event) => {
     event.stopPropagation();
     const applied = await applyChanges(event);
-    if (!applied) {
-      window.location.reload();
-    }
+    if (!applied) window.location.reload();
   }));
 }
 
-const m = document.querySelector('main');
-attachEventListners(m);
+attachEventListners(document.querySelector('main'));
+
+// decorate rich text
+// this has to happen after decorateMain(), and everythime decorateBlocks() is called
+decorateRichtext();
+// in cases where the block decoration is not done in one synchronous iteration we need to listen
+// for new richtext-instrumented elements. this happens for example when using experimentation.
+const observer = new MutationObserver(() => decorateRichtext());
+observer.observe(document, { attributeFilter: ['data-richtext-prop'], subtree: true });
