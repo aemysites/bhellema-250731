@@ -5,7 +5,7 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 let tabsIdx = 0;
 
 export default async function decorate(block) {
-  const tabsPrefix = `tabs-${tabsIdx += 1}`;
+  const tabsPrefix = `tabpanel-${tabsIdx += 1}`;
   // build tablist
   const tablist = document.createElement('div');
   tablist.className = 'tabs-list';
@@ -18,12 +18,11 @@ export default async function decorate(block) {
 
   tabHeadings.forEach((tab, i) => {
     const id = toClassName(`${tab.textContent}-${i}`);
-    const tabPanelId = `${tabsPrefix}-panel-${id}`;
 
     // decorate tabpanel
     const tabpanel = block.children[i];
     tabpanel.className = 'tabs-panel';
-    tabpanel.id = tabPanelId;
+    tabpanel.id = tabsPrefix;
     tabpanel.setAttribute('aria-hidden', !!i);
     tabpanel.setAttribute('aria-labelledby', `tab-${id}`);
     tabpanel.setAttribute('role', 'tabpanel');
