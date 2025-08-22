@@ -24,7 +24,7 @@ export default async function decorate(block) {
     tabpanel.className = 'tabs-panel';
     tabpanel.id = id;
     tabpanel.setAttribute('aria-hidden', !!i);
-    tabpanel.setAttribute('aria-labelledby', id);
+    tabpanel.setAttribute('aria-labelledby', `tab-${id}`);
     tabpanel.setAttribute('role', 'tabpanel');
 
     // build tab button
@@ -34,7 +34,7 @@ export default async function decorate(block) {
 
     button.innerHTML = tab.innerHTML;
 
-    button.setAttribute('aria-controls', `tabpanel-${id}`);
+    button.setAttribute('aria-controls', id);
     button.setAttribute('aria-selected', !i);
     button.setAttribute('role', 'tab');
     button.setAttribute('type', 'button');
