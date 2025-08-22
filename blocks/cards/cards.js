@@ -11,7 +11,9 @@ export default function decorate(block) {
     [...li.children].forEach((div, index) => {
       if (index === 0) {
         // First column: style - apply the text content as a class name
-        const styleClass = div.textContent.trim().toLowerCase().replace(/\s+/g, '-');
+        // first column contains name of the block, and style of the block
+        // eg, "card, dark"
+        const styleClass = div.textContent?.trim().toLowerCase().replace(',', '');
         if (styleClass) {
           li.className = styleClass;
         }
