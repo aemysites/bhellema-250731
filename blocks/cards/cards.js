@@ -13,7 +13,7 @@ export default function decorate(block) {
         // First column: style - apply the text content as a class name
         const styleClass = div.textContent.trim().toLowerCase().replace(/\s+/g, '-');
         if (styleClass) {
-          li.className = `cards-card-${styleClass}`;
+          li.className = styleClass;
         }
         div.remove(); // Remove the style column from the DOM
       } else if (index === 1 && div.children.length === 1 && div.querySelector('picture')) {
