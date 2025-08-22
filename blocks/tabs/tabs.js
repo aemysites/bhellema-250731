@@ -17,7 +17,7 @@ export default async function decorate(block) {
     .map((child) => child.firstElementChild);
 
   tabHeadings.forEach((tab, i) => {
-    const id = `tabpanel-${tabBlockCnt}-tab-${i}`;
+    const id = `tabpanel-${tabBlockCnt}-tab-${i + 1}`;
 
     // decorate tabpanel
     const tabpanel = block.children[i];
