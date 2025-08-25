@@ -1,66 +1,76 @@
-// eslint-disable-next-line import/no-unresolved
-import { moveInstrumentation } from '../../scripts/scripts.js';
+/* global WebImporter */
+export default function parse(element, { document }) {
+  // Defensive: Find tabs menu and pane container
+  const tabMenu = element.querySelector('[role="tablist"]');
+  const tabContentWrap = element.querySelector('.w-tab-content');
 
-// keep track globally of the number of tab blocks on the page
-let tabBlockCnt = 0;
+  if (!tabMenu || !tabContentWrap) return;
 
-export default async function decorate(block) {
-  // build tablist
-  const tablist = document.createElement('div');
-  tablist.className = 'tabs-list';
-  tablist.setAttribute('role', 'tablist');
-  tablist.id = `tablist-${tabBlockCnt += 1}`;
-
-  // the first cell of each row is the title of the tab
-  const tabHeadings = [...block.children]
-    .filter((child) => child.firstElementChild && child.firstElementChild.children.length > 0)
-    .map((child) => child.firstElementChild);
-
-  tabHeadings.forEach((tab, i) => {
-    const id = `tabpanel-${tabBlockCnt}-tab-${i + 1}`;
-
-    // decorate tabpanel
-    const tabpanel = block.children[i];
-    tabpanel.className = 'tabs-panel';
-    tabpanel.id = id;
-    tabpanel.setAttribute('aria-hidden', !!i);
-    tabpanel.setAttribute('aria-labelledby', `tab-${id}`);
-    tabpanel.setAttribute('role', 'tabpanel');
-
-    // build tab button
-    const button = document.createElement('button');
-    button.className = 'tabs-tab';
-    button.id = `tab-${id}`;
-
-    button.innerHTML = tab.innerHTML;
-
-    button.setAttribute('aria-controls', id);
-    button.setAttribute('aria-selected', !i);
-    button.setAttribute('role', 'tab');
-    button.setAttribute('type', 'button');
-
-    button.addEventListener('click', () => {
-      block.querySelectorAll('[role=tabpanel]').forEach((panel) => {
-        panel.setAttribute('aria-hidden', true);
-      });
-      tablist.querySelectorAll('button').forEach((btn) => {
-        btn.setAttribute('aria-selected', false);
-      });
-      tabpanel.setAttribute('aria-hidden', false);
-      button.setAttribute('aria-selected', true);
-    });
-
-    // add the new tab list button, to the tablist
-    tablist.append(button);
-
-    // remove the tab heading from the dom, which also removes it from the UE tree
-    tab.remove();
-
-    // remove the instrumentation from the button's h1, h2 etc (this removes it from the tree)
-    if (button.firstElementChild) {
-      moveInstrumentation(button.firstElementChild, null);
-    }
+  // Extract tab labels (in order)
+  const tabLinks = Array.from(tabMenu.children);
+  const tabLabels = tabLinks.map(link => {
+    // Try to find the label text from the direct child div if present
+    const labelDiv = link.querySelector('div');
+    return labelDiv ? labelDiv.textContent.trim() : link.textContent.trim();
   });
 
-  block.prepend(tablist);
+  // Extract tabs content panes (order should match tabLinks)
+  const tabPanes = Array.from(tabContentWrap.children);
+
+  // Construct the table rows
+  const headerRow = ['Tabs'];
+  const rows = [headerRow];
+
+  // For each tab, build [label, content] row
+  for (let i = 0; i < tabLabels.length; i++) {
+    const label = tabLabels[i];
+    const pane = tabPanes[i];
+    if (!pane) continue;
+
+    // Defensive: Get the grid containing the content (should be 1st child)
+    let contentGrid = pane.querySelector('.w-layout-grid, .grid-layout');
+    if (!contentGrid) {
+      // fallback to pane itself
+      contentGrid = pane;
+    }
+
+    // Find content elements (heading, image, etc)
+    const contentNodes = [];
+
+    // Find Heading (h3, h2 or similar)
+    const heading = contentGrid.querySelector('h1, h2, h3, h4, h5, h6');
+    if (heading) {
+      // Insert field comment and then heading
+      contentNodes.push(document.createComment(' field:found_heading '));
+      contentNodes.push(heading);
+    }
+    // Find Image
+    const img = contentGrid.querySelector('img');
+    if (img) {
+      contentNodes.push(document.createComment(' field:found_image '));
+      contentNodes.push(img);
+    }
+    // Any other rich text (paragraphs etc)? None in example, but could add:
+    // const paragraphs = contentGrid.querySelectorAll('p');
+    // paragraphs.forEach(p => {
+    //   contentNodes.push(document.createComment(' field:found_richtext '));
+    //   contentNodes.push(p);
+    // });
+
+    // Defensive: If nothing found, add the entire grid
+    if (contentNodes.length === 0) {
+      contentNodes.push(contentGrid);
+    }
+
+    // Build the row: [label, [contents...]]
+    rows.push([
+      label,
+      contentNodes
+    ]);
+  }
+
+  // Create the block table
+  const table = WebImporter.DOMUtils.createTable(rows, document);
+  // Replace original element
+  element.replaceWith(table);
 }

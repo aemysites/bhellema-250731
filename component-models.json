@@ -442,33 +442,6 @@
     ]
   },
   {
-    "id": "tab-panel",
-    "fields": [
-      {
-        "component": "text",
-        "name": "tab-label",
-        "label": "Label"
-      }
-    ]
-  },
-  {
-    "id": "tab-list",
-    "fields": [
-      {
-        "component": "boolean",
-        "name": "classes_showAll",
-        "label": "Show All?",
-        "description": "When enabled, the tab list will prepend a show all button."
-      },
-      {
-        "component": "text",
-        "name": "tab-labels",
-        "multi": true,
-        "label": "Labels"
-      }
-    ]
-  },
-  {
     "id": "table",
     "fields": [
       {
@@ -626,14 +599,14 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "heading",
+        "name": "content_heading",
         "value": "",
         "label": "Heading"
       },
       {
         "component": "select",
         "valueType": "string",
-        "name": "headingType",
+        "name": "content_headingType",
         "value": "",
         "label": "Heading Type",
         "options": [
@@ -658,16 +631,9 @@
       {
         "component": "reference",
         "valueType": "string",
-        "name": "image",
+        "name": "content_image",
         "label": "Image",
         "multi": false
-      },
-      {
-        "component": "richtext",
-        "name": "content",
-        "value": "",
-        "label": "Content",
-        "valueType": "string"
       }
     ]
   },
