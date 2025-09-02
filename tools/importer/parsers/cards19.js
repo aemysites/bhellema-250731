@@ -1,50 +1,37 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Header row as specified
+  if (!element) return;
+
+  // Prepare the table header row
   const headerRow = ['Cards (cards19)'];
 
-  // Collect the immediate card elements (each child div is a card)
+  // Select all direct child card containers
   const cardDivs = Array.from(element.querySelectorAll(':scope > div'));
 
-  // Build rows for each card
   const rows = cardDivs.map((cardDiv) => {
-    // Find icon or image (in div.icon)
-    let iconOrImage = '';
-    const iconWrapper = cardDiv.querySelector('div.icon');
-    if (iconWrapper) {
-      iconOrImage = iconWrapper;
-    } else {
-      const img = cardDiv.querySelector('img');
-      if (img) iconOrImage = img;
+    // Find the icon SVG wrapped in .icon (use the whole .icon for fidelity)
+    const iconContainer = cardDiv.querySelector('.icon');
+    let iconCellContent = '';
+    if (iconContainer) {
+      // Place the field:image comment before the .icon node
+      const frag = document.createDocumentFragment();
+      frag.appendChild(document.createComment(' field:image '));
+      frag.appendChild(iconContainer);
+      iconCellContent = frag;
     }
-
-    // Find text content (the paragraph)
-    let textContent = '';
-    const para = cardDiv.querySelector('p');
-    if (para) textContent = para;
-    else {
-      const fallbackText = Array.from(cardDiv.childNodes).find(
-        (node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim()
-      );
-      if (fallbackText) {
-        const span = document.createElement('span');
-        span.textContent = fallbackText.textContent.trim();
-        textContent = span;
-      }
+    // Find the text (p tag)
+    const p = cardDiv.querySelector('p');
+    let textCellContent = '';
+    if (p) {
+      const frag = document.createDocumentFragment();
+      frag.appendChild(document.createComment(' field:text '));
+      frag.appendChild(p);
+      textCellContent = frag;
     }
-
-    // Always three cells: [style, icon/image, text]
-    return [
-      '',                // Style cell - left blank
-      iconOrImage,       // Icon/Image cell
-      textContent        // Text cell
-    ];
+    return [iconCellContent || '', textCellContent || ''];
   });
 
-  // Construct the block table
   const cells = [headerRow, ...rows];
-  const blockTable = WebImporter.DOMUtils.createTable(cells, document);
-
-  // Replace original element
-  element.replaceWith(blockTable);
+  const table = WebImporter.DOMUtils.createTable(cells, document);
+  element.replaceWith(table);
 }

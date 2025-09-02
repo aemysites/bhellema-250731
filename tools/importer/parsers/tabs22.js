@@ -1,64 +1,67 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
+  // Defensive: Ensure WebImporter and DOMUtils exist
+  if (!window.WebImporter || !WebImporter.DOMUtils || !WebImporter.DOMUtils.createTable) {
+    return;
+  }
+
+  // Header row as required
+  const cells = [['Tabs']];
+
+  // Find tab menu labels (usually <a> elements with text)
+  // and tab panes with content
   const tabMenu = element.querySelector('.w-tab-menu');
+  const tabLinks = tabMenu ? Array.from(tabMenu.children) : [];
   const tabContent = element.querySelector('.w-tab-content');
+  const tabPanes = tabContent ? Array.from(tabContent.children) : [];
 
-  if (!tabMenu || !tabContent) return;
-
-  const tabLinks = Array.from(tabMenu.children).filter(e => e.matches('a,button,[role="tab"]'));
-  const panes = Array.from(tabContent.children).filter(e => e.classList.contains('w-tab-pane'));
-
-  const rows = [];
-  const headerRow = ['Tabs'];
-  rows.push(headerRow);
-
-  for (let i = 0; i < tabLinks.length; i++) {
-    const tabTitleEl = tabLinks[i];
-    // Tab Title
-    let tabTitle = '';
-    const labelDiv = tabTitleEl.querySelector('.paragraph-lg, div');
-    if (labelDiv) {
-      tabTitle = labelDiv;
-    } else {
-      tabTitle = tabTitleEl;
+  // For each tab, grab label, heading, image, etc.
+  for (let i = 0; i < Math.max(tabLinks.length, tabPanes.length); i++) {
+    const tabLink = tabLinks[i];
+    let tabLabel = '';
+    if (tabLink) {
+      // Defensive: Try to find the tab title (<div> inside the <a>)
+      const labelDiv = tabLink.querySelector('div');
+      tabLabel = labelDiv ? labelDiv.textContent.trim() : tabLink.textContent.trim();
     }
-    // Tab Pane
-    let tabPane = panes[i];
-    const wantedTab = tabTitleEl.getAttribute('data-w-tab');
-    if (wantedTab) {
-      const matchPane = panes.find(
-        p => p.getAttribute('data-w-tab') === wantedTab
-      );
-      if (matchPane) tabPane = matchPane;
+
+    // Build tab label cell with comment
+    const tabLabelCell = [];
+    if (tabLabel) {
+      tabLabelCell.push(document.createComment(' field:title '));
+      tabLabelCell.push(tabLabel);
     }
-    let heading = '';
-    let image = '';
-    let content = '';
+
+    // Build tab content cell (heading, image, etc)
+    const contentCell = [];
+    const tabPane = tabPanes[i];
     if (tabPane) {
-      let grid = tabPane.querySelector('.w-layout-grid, .grid-layout');
-      if (!grid) grid = tabPane;
-      heading = grid.querySelector('h1, h2, h3, h4, .h2-heading, .h1-heading');
-      image = grid.querySelector('img');
-      // Tab content should not be the same as heading
-      const contentCandidates = Array.from(grid.childNodes).filter(
-        n => n.nodeType === 1 && n !== heading && n !== image
-      );
-      // Only assign content if there is content not equal to heading
-      if (contentCandidates.length > 0) {
-        content = contentCandidates.length === 1 ? contentCandidates[0] : contentCandidates;
-      } else {
-        content = '';
+      // Usually there's a single grid child containing the real content
+      const grid = tabPane.querySelector('.w-layout-grid');
+      if (grid) {
+        // Try to locate heading (h3, h4, etc)
+        let headingElem = grid.querySelector('h3,h4,h5,h6');
+        if (headingElem) {
+          contentCell.push(document.createComment(' field:content_heading '));
+          contentCell.push(headingElem);
+        }
+        // Try to locate image
+        let imageElem = grid.querySelector('img');
+        if (imageElem) {
+          contentCell.push(document.createComment(' field:content_image '));
+          contentCell.push(imageElem);
+        }
       }
     }
-    // Always output 4 columns per row for Tabs block
-    rows.push([
-      tabTitle || '',
-      heading || '',
-      image || '',
-      content || ''
+
+    // Each tab row: [label, content]
+    cells.push([
+      tabLabelCell.length ? tabLabelCell : '',
+      contentCell.length ? contentCell : '',
     ]);
   }
 
-  const table = WebImporter.DOMUtils.createTable(rows, document);
+  // Build and replace
+  const table = WebImporter.DOMUtils.createTable(cells, document);
   element.replaceWith(table);
 }

@@ -1,25 +1,26 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Locate the grid layout representing the columns
-  const grid = element.querySelector('.w-layout-grid, .grid-layout');
+  // Defensive: find the grid containing the two column areas
+  const grid = element.querySelector('.w-layout-grid.grid-layout');
   if (!grid) return;
+  const columnEls = Array.from(grid.children);
 
-  // Get direct children of the grid, which are the columns, as per the source HTML
-  const colDivs = Array.from(grid.children);
-  if (colDivs.length === 0) return;
+  // Defensive: expect two columns
+  if (columnEls.length < 2) return;
 
-  // Build header row as per CRITICAL guideline
+  // Always reference original DOM nodes for semantic fidelity
+  const leftCol = columnEls[0];
+  const rightCol = columnEls[1];
+
+  // Create the table: header row and one row with two columns
   const headerRow = ['Columns (columns3)'];
+  const contentRow = [leftCol, rightCol];
 
-  // Each column's content must be referenced (not cloned!) and wrapped in an array for correct cell structure
-  const columnsRow = colDivs.map((col) => col);
-
-  // Final block table: header row, then one row with each column as a cell
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    columnsRow,
+    contentRow
   ], document);
 
-  // Replace the original element with the constructed table
+  // Replace original element
   element.replaceWith(table);
 }

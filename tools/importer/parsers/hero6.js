@@ -1,44 +1,52 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the main containers (the HTML structure is: header > grid > [img-column, content-column])
-  const grid = element.querySelector(':scope > .w-layout-grid');
-  if (!grid) return;
+  // --- Helper Functions ---
+  // Create table with 1 column and 3 rows as specified
 
-  // Find background image: it's in the first grid cell, img.cover-image
-  let bgImgEl = null;
-  const bgDiv = grid.querySelector('.utility-position-relative');
-  if (bgDiv) {
-    bgImgEl = bgDiv.querySelector('img.cover-image');
-  }
+  // 1. Header row (always the block name as per spec)
+  const headerRow = [ 'Hero (hero6)' ];
 
-  // Find content card: second grid cell, .container > .grid-layout > .card
-  let contentBlock = null;
-  const contentContainer = grid.querySelector('.container');
-  if (contentContainer) {
-    const contentGrid = contentContainer.querySelector('.grid-layout');
-    if (contentGrid) {
-      const card = contentGrid.querySelector('.card');
-      if (card) {
-        contentBlock = card;
+  // 2. Image row
+  let imageCell = '';
+  const grid = element.querySelector('.w-layout-grid.grid-layout');
+  if (grid) {
+    const firstDiv = grid.children[0];
+    if (firstDiv) {
+      const img = firstDiv.querySelector('img');
+      if (img) {
+        // Reference the existing <img> element, do not clone
+        const frag = document.createDocumentFragment();
+        frag.appendChild(document.createComment(' field:image '));
+        frag.appendChild(img);
+        imageCell = frag;
       }
     }
   }
 
-  // Defensive: if there is no content at all, don't create block
-  if (!bgImgEl && !contentBlock) return;
+  // 3. Text row (heading, subheading, CTAs)
+  let textCell = '';
+  if (grid && grid.children[1]) {
+    const rightCol = grid.children[1];
+    // Look for the .card with text content
+    const card = rightCol.querySelector('.card');
+    if (card) {
+      // Build a frag with the comment, then reference all original child nodes
+      const frag = document.createDocumentFragment();
+      frag.appendChild(document.createComment(' field:text '));
+      Array.from(card.childNodes).forEach((node) => {
+        frag.appendChild(node);
+      });
+      textCell = frag;
+    }
+  }
 
-  // Block header as required
-  const headerRow = ['Hero (hero6)'];
-  // Use the actual image DOM node (not a string)
-  const imageRow = [bgImgEl || ''];
-  // Use the actual card DOM node (not a string)
-  const contentRow = [contentBlock || ''];
-
-  const table = WebImporter.DOMUtils.createTable([
+  // Compose rows for table
+  const tableRows = [
     headerRow,
-    imageRow,
-    contentRow
-  ], document);
+    [imageCell],
+    [textCell],
+  ];
 
+  const table = WebImporter.DOMUtils.createTable(tableRows, document);
   element.replaceWith(table);
 }

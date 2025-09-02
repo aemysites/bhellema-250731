@@ -1,23 +1,29 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid containing the slides
-  const grid = element.querySelector('.grid-layout');
+  const grid = element.querySelector('.w-layout-grid');
   if (!grid) return;
+  const slideDivs = Array.from(grid.children);
 
-  // Get all slides (divs with an img)
-  const slides = Array.from(grid.children).filter((child) => child.querySelector('img'));
-
-  // Always use the required header row
+  // Header row: always 1 column
   const headerRow = ['Carousel (carousel16)'];
-  const rows = [headerRow];
+  const cells = [headerRow];
 
-  slides.forEach((slide) => {
-    const img = slide.querySelector('img');
-    if (!img) return;
-    // Per spec, must always have TWO columns: first image, second text (empty if none)
-    rows.push([img, '']);
+  // Data rows: if there is no text content, only the image cell is present
+  slideDivs.forEach((slideDiv) => {
+    const img = slideDiv.querySelector('img');
+    let imageCell = '';
+    if (img) {
+      const frag = document.createDocumentFragment();
+      frag.appendChild(document.createComment(' field:media_image '));
+      frag.appendChild(document.createTextNode('\n'));
+      frag.appendChild(img);
+      imageCell = frag;
+    }
+    // Check for text content (none expected in this HTML)
+    // So we add only the image cell
+    cells.push([imageCell]);
   });
 
-  const table = WebImporter.DOMUtils.createTable(rows, document);
+  const table = WebImporter.DOMUtils.createTable(cells, document);
   element.replaceWith(table);
 }

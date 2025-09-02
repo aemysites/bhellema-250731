@@ -1,67 +1,38 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: Only process the intended section
-  if (!element || !element.classList.contains('section')) return;
+  // Find the .container that holds the two main columns
+  const container = element.querySelector(':scope > .container');
+  if (!container) return;
 
-  // Get the main content grid (top half)
-  const mainContainer = element.querySelector('.container > .w-layout-grid.grid-layout.tablet-1-column');
-  // The left column (headline)
-  const headlineCol = mainContainer?.children[0];
-  // The right column (description, author, button)
-  const contentCol = mainContainer?.children[1];
+  // The left content is composed of eyebrow, heading, text, author, button
+  // The right content is a grid with two images stacked
+  const gridBlocks = container.querySelectorAll(':scope > .w-layout-grid');
+  if (gridBlocks.length < 2) return;
 
-  // Get the lower grid containing two images (bottom half)
-  const imagesGrid = element.querySelector('.grid-layout.mobile-portrait-1-column');
-
-  // Build the first column (left side)
-  let leftColContent = [];
-  if (headlineCol) {
-    // Grab eyebrow and headline
-    const eyebrow = headlineCol.querySelector('.eyebrow');
-    const headline = headlineCol.querySelector('h1');
-    if (eyebrow) leftColContent.push(eyebrow);
-    if (headline) leftColContent.push(headline);
+  // left aggregate: get eyebrow div, h1, and the first grid (text/author/button)
+  const leftMeta = container.querySelector(':scope > div > .eyebrow')?.parentElement;
+  const leftContent = gridBlocks[0];
+  const leftCol = document.createElement('div');
+  if (leftMeta) {
+    Array.from(leftMeta.children).forEach(child => leftCol.appendChild(child.cloneNode(true)));
+  }
+  if (leftContent) {
+    Array.from(leftContent.children).forEach(child => leftCol.appendChild(child.cloneNode(true)));
   }
 
-  // Build the second column (right side, top)
-  let rightColContent = [];
-  if (contentCol) {
-    // Paragraph, author, and button
-    const paragraph = contentCol.querySelector('.rich-text');
-    if (paragraph) rightColContent.push(paragraph);
+  // right: grid of images
+  const rightContent = gridBlocks[1];
+  const rightCol = document.createElement('div');
+  Array.from(rightContent.children).forEach(child => rightCol.appendChild(child.cloneNode(true)));
 
-    // Author info
-    const authorRow = contentCol.querySelector('.grid-layout > .flex-horizontal');
-    if (authorRow) {
-      // Only include author text and meta, ignore the avatar image (blurred face)
-      const authorName = authorRow.querySelector('.paragraph-sm:not(.utility-text-secondary)');
-      const authorMeta = authorRow.querySelectorAll('.utility-text-secondary');
-      if (authorName) rightColContent.push(authorName);
-      if (authorMeta && authorMeta.length > 0) rightColContent.push(...authorMeta);
-    }
-    // Button
-    const button = contentCol.querySelector('.grid-layout > a.button');
-    if (button) rightColContent.push(button);
+  // Construct columns block table
+  const rows = [
+    ['Columns (columns11)'],
+    [leftCol, rightCol],
+  ];
+  const table = WebImporter.DOMUtils.createTable(rows, document);
+  // Replace the <section> element with the block table
+  if (table && element.parentNode) {
+    element.replaceWith(table);
   }
-
-  // Build lower row with two images
-  let imgElems = [];
-  if (imagesGrid) {
-    const imageContainers = imagesGrid.querySelectorAll('.utility-aspect-1x1');
-    imageContainers.forEach(imgDiv => {
-      const img = imgDiv.querySelector('img');
-      if (img) imgElems.push(img);
-    });
-  }
-
-  // Table Construction
-  const headerRow = ['Columns (columns11)'];
-  const contentRow = [leftColContent, rightColContent];
-  const imagesRow = imgElems.length === 2 ? imgElems : [imgElems];
-
-  const cells = [headerRow, contentRow, imagesRow];
-
-  // Build block table and replace
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-  element.replaceWith(block);
 }

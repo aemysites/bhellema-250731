@@ -1,60 +1,46 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to extract all text content (tags, description, and title) from card body
-  function getCardTextContent(cardBody) {
-    const nodes = [];
-    // Tag (date and type)
-    const tag = cardBody.querySelector('.tag');
-    if (tag) {
-      nodes.push(tag.cloneNode(true));
-    }
-    // Title (h3)
-    const heading = cardBody.querySelector('h3');
-    if (heading) {
-      nodes.push(heading.cloneNode(true));
-    }
-    // Description (p)
-    const desc = cardBody.querySelector('p');
-    if (desc) {
-      nodes.push(desc.cloneNode(true));
-    }
-    return nodes;
+  // Helper: get image container (the div that wraps the <img>)
+  function getImageDiv(cardLink) {
+    // The image container is the first child div
+    const imageDiv = cardLink.querySelector('.utility-aspect-3x2');
+    return imageDiv;
   }
 
-  // Get all card links (each is a card)
+  // Helper: get text container (the div with tag, heading, and paragraph)
+  function getTextDiv(cardLink) {
+    // The text container is the .utility-padding-all-1rem div
+    const textDiv = cardLink.querySelector('.utility-padding-all-1rem');
+    return textDiv;
+  }
+
+  // Get all card links (cards)
   const cardLinks = element.querySelectorAll(':scope > a.card-link');
 
-  const rows = [];
-  // Header row (must match block name exactly)
-  rows.push(['Cards (cards10)']);
+  // Table header (block name MUST match target exactly)
+  const headerRow = ['Cards (cards10)'];
+  const rows = [headerRow];
 
-  // Parse each card
-  cardLinks.forEach((card) => {
-    // Style cell - always blank per spec
-    const styleCell = '';
+  cardLinks.forEach((cardLink) => {
+    // --- IMAGE CELL ---
+    const imageDiv = getImageDiv(cardLink);
+    const imageCell = document.createElement('div');
+    imageCell.innerHTML = '<!-- field:image -->';
+    if (imageDiv) imageCell.append(imageDiv);
 
-    // Image/Icon cell
-    let imageCell = '';
-    // Find first img inside card
-    const img = card.querySelector('img.card-image');
-    if (img) {
-      imageCell = img.cloneNode(true);
-    }
+    // --- TEXT CELL ---
+    const textDiv = getTextDiv(cardLink);
+    const textCell = document.createElement('div');
+    textCell.innerHTML = '<!-- field:text -->';
+    if (textDiv) textCell.append(textDiv);
 
-    // Text content cell
-    let textCell = '';
-    const cardBody = card.querySelector('.utility-padding-all-1rem');
-    if (cardBody) {
-      const textContent = getCardTextContent(cardBody);
-      // If textContent is empty, keep cell blank
-      if (textContent.length > 0) {
-        textCell = textContent;
-      }
-    }
-
-    rows.push([styleCell, imageCell, textCell]);
+    rows.push([
+      imageCell,
+      textCell,
+    ]);
   });
 
+  // Create block table
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

@@ -1,31 +1,37 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // 1. Locate the card-body (defensive)
-  const cardBody = element.querySelector('.card-body');
-  if (!cardBody) return;
+  // Get the innermost .card-body
+  function getFirstChildByClass(parent, className) {
+    return Array.from(parent.children).find(child => child.classList.contains(className));
+  }
 
-  // 2. Image extraction (mandatory)
-  const image = cardBody.querySelector('img');
+  let cardBody = element;
+  cardBody = getFirstChildByClass(cardBody, 'ix-card-rotate-2') || cardBody;
+  cardBody = getFirstChildByClass(cardBody, 'card') || cardBody;
+  cardBody = getFirstChildByClass(cardBody, 'card-body') || cardBody;
 
-  // 3. Heading extraction (optional)
-  const heading = cardBody.querySelector('.h4-heading');
+  // Image (mandatory)
+  const imgEl = cardBody.querySelector('img.cover-image');
+  if (!imgEl) return;
 
-  // 4. Second cell: build array, keep DOM references, preserve semantics
+  // Title (optional)
+  const titleEl = cardBody.querySelector('.h4-heading');
+
+  // Compose text cell content
   const textCell = [];
-  if (heading) textCell.push(heading);
-  // (No additional paragraphs, lists, or CTA in this example)
+  if (titleEl) textCell.push(titleEl);
 
-  // 5. Table assembly
-  const rows = [];
-  rows.push(['Carousel (carousel21)']); // Block header, must match exactly
-  rows.push([
-    image,
-    textCell.length ? textCell : ''
-  ]);
+  // Compose table rows
+  const headerRow = ['Carousel (carousel21)'];
+  const slideRow = [
+    [document.createComment(' field:media_image '), imgEl],
+    textCell.length ? [document.createComment(' field:content_text '), ...textCell] : ''
+  ];
 
-  // 6. Create table
-  const table = WebImporter.DOMUtils.createTable(rows, document);
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    slideRow
+  ], document);
 
-  // 7. Replace element with table
   element.replaceWith(table);
 }

@@ -1,25 +1,21 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: Find the grid row with two columns
+  // Find the main grid container (holds the columns)
   const grid = element.querySelector('.w-layout-grid');
   if (!grid) return;
-  // Get all immediate children of the grid
-  const gridChildren = Array.from(grid.children);
-  if (gridChildren.length < 2) return;
 
-  // First column: the heading (h2)
-  const col1 = gridChildren[0];
-  // Second column: the div with paragraph and button
-  const col2 = gridChildren[1];
+  // Get all direct children of the grid (these are the columns)
+  const columns = Array.from(grid.children);
+  if (columns.length < 2) return;
 
-  // Build the table rows
+  // Compose header and content rows for the Columns block
   const headerRow = ['Columns (columns14)'];
-  const contentRow = [col1, col2];
+  const contentRow = columns.map((col) => col);
 
-  // Create the table and replace the element
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    contentRow
+    contentRow,
   ], document);
+
   element.replaceWith(table);
 }

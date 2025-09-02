@@ -1,41 +1,44 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  if (!element) return;
+  // Helper to create HTML field comments
+  function createFieldComment(name) {
+    return document.createComment(` field:${name} `);
+  }
 
-  // Find all accordion items that are direct children
-  const accordions = Array.from(element.querySelectorAll(':scope > .accordion.w-dropdown'));
+  // Compose table rows
+  const rows = [];
+  // Header: single cell (with colspan=2 to match row structure)
+  rows.push(['Accordion']);
 
-  // Build rows: first row is header ('Accordion'), then each item is [title, content]
-  const rows = [
-    ['Accordion'],
-  ];
-
-  accordions.forEach(acc => {
-    // Title cell: get as much of the full title block as possible
-    let title = acc.querySelector('.w-dropdown-toggle .paragraph-lg');
-    if (!title) {
-      // fallback: try first div under .w-dropdown-toggle
-      title = acc.querySelector('.w-dropdown-toggle div');
+  // Gather accordion items
+  const accordionItems = element.querySelectorAll(':scope > div.accordion');
+  accordionItems.forEach((item) => {
+    // SUMMARY/TITLE CELL
+    const titleEl = item.querySelector('.w-dropdown-toggle .paragraph-lg');
+    const summaryCell = [];
+    if (titleEl) {
+      summaryCell.push(createFieldComment('summary'));
+      summaryCell.push(titleEl);
     }
-    // Always use the DOM node for cell, not its textContent
-    const titleCell = title || '';
-
-    // Content cell: prefer .w-richtext if present, else the inner div, else .w-dropdown-list itself
-    const contentWrapper = acc.querySelector('.w-dropdown-list');
-    let contentCell = '';
-    if (contentWrapper) {
-      const rich = contentWrapper.querySelector('.w-richtext');
-      if (rich) {
-        contentCell = rich;
-      } else {
-        const inner = contentWrapper.querySelector('div');
-        contentCell = inner || contentWrapper;
-      }
+    // TEXT/CONTENT CELL
+    const contentWrap = item.querySelector('.accordion-content .utility-padding-all-1rem');
+    let textEl = contentWrap && contentWrap.querySelector('.w-richtext');
+    if (!textEl && contentWrap) textEl = contentWrap;
+    const textCell = [];
+    if (textEl) {
+      textCell.push(createFieldComment('text'));
+      textCell.push(textEl);
     }
-    rows.push([titleCell, contentCell]);
+    rows.push([summaryCell, textCell]);
   });
 
-  // Create and replace with the table
+  // Create table
   const table = WebImporter.DOMUtils.createTable(rows, document);
+  // Fix: set colspan=2 on first row's cell to ensure a valid table
+  const firstRow = table.querySelector('tr');
+  if (firstRow && firstRow.children.length === 1) {
+    firstRow.children[0].setAttribute('colspan', '2');
+  }
+
   element.replaceWith(table);
 }

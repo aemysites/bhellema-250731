@@ -1,56 +1,81 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Header row (per guidelines)
   const headerRow = ['Hero (hero12)'];
 
-  // --- 1. Find background image (block's background) ---
-  let bgImg = null;
-  const gridContainers = element.querySelectorAll(':scope > div');
-  if (gridContainers.length > 0) {
-    const img = gridContainers[0].querySelector('img.cover-image');
-    if (img) bgImg = img;
+  // --- 1st cell: background image (with field comment) ---
+  let imageCell = '';
+  const gridDivs = element.querySelectorAll(':scope > div');
+  if (gridDivs.length > 0) {
+    const bgImgCandidate = gridDivs[0].querySelector('img');
+    if (bgImgCandidate) {
+      const imageDiv = document.createElement('div');
+      imageDiv.insertAdjacentHTML('beforeend', '<!-- field:image -->');
+      imageDiv.appendChild(bgImgCandidate.cloneNode(true));
+      imageCell = imageDiv;
+    }
   }
 
-  // --- 2. Find content: title, subheading, CTA, and inner image ---
-  let contentElems = [];
-  if (gridContainers.length > 1) {
-    const cardBody = gridContainers[1].querySelector('.card-body');
-    if (cardBody) {
-      const grid = cardBody.querySelector('.w-layout-grid');
-      if (grid) {
-        // The secondary image (left column)
-        const innerImage = grid.querySelector('img.image');
-        if (innerImage) contentElems.push(innerImage);
-        // The text column: h2, list, button
-        const textCol = Array.from(grid.querySelectorAll('div')).find(div => div.querySelector('h2'));
-        if (textCol) {
-          // 1. Heading
-          const h2 = textCol.querySelector('h2');
-          if (h2) contentElems.push(h2);
-          // 2. All subheading/list lines (include icons)
-          textCol.querySelectorAll('.flex-horizontal').forEach(fh => {
-            if (fh.textContent.trim()) contentElems.push(fh);
-          });
-          // 3. CTA Button
-          const btn = textCol.querySelector('a.button');
-          if (btn) contentElems.push(btn);
+  // --- 2nd cell: text content (with field comment ONLY if not empty) ---
+  let textCell = '';
+  if (gridDivs.length > 1) {
+    const contentDiv = gridDivs[1];
+    const cardGrid = contentDiv.querySelector('.card-body .grid-layout');
+    if (cardGrid) {
+      // Find the side image (concert crowd)
+      const leftImg = cardGrid.querySelector('img');
+      // Find the block with h2 (heading and subcontent)
+      let textBlock = Array.from(cardGrid.children).find(c => c.querySelector && c.querySelector('h2'));
+      const textWrap = document.createElement('div');
+      let hasContent = false;
+      // Side image in text cell
+      if (leftImg) {
+        textWrap.appendChild(leftImg.cloneNode(true));
+        hasContent = true;
+      }
+      if (textBlock) {
+        // Heading
+        const heading = textBlock.querySelector('h2');
+        if (heading) {
+          textWrap.appendChild(heading.cloneNode(true));
+          hasContent = true;
         }
+        // Features (bullets)
+        const vertical = textBlock.querySelector('.flex-vertical');
+        if (vertical) {
+          vertical.querySelectorAll('.flex-horizontal').forEach(fh => {
+            const p = fh.querySelector('p');
+            if (p) {
+              textWrap.appendChild(p.cloneNode(true));
+              hasContent = true;
+            }
+          });
+          // Dividers for visual separation
+          vertical.querySelectorAll('.divider').forEach(divider => {
+            textWrap.appendChild(divider.cloneNode(true));
+            hasContent = true;
+          });
+        }
+        // Call-to-action button
+        const cta = textBlock.querySelector('.button-group a');
+        if (cta) {
+          textWrap.appendChild(cta.cloneNode(true));
+          hasContent = true;
+        }
+      }
+      if (hasContent) {
+        textWrap.insertAdjacentHTML('afterbegin', '<!-- field:text -->');
+        textCell = textWrap;
       }
     }
   }
 
-  // --- 3. Build table: Always create 3 rows as per block spec, but do not create an empty cell in row three ---
-  const rows = [
+  // Build table rows
+  const cells = [
     headerRow,
-    [bgImg ? bgImg : ''],
-    contentElems.length > 0 ? [contentElems] : []
-  ].filter(row => row.length > 0);
-  
-  // Guarantee 3 rows (header, image, content), but do NOT add a blank row if content is empty.
-  while (rows.length < 3) {
-    rows.push(['']);
-  }
-
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(table);
+    [imageCell],
+    [textCell],
+  ];
+  // Replace original element
+  const block = WebImporter.DOMUtils.createTable(cells, document);
+  element.replaceWith(block);
 }

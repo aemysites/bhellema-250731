@@ -1,27 +1,24 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid containing the columns
+  // Find the main grid layout
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
+  const gridChildren = Array.from(grid.children);
+  if (gridChildren.length < 2) return;
 
-  // Get the columns: image and content
-  const columns = Array.from(grid.children);
-  if (columns.length < 2) return;
+  // Find image (column 1)
+  const img = grid.querySelector('img');
+  // Find content column (column 2)
+  const contentDiv = gridChildren.find(child => child.tagName !== 'IMG');
 
-  // First column: image
-  const imgCol = columns[0].closest('img') ? columns[0] : columns[0].querySelector('img');
-  // Second column: content (h1, p, buttons)
-  const contentCol = columns[1];
-
-  // Table header row as required
+  // Use DOM references (do not clone)
   const headerRow = ['Columns (columns1)'];
-  // Data row: one cell for image, one for content
-  const cellsRow = [imgCol, contentCol];
+  const contentRow = [img, contentDiv];
 
-  // Create and replace with the block table
+  // Create columns block table (no field comments for Columns block)
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    cellsRow,
+    contentRow
   ], document);
 
   element.replaceWith(table);

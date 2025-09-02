@@ -1,0 +1,5 @@
+{
+  "url": "https://www.wknd-trendsetters.site/",
+  "transformationUrl": "http://localhost:3001/tools/importer/import.js",
+  "pageLoadTimeout": 100
+}

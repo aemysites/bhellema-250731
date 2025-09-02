@@ -1,48 +1,56 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Get all anchor card elements directly under the grid
-  const cardEls = element.querySelectorAll(':scope > a.utility-link-content-block');
+  // Create the header row
+  const headerRow = ['Cards (cards24)'];
 
-  // Header row as specified in the block description
-  const rows = [ ['Cards (cards24)'] ];
+  // Collect all card links (each represents a card)
+  const cardLinks = Array.from(element.querySelectorAll(':scope > a.utility-link-content-block'));
 
-  // Iterate through each card and extract required content
-  cardEls.forEach(card => {
-    // --- Column 1: Style (blank, as no variant classes are present) ---
-    const cellStyle = '';
-
-    // --- Column 2: Image or Icon ---
-    // Find the image inside the aspect-ratio wrapper
-    let imgCell = '';
-    const imgWrapper = card.querySelector(':scope > div.utility-aspect-2x3');
-    if (imgWrapper) {
-      const img = imgWrapper.querySelector('img');
-      if (img) imgCell = img;
+  // Build each card row
+  const rows = cardLinks.map((a) => {
+    // Find image (mandatory)
+    const imageWrapper = a.querySelector('.utility-aspect-2x3');
+    const img = imageWrapper ? imageWrapper.querySelector('img') : null;
+    let imageCell = '';
+    if (img) {
+      imageCell = document.createElement('div');
+      imageCell.innerHTML = '<!-- field:image -->';
+      imageCell.appendChild(img);
+    } else {
+      imageCell = '';
     }
 
-    // --- Column 3: Text content ---
-    const metaDiv = card.querySelector(':scope > div.flex-horizontal');
-    const heading = card.querySelector(':scope > h3');
-    // Compose content: Tag, date, heading
-    const textCell = document.createElement('div');
-    if (metaDiv) {
-      // Clone children of metaDiv (tag and date)
-      Array.from(metaDiv.children).forEach(child => {
-        textCell.appendChild(child.cloneNode(true));
-      });
+    // Find text content: tag/date and heading
+    const textElements = [];
+
+    // Tag and date row (keeps inline as in screenshot)
+    const tagDate = a.querySelector('.flex-horizontal');
+    if (tagDate) {
+      textElements.push(tagDate);
     }
+
+    // Title (h3)
+    const heading = a.querySelector('h3');
     if (heading) {
-      // Add heading (card title)
-      const title = heading.cloneNode(true);
-      textCell.appendChild(title);
+      textElements.push(heading);
     }
-    // Description and CTA are not present in this HTML, so skip
 
-    // Push the row [style, image, text]
-    rows.push([cellStyle, imgCell, textCell]);
+    let textCell;
+    if (textElements.length > 0) {
+      textCell = document.createElement('div');
+      textCell.innerHTML = '<!-- field:text -->';
+      textElements.forEach(el => textCell.appendChild(el));
+    } else {
+      textCell = '';
+    }
+
+    return [imageCell, textCell];
   });
 
-  // Create the block table
-  const table = WebImporter.DOMUtils.createTable(rows, document);
+  // Compose cells for table
+  const cells = [headerRow, ...rows];
+
+  // Create and replace
+  const table = WebImporter.DOMUtils.createTable(cells, document);
   element.replaceWith(table);
 }

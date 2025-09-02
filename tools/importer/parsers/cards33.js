@@ -1,55 +1,51 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Header row: exactly one column, block name
+  // Cards (cards33) block header row
   const headerRow = ['Cards (cards33)'];
-  const rows = [headerRow];
 
-  // Select all card links
+  // Each card is an <a> direct child of the grid container
   const cardLinks = Array.from(element.querySelectorAll(':scope > a'));
 
-  cardLinks.forEach(cardLink => {
-    // Style cell (blank)
-    const styleCell = '';
+  // Generate rows for each card
+  const rows = cardLinks.map((card) => {
+    // Find image for the card
+    const img = card.querySelector('img');
+    // Find the grid inner div (contains all text)
+    const innerDiv = card.querySelector(':scope > div');
 
-    // Image cell: first img in card
-    const img = cardLink.querySelector('img');
-    const imageCell = img || '';
+    // Prepare text cell: extract only relevant content, flat
+    let textCellContent = document.createDocumentFragment();
+    if (innerDiv) {
+      // Remove the image node if present in innerDiv
+      const clones = innerDiv.cloneNode(true);
+      const cloneImg = clones.querySelector('img');
+      if (cloneImg) cloneImg.remove();
+      // Unwrap grid if necessary
+      let nodes;
+      if (clones.classList.contains('w-layout-grid')) {
+        nodes = Array.from(clones.childNodes);
+      } else {
+        nodes = [clones];
+      }
+      nodes.forEach(node => textCellContent.appendChild(node));
+    }
 
-    // Text cell: collect all text content (tag, read time, title, desc, CTA)
-    const grid = cardLink.querySelector('.w-layout-grid');
-    const textCellContainer = document.createElement('div');
-    if (grid) {
-      // 1. Get tag and read time (inside flex-horizontal)
-      const tagRow = grid.querySelector('.flex-horizontal');
-      if (tagRow) {
-        Array.from(tagRow.children).forEach(child => {
-          textCellContainer.appendChild(child.cloneNode(true));
-        });
-      }
-      // 2. Heading (h3/h4)
-      const heading = grid.querySelector('h2,h3,h4,h5');
-      if (heading) textCellContainer.appendChild(heading.cloneNode(true));
-      // 3. Description (first <p>)
-      const desc = grid.querySelector('p');
-      if (desc) textCellContainer.appendChild(desc.cloneNode(true));
-      // 4. CTA (div containing 'Read')
-      const ctaDiv = Array.from(grid.querySelectorAll('div')).find(d => d.textContent.trim().toLowerCase() === 'read');
-      if (ctaDiv && cardLink.href) {
-        const link = document.createElement('a');
-        link.href = cardLink.href;
-        link.textContent = ctaDiv.textContent;
-        textCellContainer.appendChild(link);
-      }
+    // Always add field comments to the proper cell
+    const imageCell = img ? [document.createComment(' field:image '), img] : [document.createComment(' field:image ')];
+    // For text cell, always include field:text comment
+    let textCell;
+    if (textCellContent.childNodes.length) {
+      textCell = [document.createComment(' field:text '), textCellContent];
+    } else {
+      textCell = [document.createComment(' field:text ')];
     }
-    // Defensive: if nothing found, use empty string
-    let textCell = '';
-    if (textCellContainer.childNodes.length) {
-      textCell = Array.from(textCellContainer.childNodes);
-    }
-    
-    rows.push([styleCell, imageCell, textCell]);
+    return [imageCell, textCell];
   });
 
-  const table = WebImporter.DOMUtils.createTable(rows, document);
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    ...rows,
+  ], document);
+
   element.replaceWith(table);
 }

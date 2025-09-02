@@ -1,27 +1,40 @@
 /* global WebImporter */
+
 export default function parse(element, { document }) {
-  // Table header
+  if (!element || !document) return;
+
+  // Header row for Cards (cards29) block (one column only)
   const headerRow = ['Cards (cards29)'];
-  const rows = [headerRow];
 
-  // Each card is a .utility-aspect-1x1 div (per the HTML structure)
-  const cardDivs = element.querySelectorAll(':scope > .utility-aspect-1x1');
+  // Each card is a div.utility-aspect-1x1 containing an img
+  const cardDivs = Array.from(element.querySelectorAll(':scope > div.utility-aspect-1x1'));
 
-  cardDivs.forEach(cardDiv => {
-    // Style cell is always blank
-    const styleCell = '';
-    // Image cell: use image element if present
-    let imageCell = '';
+  const rows = cardDivs.map(cardDiv => {
+    // Find image
     const img = cardDiv.querySelector('img');
-    if (img) imageCell = img;
-    // Text content: check for any visible element that's not the image
-    // (in this HTML, there is none, so we keep empty)
-    const textCell = '';
-    // Add row
-    rows.push([styleCell, imageCell, textCell]);
+    let imageCell = '';
+    if (img) {
+      imageCell = [document.createComment(' field:image '), img];
+    }
+    // Second cell: only add field:text comment if there is content
+    let textCell = '';
+    const childNodes = Array.from(cardDiv.childNodes).filter(node => {
+      if (node === img) return false;
+      if (node.nodeType === 3) {
+        return node.textContent.trim();
+      }
+      if (node.nodeType === 1) {
+        return node.textContent.trim();
+      }
+      return false;
+    });
+    if (childNodes.length) {
+      textCell = [document.createComment(' field:text '), ...childNodes];
+    }
+    return [imageCell, textCell];
   });
 
-  // Create and replace
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(table);
+  const cells = [headerRow, ...rows];
+  const block = WebImporter.DOMUtils.createTable(cells, document);
+  element.replaceWith(block);
 }

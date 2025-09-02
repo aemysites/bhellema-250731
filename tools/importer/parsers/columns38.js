@@ -1,33 +1,31 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  if (!element) return;
-
-  // Set table header as per strict instructions
-  const headerRow = ['Columns (columns38)'];
-
-  // Find direct column divs only (no nested divs)
+  // Extract direct child columns from the grid container
   const columns = Array.from(element.querySelectorAll(':scope > div'));
 
-  // Build the content row: each column cell gets its main image
-  const contentRow = columns.map(col => {
-    // Try to get the first img for each column
-    const img = col.querySelector('img');
-    // If no image, fallback to text content, else empty cell
-    if (img) return img;
-    if (col.textContent && col.textContent.trim()) {
-      const span = document.createElement('span');
-      span.textContent = col.textContent.trim();
-      return span;
+  // Header row must match EXACTLY
+  const headerRow = ['Columns (columns38)'];
+
+  // Build the row with each cell as image or corresponding content
+  const contentRow = columns.map((col) => {
+    // If a single img, reference it directly
+    if (col.children.length === 1 && col.firstElementChild.tagName === 'IMG') {
+      return col.firstElementChild;
     }
-    return document.createTextNode('');
+    // If the col is empty, return empty string
+    if (col.textContent.trim() === '' && col.children.length === 0) {
+      return '';
+    }
+    // Otherwise, place the column div itself (preserves content/structure)
+    return col;
   });
 
-  // Construct table rows
+  // Assemble table rows
   const rows = [headerRow, contentRow];
 
-  // Create table using provided API
+  // Create table using WebImporter utility
   const table = WebImporter.DOMUtils.createTable(rows, document);
 
-  // Replace original block with the block table
+  // Replace the original element with the new table
   element.replaceWith(table);
 }

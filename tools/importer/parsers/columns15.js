@@ -1,59 +1,36 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid layout (container for columns)
-  const grid = element.querySelector('.grid-layout');
-  if (!grid) return;
+  const layout = element.querySelector('.grid-layout');
+  if (!layout) return;
+  const columns = Array.from(layout.children);
+  if (columns.length < 2) return;
 
-  // Get direct children of the grid for left and right columns
-  const gridChildren = grid.querySelectorAll(':scope > *');
-  if (gridChildren.length < 2) return;
+  // Left column: All content (h1, p, button group)
+  const leftCol = columns[0];
+  const leftColContent = [];
 
-  // --- LEFT COLUMN ---
-  // Collect ALL content blocks in the left column (not just heading/subheading/button)
-  const leftCol = gridChildren[0];
-  let leftContent = [];
-  // Use all child nodes preserving order/text
-  leftCol.childNodes.forEach((node) => {
-    // Only push elements or meaningful text nodes (not whitespace)
-    if (node.nodeType === Node.ELEMENT_NODE) {
-      leftContent.push(node);
-    } else if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
-      // Wrap in a <span> to preserve text nodes
-      const span = document.createElement('span');
-      span.textContent = node.textContent;
-      leftContent.push(span);
-    }
-  });
-  // Defensive: If no content found, fallback to textContent
-  if (leftContent.length === 0 && leftCol.textContent.trim()) {
-    leftContent.push(leftCol.textContent.trim());
-  }
+  // Get all direct children in correct order
+  const h1 = leftCol.querySelector('h1');
+  if (h1) leftColContent.push(h1.cloneNode(true));
 
-  // --- RIGHT COLUMN ---
-  // Use the image for the right column
-  const rightCol = gridChildren[1];
-  let rightContent = [];
-  if (rightCol.tagName === 'IMG') {
-    rightContent.push(rightCol);
-  } else {
-    // Find all images inside rightCol (in case of wrappers)
-    const imgs = rightCol.querySelectorAll('img');
-    imgs.forEach(img => rightContent.push(img));
-    // Defensive: If no image, add text content
-    if (rightContent.length === 0 && rightCol.textContent.trim()) {
-      rightContent.push(rightCol.textContent.trim());
-    }
-  }
+  const p = leftCol.querySelector('p');
+  if (p) leftColContent.push(p.cloneNode(true));
 
-  // Compose table rows
+  const buttonGroup = leftCol.querySelector('.button-group');
+  if (buttonGroup) leftColContent.push(buttonGroup.cloneNode(true));
+
+  // Right column: image
+  const rightCol = columns[1];
+  const img = rightCol.querySelector('img');
+  // Only add the right column if there is content
+  const row = [leftColContent];
+  if (img) row.push(img.cloneNode(true));
+
   const headerRow = ['Columns (columns15)'];
-  const contentRow = [leftContent, rightContent];
-
-  // Create the block table
   const table = WebImporter.DOMUtils.createTable([
-    headerRow, contentRow
+    headerRow,
+    row,
   ], document);
 
-  // Replace the original element with the block table
   element.replaceWith(table);
 }

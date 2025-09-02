@@ -1,54 +1,47 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: extract text content from a container for the text cell
-  function extractTextContent(container) {
-    if (!container) return null;
-    const parts = [];
-    // Get heading
-    const heading = container.querySelector('h1, h2, h3, h4, h5, h6');
-    if (heading) parts.push(heading);
-    // Get paragraphs AFTER heading (if heading exists), else all ps
-    let ps = [];
-    if (heading) {
-      let sibling = heading.nextElementSibling;
-      while (sibling) {
-        if (sibling.tagName.toLowerCase() === 'p') ps.push(sibling);
-        sibling = sibling.nextElementSibling;
-      }
-    } else {
-      ps = Array.from(container.querySelectorAll('p'));
-    }
-    parts.push(...ps);
-    return parts.length ? parts : null;
+  // Helper to create field comment
+  function fieldComment(name) {
+    return document.createComment(` field:${name} `);
   }
 
-  // Collect all top-level card containers
-  const cardContainers = Array.from(element.querySelectorAll(':scope > div'));
+  // Find all direct children (each card)
+  const cardNodes = Array.from(element.querySelectorAll(':scope > div'));
   const rows = [];
-  rows.push(['Cards (cards25)']); // Block header row
+  // Each row: [image cell, text cell]
 
-  cardContainers.forEach(card => {
-    // Style cell: always blank unless a variant is present, which we don't see here
-    const style = '';
-    // Image cell: use the direct child img or img inside the primary container
+  cardNodes.forEach((card) => {
+    // Try to find the image (mandatory for this block)
     const img = card.querySelector('img');
-    // Text content cell: use the .utility-padding-all-2rem if present, else look for heading/ps in card
-    let textContent = null;
-    const pad = card.querySelector('.utility-padding-all-2rem');
-    if (pad) {
-      textContent = extractTextContent(pad);
+    let imageCell = [];
+    if (img) {
+      imageCell = [fieldComment('image'), img];
     } else {
-      textContent = extractTextContent(card);
+      imageCell = [''];
     }
-    // Each row must have 3 cells: [style, image, textContent]
-    rows.push([
-      style,
-      img || '',
-      (textContent && textContent.length) ? textContent : ''
-    ]);
+
+    // Try to find the text content (h3, p, etc)
+    // Look for typical text container
+    let textCell = [];
+    let textDiv = null;
+    // Typical structure: ...<div><div><h3>...</h3><p>...</p></div></div>...
+    const innerDivs = card.querySelectorAll(':scope > div > div');
+    for (let d of innerDivs) {
+      if (d.querySelector('h3') || d.querySelector('p')) {
+        textDiv = d;
+        break;
+      }
+    }
+    if (textDiv) {
+      textCell = [fieldComment('text'), ...Array.from(textDiv.childNodes)];
+    } else {
+      textCell = [''];
+    }
+    rows.push([imageCell, textCell]);
   });
 
-  // Build the table
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(table);
+  const headerRow = ['Cards (cards25)'];
+  const tableRows = [headerRow, ...rows];
+  const block = WebImporter.DOMUtils.createTable(tableRows, document);
+  element.replaceWith(block);
 }

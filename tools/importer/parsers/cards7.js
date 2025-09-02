@@ -1,31 +1,30 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Block header must match exactly
+  // Cards (cards7) block header as specified
   const headerRow = ['Cards (cards7)'];
 
-  // Get all direct card containers
-  const cardElements = element.querySelectorAll(':scope > div');
+  // Gather card rows
+  const rows = [];
 
-  // Compose rows for each card
-  const rows = Array.from(cardElements).map(card => {
-    // Style cell (blank)
-    const styleCell = '';
-    // Image/Icon cell
-    const img = card.querySelector('img');
-    const imageCell = img ? img : '';
-    // Text content cell: ensure it is truly blank (no text in card)
-    let textCell = '';
-    // Remove the image and check if any text remains
-    const cardClone = card.cloneNode(true);
-    const imgClone = cardClone.querySelector('img');
-    if (imgClone) imgClone.remove();
-    // If there's text, add it, else keep as blank
-    const cardText = cardClone.textContent.trim();
-    if (cardText) textCell = cardText;
-    return [styleCell, imageCell, textCell];
+  // Get all immediate children (cards)
+  const cardDivs = element.querySelectorAll(':scope > div');
+  cardDivs.forEach((cardDiv) => {
+    // Each cardDiv should contain an image (mandatory)
+    const img = cardDiv.querySelector('img');
+    let imgCell = '';
+    if (img) {
+      const wrapper = document.createElement('div');
+      wrapper.appendChild(document.createComment(' field:image '));
+      wrapper.appendChild(img);
+      imgCell = wrapper;
+    }
+    // Second cell is always present and must be empty (no comment unless there's real content)
+    const textCell = '';
+    rows.push([imgCell, textCell]);
   });
 
-  const tableData = [headerRow, ...rows];
-  const table = WebImporter.DOMUtils.createTable(tableData, document);
+  // Assemble cells for the createTable function
+  const cells = [headerRow, ...rows];
+  const table = WebImporter.DOMUtils.createTable(cells, document);
   element.replaceWith(table);
 }
