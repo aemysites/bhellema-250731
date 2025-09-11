@@ -1,37 +1,38 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid layout container (columns block)
+  // Find the grid
   const grid = element.querySelector('.w-layout-grid');
   if (!grid) return;
-
-  // Get the relevant direct children for columns
-  // There should be 3: left content, right contact list, image
   const children = Array.from(grid.children);
-  if (children.length < 3) return;
+  if (children.length === 0) return;
 
-  // Left column: heading/content (first block)
+  // Main content (left) and others (right)
   const leftCol = children[0];
-  // Right column: contact methods (ul, second block)
-  const rightCol = children[1];
-  // Image (third block)
-  const image = children[2];
+  // Find <ul> and <img> among the right column children
+  let ul = null, img = null;
+  for (let i = 1; i < children.length; i++) {
+    if (!ul && children[i].tagName === 'UL') ul = children[i];
+    if (!img && children[i].tagName === 'IMG') img = children[i];
+  }
 
-  // Table header: must EXACTLY match block name
+  // Prepare right column contents (ul above image)
+  const rightCol = [];
+  if (ul) rightCol.push(ul);
+  if (img) rightCol.push(img);
+
+  // Only create block if at least leftCol and (ul or img) exists
+  if (!leftCol || rightCol.length === 0) return;
+
+  // Table rows:
+  // 1. Header row (must match block name exactly)
   const headerRow = ['Columns (columns18)'];
+  // 2. Content row: [left, right]
+  const contentRow = [leftCol, rightCol];
 
-  // Table second row: left and right columns
-  // Pass references to original elements
-  const columnsRow = [leftCol, rightCol];
-
-  // Third row: image in left cell, right cell empty
-  const imageRow = [image, ''];
-
-  // Create the table according to example
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    columnsRow,
-    imageRow,
+    contentRow,
   ], document);
-
+  
   element.replaceWith(table);
 }

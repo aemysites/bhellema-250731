@@ -1,56 +1,63 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  if (!element || !document) return;
+  // Find the main grid containing visual and content
+  const grid = element.querySelector('.w-layout-grid');
+  if (!grid) return;
 
-  // 1. HEADER ROW: block name (must be exact)
-  const headerRow = ['Hero (hero39)'];
-
-  // 2. IMAGE ROW: extract background image
+  // --- Row 2: Image ---
+  // The image cell is the first child of the grid
+  const imageHolder = grid.children[0];
+  const imageEl = imageHolder.querySelector('img');
   let imageCell = '';
-  const imageEl = element.querySelector('img.cover-image');
   if (imageEl) {
-    // Use the existing image element reference
-    imageCell = [document.createComment(' field:image '), imageEl];
-  } else {
-    imageCell = '';
-  }
-
-  // 3. TEXT ROW: headline, paragraphs, CTA
-  let textCell = '';
-  const textContainer = element.querySelector('.container');
-  if (textContainer) {
+    const pic = document.createElement('picture');
+    pic.appendChild(imageEl);
+    // Add field hint for model property 'image'
     const frag = document.createDocumentFragment();
-
-    // Headline (h1)
-    const h1 = textContainer.querySelector('h1');
-    if (h1) frag.appendChild(h1);
-
-    // Paragraph(s)
-    const ps = textContainer.querySelectorAll('p');
-    ps.forEach(p => frag.appendChild(p));
-
-    // CTA button/link
-    const cta = textContainer.querySelector('a.button');
-    if (cta) frag.appendChild(cta);
-
-    // Only add content if we actually have anything
-    if (frag.childNodes.length > 0) {
-      textCell = [document.createComment(' field:text '), frag];
-    } else {
-      textCell = '';
-    }
-  } else {
-    textCell = '';
+    frag.appendChild(document.createComment(' field:image '));
+    frag.appendChild(pic);
+    imageCell = frag;
   }
 
-  // Compose table: ensure each row after header has ONLY ONE column
-  const table = [
+  // --- Row 3: Content (heading, paragraph, button) ---
+  // The content cell is the second child of the grid
+  const contentHolder = grid.children[1];
+  let textCellFrag = document.createDocumentFragment();
+  let hasContent = false;
+
+  // Find heading
+  const h1 = contentHolder.querySelector('h1');
+  if (h1) {
+    textCellFrag.appendChild(document.createComment(' field:text '));
+    textCellFrag.appendChild(h1);
+    hasContent = true;
+  }
+
+  // Find subheading paragraph
+  const subParagraph = contentHolder.querySelector('p');
+  if (subParagraph) {
+    if (hasContent) textCellFrag.appendChild(document.createElement('br'));
+    textCellFrag.appendChild(subParagraph);
+    hasContent = true;
+  }
+
+  // Find CTA/button
+  const cta = contentHolder.querySelector('.button-group a');
+  if (cta) {
+    if (hasContent) textCellFrag.appendChild(document.createElement('br'));
+    textCellFrag.appendChild(cta);
+    hasContent = true;
+  }
+
+  // Table header should match block name exactly
+  const headerRow = ['Hero (hero39)'];
+  const tableRows = [
     headerRow,
-    [imageCell],
-    [textCell]
+    [imageCell || ''],
+    [hasContent ? textCellFrag : '']
   ];
 
-  // Replace element with import table
-  const block = WebImporter.DOMUtils.createTable(table, document);
-  element.replaceWith(block);
+  // Build the table
+  const table = WebImporter.DOMUtils.createTable(tableRows, document);
+  element.replaceWith(table);
 }

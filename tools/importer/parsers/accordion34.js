@@ -1,44 +1,46 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to create HTML field comments
-  function createFieldComment(name) {
-    return document.createComment(` field:${name} `);
-  }
+  // Accordion items are the direct children with class 'accordion'
+  const accordionItems = Array.from(element.querySelectorAll(':scope > div.accordion'));
 
-  // Compose table rows
-  const rows = [];
-  // Header: single cell (with colspan=2 to match row structure)
-  rows.push(['Accordion']);
-
-  // Gather accordion items
-  const accordionItems = element.querySelectorAll(':scope > div.accordion');
+  // Table must have a single header row with one column, then each data row as an array of two cells
+  const tableRows = [];
+  tableRows.push(['Accordion']); // header row: single cell
+  // Each following row must be an array of two cells
   accordionItems.forEach((item) => {
-    // SUMMARY/TITLE CELL
-    const titleEl = item.querySelector('.w-dropdown-toggle .paragraph-lg');
-    const summaryCell = [];
-    if (titleEl) {
-      summaryCell.push(createFieldComment('summary'));
-      summaryCell.push(titleEl);
+    // Title cell: .paragraph-lg inside .w-dropdown-toggle
+    let titleCell = '';
+    const toggle = item.querySelector('.w-dropdown-toggle');
+    if (toggle) {
+      const titleDiv = toggle.querySelector('.paragraph-lg');
+      if (titleDiv) {
+        // clone so we don't move the node from DOM
+        const clonedTitle = titleDiv.cloneNode(true);
+        const frag = document.createDocumentFragment();
+        frag.appendChild(document.createComment(' field:summary '));
+        frag.appendChild(clonedTitle);
+        titleCell = frag;
+      }
     }
-    // TEXT/CONTENT CELL
-    const contentWrap = item.querySelector('.accordion-content .utility-padding-all-1rem');
-    let textEl = contentWrap && contentWrap.querySelector('.w-richtext');
-    if (!textEl && contentWrap) textEl = contentWrap;
-    const textCell = [];
-    if (textEl) {
-      textCell.push(createFieldComment('text'));
-      textCell.push(textEl);
+
+    // Content cell: .w-richtext inside nav.accordion-content
+    let contentCell = '';
+    const contentNav = item.querySelector('nav.accordion-content');
+    if (contentNav) {
+      const richText = contentNav.querySelector('.w-richtext');
+      if (richText) {
+        const clonedRT = richText.cloneNode(true);
+        const frag = document.createDocumentFragment();
+        frag.appendChild(document.createComment(' field:text '));
+        frag.appendChild(clonedRT);
+        contentCell = frag;
+      }
     }
-    rows.push([summaryCell, textCell]);
+    // Add the row as an array of two cells
+    tableRows.push([titleCell, contentCell]);
   });
 
-  // Create table
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-  // Fix: set colspan=2 on first row's cell to ensure a valid table
-  const firstRow = table.querySelector('tr');
-  if (firstRow && firstRow.children.length === 1) {
-    firstRow.children[0].setAttribute('colspan', '2');
-  }
-
+  // Create and replace with the table
+  const table = WebImporter.DOMUtils.createTable(tableRows, document);
   element.replaceWith(table);
 }

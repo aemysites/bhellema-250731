@@ -1,25 +1,30 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the main grid layout
+  // Find the grid container which represents the columns
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
-  const gridChildren = Array.from(grid.children);
-  if (gridChildren.length < 2) return;
 
-  // Find image (column 1)
-  const img = grid.querySelector('img');
-  // Find content column (column 2)
-  const contentDiv = gridChildren.find(child => child.tagName !== 'IMG');
+  // Get all direct children of grid (two columns)
+  const columns = Array.from(grid.children);
+  if (columns.length < 2) return;
 
-  // Use DOM references (do not clone)
+  // First column: image
+  const col1 = columns[0]; // <img>
+  // Second column: text content and buttons
+  const col2 = columns[1];
+
+  // Prepare table rows
+  // Table header MUST match block name exactly!
   const headerRow = ['Columns (columns1)'];
-  const contentRow = [img, contentDiv];
+  // Second row: both columns as elements, referenced directly
+  const contentRow = [col1, col2];
 
-  // Create columns block table (no field comments for Columns block)
+  // Create table with correct structure
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    contentRow
+    contentRow,
   ], document);
 
+  // Replace original element with table block
   element.replaceWith(table);
 }

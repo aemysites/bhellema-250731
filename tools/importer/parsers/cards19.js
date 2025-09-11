@@ -1,37 +1,37 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  if (!element) return;
+  // Get all top-level card containers
+  const cardElements = Array.from(element.querySelectorAll(':scope > div'));
 
-  // Prepare the table header row
+  // Table header (block name)
   const headerRow = ['Cards (cards19)'];
+  const rows = [headerRow];
 
-  // Select all direct child card containers
-  const cardDivs = Array.from(element.querySelectorAll(':scope > div'));
-
-  const rows = cardDivs.map((cardDiv) => {
-    // Find the icon SVG wrapped in .icon (use the whole .icon for fidelity)
-    const iconContainer = cardDiv.querySelector('.icon');
-    let iconCellContent = '';
+  cardElements.forEach(cardEl => {
+    // Icon cell
+    let iconCell = '';
+    const iconContainer = cardEl.querySelector(':scope > div.icon, :scope > div > .icon');
     if (iconContainer) {
-      // Place the field:image comment before the .icon node
       const frag = document.createDocumentFragment();
       frag.appendChild(document.createComment(' field:image '));
       frag.appendChild(iconContainer);
-      iconCellContent = frag;
+      iconCell = frag;
     }
-    // Find the text (p tag)
-    const p = cardDiv.querySelector('p');
-    let textCellContent = '';
-    if (p) {
+
+    // Text cell
+    let textCell = '';
+    const textP = cardEl.querySelector('p');
+    if (textP && textP.textContent.trim()) {
       const frag = document.createDocumentFragment();
       frag.appendChild(document.createComment(' field:text '));
-      frag.appendChild(p);
-      textCellContent = frag;
+      frag.appendChild(textP);
+      textCell = frag;
     }
-    return [iconCellContent || '', textCellContent || ''];
+
+    rows.push([iconCell, textCell]);
   });
 
-  const cells = [headerRow, ...rows];
-  const table = WebImporter.DOMUtils.createTable(cells, document);
+  // Create table
+  const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

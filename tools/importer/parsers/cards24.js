@@ -1,56 +1,51 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Create the header row
+  // Cards (cards24) block: header row
   const headerRow = ['Cards (cards24)'];
+  const rows = [headerRow];
 
-  // Collect all card links (each represents a card)
-  const cardLinks = Array.from(element.querySelectorAll(':scope > a.utility-link-content-block'));
+  // Find all card links in the grid
+  const cards = element.querySelectorAll(':scope > a.utility-link-content-block');
 
-  // Build each card row
-  const rows = cardLinks.map((a) => {
-    // Find image (mandatory)
-    const imageWrapper = a.querySelector('.utility-aspect-2x3');
-    const img = imageWrapper ? imageWrapper.querySelector('img') : null;
+  cards.forEach(card => {
+    // FIRST COLUMN: IMAGE
     let imageCell = '';
+    const imageDiv = card.querySelector('div[class*="utility-aspect-2x3"]');
+    const img = imageDiv ? imageDiv.querySelector('img') : null;
     if (img) {
-      imageCell = document.createElement('div');
-      imageCell.innerHTML = '<!-- field:image -->';
-      imageCell.appendChild(img);
+      // Move the <img> node (do not clone)
+      const tempDiv = document.createElement('div');
+      tempDiv.appendChild(img);
+      imageCell = `<!-- field:image -->${tempDiv.innerHTML}`;
     } else {
       imageCell = '';
     }
 
-    // Find text content: tag/date and heading
-    const textElements = [];
-
-    // Tag and date row (keeps inline as in screenshot)
-    const tagDate = a.querySelector('.flex-horizontal');
-    if (tagDate) {
-      textElements.push(tagDate);
-    }
-
-    // Title (h3)
-    const heading = a.querySelector('h3');
-    if (heading) {
-      textElements.push(heading);
-    }
-
-    let textCell;
-    if (textElements.length > 0) {
-      textCell = document.createElement('div');
-      textCell.innerHTML = '<!-- field:text -->';
-      textElements.forEach(el => textCell.appendChild(el));
+    // SECOND COLUMN: TEXT (meta and heading)
+    let textCell = '';
+    const metaRow = card.querySelector('div.flex-horizontal');
+    const heading = card.querySelector('h3');
+    if (metaRow || heading) {
+      let textContent = '';
+      if (metaRow) {
+        const tempDiv = document.createElement('div');
+        tempDiv.appendChild(metaRow);
+        textContent += tempDiv.innerHTML;
+      }
+      if (heading) {
+        const tempDiv = document.createElement('div');
+        tempDiv.appendChild(heading);
+        textContent += tempDiv.innerHTML;
+      }
+      textCell = `<!-- field:text -->${textContent}`;
     } else {
       textCell = '';
     }
 
-    return [imageCell, textCell];
+    rows.push([imageCell, textCell]);
   });
 
-  // Compose cells for table
-  const cells = [headerRow, ...rows];
-
-  // Create and replace
-  const table = WebImporter.DOMUtils.createTable(cells, document);
+  // Build table block
+  const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

@@ -8,21 +8,9 @@ export default function decorate(block) {
     const li = document.createElement('li');
     moveInstrumentation(row, li);
     while (row.firstElementChild) li.append(row.firstElementChild);
-    [...li.children].forEach((div, index, children) => {
-      // if we have 3 cells, then we have styles
-      if (children.length === 3 && index === 0) {
-        const styleClass = div.textContent?.trim().toLowerCase().replace(',', '');
-        if (styleClass) {
-          li.className = styleClass;
-        }
-        div.remove(); // Remove the style column from the DOM
-      } else if (div.querySelector('picture')) {
-        // Second column: image
-        div.className = 'cards-card-image';
-      } else {
-        // Third column: text content
-        div.className = 'cards-card-body';
-      }
+    [...li.children].forEach((div) => {
+      if (div.children.length === 1 && div.querySelector('picture')) div.className = 'cards-card-image';
+      else div.className = 'cards-card-body';
     });
     ul.append(li);
   });

@@ -1,67 +1,69 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: Ensure WebImporter and DOMUtils exist
-  if (!window.WebImporter || !WebImporter.DOMUtils || !WebImporter.DOMUtils.createTable) {
-    return;
+  // Helper function to get direct children matching selector
+  function getDirectChildren(parent, selector) {
+    return Array.from(parent.children).filter(child => child.matches(selector));
   }
 
-  // Header row as required
-  const cells = [['Tabs']];
+  // Find the tab menu and tab content
+  const tabMenu = Array.from(element.children).find(
+    el => el.classList.contains('w-tab-menu')
+  );
+  const tabContent = Array.from(element.children).find(
+    el => el.classList.contains('w-tab-content')
+  );
+  if (!tabMenu || !tabContent) return;
 
-  // Find tab menu labels (usually <a> elements with text)
-  // and tab panes with content
-  const tabMenu = element.querySelector('.w-tab-menu');
-  const tabLinks = tabMenu ? Array.from(tabMenu.children) : [];
-  const tabContent = element.querySelector('.w-tab-content');
-  const tabPanes = tabContent ? Array.from(tabContent.children) : [];
+  // Get tab labels and content panes
+  const tabLinks = getDirectChildren(tabMenu, 'a');
+  const tabPanes = getDirectChildren(tabContent, 'div.w-tab-pane');
 
-  // For each tab, grab label, heading, image, etc.
-  for (let i = 0; i < Math.max(tabLinks.length, tabPanes.length); i++) {
-    const tabLink = tabLinks[i];
-    let tabLabel = '';
-    if (tabLink) {
-      // Defensive: Try to find the tab title (<div> inside the <a>)
-      const labelDiv = tabLink.querySelector('div');
-      tabLabel = labelDiv ? labelDiv.textContent.trim() : tabLink.textContent.trim();
-    }
+  // Always use 'Tabs' as the header row per spec
+  const headerRow = ['Tabs'];
 
-    // Build tab label cell with comment
-    const tabLabelCell = [];
-    if (tabLabel) {
-      tabLabelCell.push(document.createComment(' field:title '));
-      tabLabelCell.push(tabLabel);
-    }
+  // Build each tab row
+  const rows = tabLinks.map((tabLink, i) => {
+    // Tab Title
+    const labelDiv = tabLink.querySelector('div');
+    const tabLabel = labelDiv ? labelDiv.textContent.trim() : tabLink.textContent.trim();
+    const labelCell = document.createElement('div');
+    labelCell.innerHTML = `<!-- field:title -->${tabLabel}`;
 
-    // Build tab content cell (heading, image, etc)
-    const contentCell = [];
+    // Tab Content cell
     const tabPane = tabPanes[i];
+    const contentCell = document.createElement('div');
     if (tabPane) {
-      // Usually there's a single grid child containing the real content
+      // Extract content
       const grid = tabPane.querySelector('.w-layout-grid');
       if (grid) {
-        // Try to locate heading (h3, h4, etc)
-        let headingElem = grid.querySelector('h3,h4,h5,h6');
-        if (headingElem) {
-          contentCell.push(document.createComment(' field:content_heading '));
-          contentCell.push(headingElem);
+        // Heading
+        const heading = grid.querySelector('h3, h4, h5, h6');
+        if (heading) {
+          contentCell.innerHTML += `<!-- field:content_heading -->${heading.outerHTML}`;
         }
-        // Try to locate image
-        let imageElem = grid.querySelector('img');
-        if (imageElem) {
-          contentCell.push(document.createComment(' field:content_image '));
-          contentCell.push(imageElem);
+        // Image
+        const img = grid.querySelector('img');
+        if (img) {
+          contentCell.innerHTML += img.outerHTML;
         }
+        // Any additional richtext nodes
+        const additionalNodes = Array.from(grid.children).filter(n => {
+          if (heading && n.isSameNode(heading)) return false;
+          if (img && n.isSameNode(img)) return false;
+          return true;
+        });
+        additionalNodes.forEach(node => {
+          if (node.textContent.trim()) {
+            contentCell.innerHTML += `<!-- field:content_richtext -->${node.outerHTML}`;
+          }
+        });
       }
     }
+    return [labelCell, contentCell];
+  });
 
-    // Each tab row: [label, content]
-    cells.push([
-      tabLabelCell.length ? tabLabelCell : '',
-      contentCell.length ? contentCell : '',
-    ]);
-  }
-
-  // Build and replace
+  // Compose table
+  const cells = [headerRow, ...rows];
   const table = WebImporter.DOMUtils.createTable(cells, document);
   element.replaceWith(table);
 }

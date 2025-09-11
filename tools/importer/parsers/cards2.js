@@ -1,107 +1,101 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to add field comment
-  function fieldComment(name) {
-    return document.createComment(` field:${name} `);
+  // Helper to add a field comment before element if not already present
+  function withFieldComment(fieldName, content) {
+    const frag = document.createDocumentFragment();
+    frag.appendChild(document.createComment(` field:${fieldName} `));
+    if (Array.isArray(content)) {
+      content.forEach((el) => frag.appendChild(el));
+    } else {
+      frag.appendChild(content);
+    }
+    return frag;
   }
 
-  // Get all main card wrappers
+  // Helper to compose a cell with optional content and field comment
+  function cell(field, content) {
+    if (!content || (Array.isArray(content) && content.length === 0)) {
+      return document.createElement('div'); // empty cell
+    }
+    return withFieldComment(field, content);
+  }
+
+  // Get the main grid container (card grid)
   const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // For main cards: first child is the big left card, next is middle column with 2 cards with images, last is column with small cards without images
-  const children = Array.from(grid.children);
-  // Defensive check for expected structure
-  if (!children.length) return;
-
-  // Prepare rows for block table
+  // Rows will be [ header, ...cards ]
   const rows = [];
-  // Header
+  // Add header row
   rows.push(['Cards (cards2)']);
 
-  // 1. Big left card (first child)
-  const bigCard = children[0];
-  if (bigCard) {
-    // Find image
-    const imgWrap = bigCard.querySelector('.utility-aspect-1x1');
-    const img = imgWrap && imgWrap.querySelector('img');
-    // Find text content (tag, heading, paragraph)
-    const textContent = document.createElement('div');
+  // Get all 3 card areas
+  const cardEls = [];
+  // First card: big card (left), is a link block
+  const firstCard = grid.children[0];
+  if (firstCard && firstCard.matches('a.utility-link-content-block')) {
+    cardEls.push(firstCard);
+  }
+  // Second area: two grid cards (images+text, right top)
+  // These are inside a flex container
+  const gridFlex = grid.children[1];
+  if (gridFlex) {
+    // Only direct a.utility-link-content-block children are cards
+    const flexCards = Array.from(gridFlex.querySelectorAll(':scope > a.utility-link-content-block'));
+    flexCards.forEach((c) => cardEls.push(c));
+  }
+  // Third area: text-only cards with dividers (right bottom)
+  const textFlex = grid.children[2];
+  if (textFlex) {
+    const flexTextCards = Array.from(textFlex.querySelectorAll(':scope > a.utility-link-content-block'));
+    flexTextCards.forEach((c) => cardEls.push(c));
+  }
+
+  // Parse each card element into a [image, text] cell row
+  cardEls.forEach((card) => {
+    // IMAGE CELL
+    let imageCell = null;
+    // Prefer .utility-aspect-1x1 or .utility-aspect-3x2 containers with img inside
+    let imgDiv = card.querySelector('.utility-aspect-1x1, .utility-aspect-3x2');
+    let img = imgDiv && imgDiv.querySelector('img');
+    if (img) {
+      // Put the parent div (aspect ratio wrapper) as the cell content
+      imageCell = cell('image', imgDiv);
+    } else {
+      // Text-only: empty cell
+      imageCell = document.createElement('div');
+    }
+
+    // TEXT CELL
+    // Compose text content: tag (optional), heading, paragraph
+    const textParts = [];
     // Tag
-    const tagGroup = bigCard.querySelector('.tag-group');
-    if (tagGroup) {
-      textContent.appendChild(tagGroup);
+    const tag = card.querySelector('.tag-group');
+    if (tag) {
+      textParts.push(tag.cloneNode(true));
     }
-    // Heading
-    const heading = bigCard.querySelector('h3');
+    // Heading (h3/h4)
+    const heading = card.querySelector('h3');
     if (heading) {
-      textContent.appendChild(heading);
+      textParts.push(heading.cloneNode(true));
     }
-    // Paragraph
-    const para = bigCard.querySelector('p');
-    if (para) {
-      textContent.appendChild(para);
+    // Description
+    const desc = card.querySelector('p');
+    if (desc) {
+      textParts.push(desc.cloneNode(true));
     }
-    // Compose row
-    rows.push([
-      [fieldComment('image'), img],
-      [fieldComment('text'), textContent]
-    ]);
-  }
+    // Only add text cell if we have content
+    let textCell;
+    if (textParts.length) {
+      textCell = cell('text', textParts);
+    } else {
+      textCell = document.createElement('div');
+    }
 
-  // 2. Middle column: 2 cards with images
-  const middleCol = children[1];
-  if (middleCol) {
-    // Find all direct card anchors
-    const midCards = Array.from(middleCol.querySelectorAll(':scope > a'));
-    midCards.forEach((card) => {
-      // Image
-      const imgWrap = card.querySelector('.utility-aspect-3x2');
-      const img = imgWrap && imgWrap.querySelector('img');
-      // Text content
-      const textContent = document.createElement('div');
-      // Tag
-      const tagGroup = card.querySelector('.tag-group');
-      if (tagGroup) textContent.appendChild(tagGroup);
-      // Heading
-      const heading = card.querySelector('h3');
-      if (heading) textContent.appendChild(heading);
-      // Paragraph
-      const para = card.querySelector('p');
-      if (para) textContent.appendChild(para);
-      // Compose row
-      rows.push([
-        [fieldComment('image'), img],
-        [fieldComment('text'), textContent]
-      ]);
-    });
-  }
+    rows.push([imageCell, textCell]);
+  });
 
-  // 3. Right column: only text cards (no image)
-  const rightCol = children[2];
-  if (rightCol) {
-    // Cards separated by .divider elements
-    // Get all child anchors (cards)
-    const rightCards = Array.from(rightCol.querySelectorAll(':scope > a'));
-    rightCards.forEach((card) => {
-      // Image cell will be empty, but field comment is required
-      // Text
-      const textContent = document.createElement('div');
-      // Heading
-      const heading = card.querySelector('h3');
-      if (heading) textContent.appendChild(heading);
-      // Paragraph
-      const para = card.querySelector('p');
-      if (para) textContent.appendChild(para);
-      rows.push([
-        [fieldComment('image')],
-        [fieldComment('text'), textContent]
-      ]);
-    });
-  }
-
-  // Create block table
+  // Build the table and replace the element
   const table = WebImporter.DOMUtils.createTable(rows, document);
-  // Replace element
   element.replaceWith(table);
 }

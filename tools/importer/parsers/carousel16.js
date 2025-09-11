@@ -1,29 +1,31 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
+  // Defensive: find the grid containing all slides
   const grid = element.querySelector('.w-layout-grid');
   if (!grid) return;
+
+  // Get all direct children of grid (each one is a card/slide)
   const slideDivs = Array.from(grid.children);
 
-  // Header row: always 1 column
-  const headerRow = ['Carousel (carousel16)'];
-  const cells = [headerRow];
+  // Header row per block guidelines
+  const rows = [ [ 'Carousel (carousel16)' ] ];
 
-  // Data rows: if there is no text content, only the image cell is present
   slideDivs.forEach((slideDiv) => {
-    const img = slideDiv.querySelector('img');
-    let imageCell = '';
+    // Defensive: find image inside slideDiv
+    const imgContainer = slideDiv.querySelector('.utility-aspect-2x3');
+    let img = imgContainer ? imgContainer.querySelector('img') : null;
+
     if (img) {
-      const frag = document.createDocumentFragment();
-      frag.appendChild(document.createComment(' field:media_image '));
-      frag.appendChild(document.createTextNode('\n'));
-      frag.appendChild(img);
-      imageCell = frag;
+      // First cell: image with field comment
+      const imgCell = document.createElement('div');
+      imgCell.innerHTML = '<!-- field:media_image -->';
+      imgCell.appendChild(img);
+      // Always add an empty second cell (no field hint), per block structure requirement
+      rows.push([imgCell, '']);
     }
-    // Check for text content (none expected in this HTML)
-    // So we add only the image cell
-    cells.push([imageCell]);
   });
 
-  const table = WebImporter.DOMUtils.createTable(cells, document);
+  // Create the block table and replace original element
+  const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

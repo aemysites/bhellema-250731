@@ -1,40 +1,31 @@
 /* global WebImporter */
-
 export default function parse(element, { document }) {
-  if (!element || !document) return;
-
-  // Header row for Cards (cards29) block (one column only)
+  // Always use the correct Cards (cards29) header row
   const headerRow = ['Cards (cards29)'];
 
-  // Each card is a div.utility-aspect-1x1 containing an img
-  const cardDivs = Array.from(element.querySelectorAll(':scope > div.utility-aspect-1x1'));
-
-  const rows = cardDivs.map(cardDiv => {
-    // Find image
-    const img = cardDiv.querySelector('img');
+  // Each card is a direct child
+  const cards = Array.from(element.children);
+  const rows = cards.map(card => {
     let imageCell = '';
+    // Get first img (should only be one per card)
+    const img = card.querySelector('img');
     if (img) {
-      imageCell = [document.createComment(' field:image '), img];
+      // For image collapsing, wrap in <picture> if not already
+      const picture = document.createElement('picture');
+      picture.appendChild(img.cloneNode(true));
+      const cellDiv = document.createElement('div');
+      cellDiv.append(document.createComment(' field:image '));
+      cellDiv.append(picture);
+      imageCell = Array.from(cellDiv.childNodes);
     }
-    // Second cell: only add field:text comment if there is content
-    let textCell = '';
-    const childNodes = Array.from(cardDiv.childNodes).filter(node => {
-      if (node === img) return false;
-      if (node.nodeType === 3) {
-        return node.textContent.trim();
-      }
-      if (node.nodeType === 1) {
-        return node.textContent.trim();
-      }
-      return false;
-    });
-    if (childNodes.length) {
-      textCell = [document.createComment(' field:text '), ...childNodes];
-    }
-    return [imageCell, textCell];
+    // No text content in this input example
+    return [imageCell, ''];
   });
-
-  const cells = [headerRow, ...rows];
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-  element.replaceWith(block);
+  // Construct the table
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    ...rows
+  ], document);
+  // Replace element
+  element.replaceWith(table);
 }

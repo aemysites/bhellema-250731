@@ -1,25 +1,21 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the columns grid
-  const grid = element.querySelector('.grid-layout');
+  if (!element) return;
+  const grid = element.querySelector('.w-layout-grid');
   if (!grid) return;
-
-  // Each immediate child of grid is a column (4 columns: logo+socials, Trends, Inspire, Explore)
+  // Each column is a direct child of the grid
   const columns = Array.from(grid.children);
-  if (!columns.length) return;
 
-  // Columns block table header as required
+  // Columns block: first row is block name, second row has all columns as cells
   const headerRow = ['Columns (columns9)'];
+  const contentRow = columns.map(col => col);
 
-  // The columns block expects each cell as the real DOM element (not clones)
-  const cells = columns.map(col => col);
-
-  // Build table with proper structure
+  // Create the table with the block name header and columns
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    cells
+    contentRow,
   ], document);
 
-  // Replace the element with the table
+  // Replace original element
   element.replaceWith(table);
 }

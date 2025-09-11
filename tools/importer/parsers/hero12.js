@@ -1,81 +1,85 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
+  // Critical fix: Only the first (background) image should be in the second row with <!-- field:image -->; the card image must be included as content within the text cell under <!-- field:text -->
+
+  // 1. Get main grid
+  const mainGrid = element.querySelector('.grid-layout.desktop-1-column');
+  if (!mainGrid) return;
+
+  // 2. Get background image (first grid child)
+  let bgImg = null;
+  if (mainGrid.children[0]) {
+    bgImg = mainGrid.children[0].querySelector('img');
+  }
+
+  // 3. Get the content area (second grid child)
+  const content = mainGrid.children[1] || null;
+  let cardGrid = null;
+  if (content) {
+    cardGrid = content.querySelector('.card-body .grid-layout');
+  }
+
+  // 4. Get card image, heading, list, and CTA
+  let cardImg = null, heading = null, cta = null, detailPs = [];
+  if (cardGrid) {
+    cardImg = cardGrid.querySelector('img');
+    heading = cardGrid.querySelector('h2');
+    const flexVert = cardGrid.querySelector('.flex-vertical');
+    if (flexVert) {
+      flexVert.querySelectorAll('.flex-horizontal').forEach(row => {
+        const p = row.querySelector('p');
+        if (p) detailPs.push(p);
+      });
+    }
+    const btnGroup = cardGrid.querySelector('.button-group');
+    if (btnGroup) {
+      cta = btnGroup.querySelector('a');
+    }
+  }
+
+  // Header row
   const headerRow = ['Hero (hero12)'];
 
-  // --- 1st cell: background image (with field comment) ---
-  let imageCell = '';
-  const gridDivs = element.querySelectorAll(':scope > div');
-  if (gridDivs.length > 0) {
-    const bgImgCandidate = gridDivs[0].querySelector('img');
-    if (bgImgCandidate) {
-      const imageDiv = document.createElement('div');
-      imageDiv.insertAdjacentHTML('beforeend', '<!-- field:image -->');
-      imageDiv.appendChild(bgImgCandidate.cloneNode(true));
-      imageCell = imageDiv;
-    }
+  // Row 2: background image only, field collapsing for alt
+  let bgCell = '';
+  if (bgImg) {
+    const pic = document.createElement('picture');
+    const img = bgImg.cloneNode(true);
+    if (!img.hasAttribute('alt')) img.setAttribute('alt', '');
+    pic.appendChild(img);
+    const frag = document.createDocumentFragment();
+    frag.appendChild(document.createComment(' field:image '));
+    frag.appendChild(pic);
+    bgCell = frag;
   }
 
-  // --- 2nd cell: text content (with field comment ONLY if not empty) ---
+  // Row 3: text cell, ALL content including the card image must be under <!-- field:text -->
   let textCell = '';
-  if (gridDivs.length > 1) {
-    const contentDiv = gridDivs[1];
-    const cardGrid = contentDiv.querySelector('.card-body .grid-layout');
-    if (cardGrid) {
-      // Find the side image (concert crowd)
-      const leftImg = cardGrid.querySelector('img');
-      // Find the block with h2 (heading and subcontent)
-      let textBlock = Array.from(cardGrid.children).find(c => c.querySelector && c.querySelector('h2'));
-      const textWrap = document.createElement('div');
-      let hasContent = false;
-      // Side image in text cell
-      if (leftImg) {
-        textWrap.appendChild(leftImg.cloneNode(true));
-        hasContent = true;
-      }
-      if (textBlock) {
-        // Heading
-        const heading = textBlock.querySelector('h2');
-        if (heading) {
-          textWrap.appendChild(heading.cloneNode(true));
-          hasContent = true;
-        }
-        // Features (bullets)
-        const vertical = textBlock.querySelector('.flex-vertical');
-        if (vertical) {
-          vertical.querySelectorAll('.flex-horizontal').forEach(fh => {
-            const p = fh.querySelector('p');
-            if (p) {
-              textWrap.appendChild(p.cloneNode(true));
-              hasContent = true;
-            }
-          });
-          // Dividers for visual separation
-          vertical.querySelectorAll('.divider').forEach(divider => {
-            textWrap.appendChild(divider.cloneNode(true));
-            hasContent = true;
-          });
-        }
-        // Call-to-action button
-        const cta = textBlock.querySelector('.button-group a');
-        if (cta) {
-          textWrap.appendChild(cta.cloneNode(true));
-          hasContent = true;
-        }
-      }
-      if (hasContent) {
-        textWrap.insertAdjacentHTML('afterbegin', '<!-- field:text -->');
-        textCell = textWrap;
-      }
+  if (heading || cardImg || detailPs.length || cta) {
+    const frag = document.createDocumentFragment();
+    frag.appendChild(document.createComment(' field:text '));
+    // Card image (inside text field, as part of content)
+    if (cardImg) {
+      const pic2 = document.createElement('picture');
+      const img2 = cardImg.cloneNode(true);
+      if (!img2.hasAttribute('alt')) img2.setAttribute('alt', '');
+      pic2.appendChild(img2);
+      frag.appendChild(pic2);
     }
+    // Heading
+    if (heading) frag.appendChild(heading);
+    // Details
+    detailPs.forEach(p => frag.appendChild(p));
+    // CTA
+    if (cta) frag.appendChild(cta);
+    textCell = frag;
   }
 
-  // Build table rows
-  const cells = [
+  // Build table
+  const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    [imageCell],
+    [bgCell],
     [textCell],
-  ];
-  // Replace original element
-  const block = WebImporter.DOMUtils.createTable(cells, document);
-  element.replaceWith(block);
+  ], document);
+  element.replaceWith(table);
 }

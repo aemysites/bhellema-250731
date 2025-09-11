@@ -1,51 +1,49 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Cards (cards33) block header row
-  const headerRow = ['Cards (cards33)'];
-
-  // Each card is an <a> direct child of the grid container
-  const cardLinks = Array.from(element.querySelectorAll(':scope > a'));
-
-  // Generate rows for each card
-  const rows = cardLinks.map((card) => {
-    // Find image for the card
-    const img = card.querySelector('img');
-    // Find the grid inner div (contains all text)
-    const innerDiv = card.querySelector(':scope > div');
-
-    // Prepare text cell: extract only relevant content, flat
-    let textCellContent = document.createDocumentFragment();
-    if (innerDiv) {
-      // Remove the image node if present in innerDiv
-      const clones = innerDiv.cloneNode(true);
-      const cloneImg = clones.querySelector('img');
-      if (cloneImg) cloneImg.remove();
-      // Unwrap grid if necessary
-      let nodes;
-      if (clones.classList.contains('w-layout-grid')) {
-        nodes = Array.from(clones.childNodes);
-      } else {
-        nodes = [clones];
+  // Helper: extract all block-level text content from the right side
+  function createTextCell(cardRoot) {
+    // Get the innermost grid div (text and tags)
+    const contentDiv = cardRoot.querySelector('.w-layout-grid > div');
+    if (!contentDiv) return document.createElement('span');
+    const frag = document.createDocumentFragment();
+    // Find all relevant children to preserve order: tag+min, heading, desc, CTA
+    // We'll walk all direct children and keep relevant tags
+    Array.from(contentDiv.childNodes).forEach((child) => {
+      if (child.nodeType !== 1) return; // only element nodes
+      if (
+        child.matches('.flex-horizontal') ||
+        child.matches('h3, .h4-heading') ||
+        child.matches('p') ||
+        (child.tagName === 'DIV' && child.textContent.trim().toLowerCase() === 'read')
+      ) {
+        frag.appendChild(child.cloneNode(true));
       }
-      nodes.forEach(node => textCellContent.appendChild(node));
+    });
+    if (!frag.hasChildNodes()) return document.createElement('span');
+    // Prepend model hint if content present
+    frag.insertBefore(document.createComment(' field:text '), frag.firstChild);
+    return frag;
+  }
+  // Build header row
+  const headerRow = ['Cards (cards33)'];
+  const rows = [headerRow];
+  // Find all cards
+  const cards = Array.from(element.querySelectorAll(':scope > a'));
+  cards.forEach((card) => {
+    // Image cell
+    const img = card.querySelector('img');
+    let imgCell = document.createElement('span');
+    if (img) {
+      const frag = document.createDocumentFragment();
+      frag.appendChild(document.createComment(' field:image '));
+      frag.appendChild(img.cloneNode(true));
+      imgCell = frag;
     }
-
-    // Always add field comments to the proper cell
-    const imageCell = img ? [document.createComment(' field:image '), img] : [document.createComment(' field:image ')];
-    // For text cell, always include field:text comment
-    let textCell;
-    if (textCellContent.childNodes.length) {
-      textCell = [document.createComment(' field:text '), textCellContent];
-    } else {
-      textCell = [document.createComment(' field:text ')];
-    }
-    return [imageCell, textCell];
+    // Text cell
+    const textCell = createTextCell(card);
+    rows.push([imgCell, textCell]);
   });
-
-  const table = WebImporter.DOMUtils.createTable([
-    headerRow,
-    ...rows,
-  ], document);
-
+  // Create table and replace
+  const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

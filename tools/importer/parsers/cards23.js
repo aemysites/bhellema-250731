@@ -1,67 +1,65 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // The element is the tabs content block, only process the active tab
+  // Helper to create model hint comment
+  function createFieldComment(name) {
+    return document.createComment(` field:${name} `);
+  }
+
+  // Find the active tab pane (the one that's visible)
+  const activePane = element.querySelector('.w-tab-pane.w--tab-active');
+  if (!activePane) return;
+
+  // Find grid inside active tab
+  const grid = activePane.querySelector('.w-layout-grid');
+  if (!grid) return;
+
+  // Find all card anchor elements
+  const cards = Array.from(grid.querySelectorAll('a'));
+
+  // Always use the block name and variant as header
   const headerRow = ['Cards (cards23)'];
   const rows = [headerRow];
 
-  const activeTab = element.querySelector('.w-tab-pane.w--tab-active');
-  if (!activeTab) return;
-
-  const grid = activeTab.querySelector('.w-layout-grid');
-  if (!grid) return;
-
-  // Only direct children <a> are cards
-  const cards = Array.from(grid.children).filter(child => child.tagName === 'A');
-
   cards.forEach(card => {
+    // Image cell
     let imageCell = '';
-    let textCell = '';
-
-    // Find image (mandatory for image cell), cell can be empty if missing
-    let imgEl = card.querySelector('img.cover-image');
-    if (imgEl) {
-      // field:image comment
-      const imgComment = document.createComment(' field:image ');
-      imageCell = [imgComment, imgEl];
-    } else {
-      imageCell = '';
+    const img = card.querySelector('img');
+    if (img) {
+      imageCell = [createFieldComment('image'), img.cloneNode(true)];
     }
 
-    // Find all text content, not just heading and description
-    // Instead of using selectors, include all text nodes and elements that are visually rendered in the card
-    // Remove any image element from the clone
-    const cardClone = card.cloneNode(true);
-    // Remove all img tags from clone to avoid duplicating in text cell
-    Array.from(cardClone.querySelectorAll('img.cover-image')).forEach(img => img.remove());
-    // field:text comment
-    if (cardClone.textContent.trim()) {
-      const textComment = document.createComment(' field:text ');
-      // Wrap all content for text cell in a div
-      const textDiv = document.createElement('div');
-      textDiv.appendChild(textComment);
-      // Append heading and paragraphs (preserving order)
-      Array.from(cardClone.children).forEach(child => {
-        if (
-          child.classList.contains('h4-heading') ||
-          child.classList.contains('paragraph-sm') ||
-          child.classList.contains('flex-horizontal') ||
-          child.classList.contains('utility-text-align-center')
-        ) {
-          textDiv.appendChild(child);
+    // Text cell: gather all visible text (not just h3 and .paragraph-sm)
+    let textCell = '';
+    // Collect all text-based children in card (h3, div.paragraph-sm, etc)
+    const textContentEls = [];
+    // In some cards, text is direct children; in others, inside wrappers
+    card.childNodes.forEach(child => {
+      // Only element nodes
+      if (child.nodeType === 1) {
+        if (child.matches('h3, .paragraph-sm')) {
+          textContentEls.push(child.cloneNode(true));
+        } else {
+          // For wrappers, look for h3/paragraph-sm inside
+          const h3 = child.querySelector('h3');
+          if (h3) textContentEls.push(h3.cloneNode(true));
+          // Get all .paragraph-sm elements inside
+          child.querySelectorAll('.paragraph-sm').forEach(para => {
+            textContentEls.push(para.cloneNode(true));
+          });
         }
-      });
-      // If nothing found by classes, just append all textContent
-      if (!textDiv.querySelector('.h4-heading') && !textDiv.querySelector('.paragraph-sm')) {
-        textDiv.appendChild(document.createTextNode(cardClone.textContent.trim()));
       }
-      textCell = textDiv;
-    } else {
-      textCell = '';
+    });
+    // If text content elements found, add comment and content
+    if (textContentEls.length > 0) {
+      const wrapper = document.createElement('div');
+      textContentEls.forEach(el => wrapper.appendChild(el));
+      textCell = [createFieldComment('text'), wrapper];
     }
 
     rows.push([imageCell, textCell]);
   });
 
+  // Replace element with block table
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

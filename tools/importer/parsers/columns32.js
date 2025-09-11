@@ -1,25 +1,28 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid layout container (columns)
-  const grid = element.querySelector('.w-layout-grid');
-  if (!grid) return; // Defensive: only proceed if grid exists
+  // Find the main grid layout in the section
+  const grid = element.querySelector('.grid-layout');
+  if (!grid) return;
+  const cols = Array.from(grid.children);
+  if (cols.length < 2) return;
 
-  // Get immediate children inside the grid: should be [img, contentDiv]
-  const columns = Array.from(grid.children);
-  if (columns.length < 2) return;
+  // 1st column: Image
+  const imgCol = cols[0]; // img element
+  // 2nd column: All textual info
+  const infoCol = cols[1];
 
-  // Table header row
+  // Build the table rows
   const headerRow = ['Columns block (columns32)'];
+  // For columns blocks, DO NOT add any field comments.
+  // Place elements directly into their cells as references.
+  const contentRow = [imgCol, infoCol];
 
-  // Table second row: each cell is a column
-  const row = [columns[0], columns[1]];
-
-  // Create block table
-  const block = WebImporter.DOMUtils.createTable([
+  // Assemble full table
+  const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    row,
+    contentRow
   ], document);
 
-  // Replace original element
-  element.replaceWith(block);
+  // Replace the section with the new table
+  element.replaceWith(table);
 }

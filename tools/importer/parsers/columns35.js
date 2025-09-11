@@ -1,26 +1,32 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Block header row - must match target block name exactly
-  const headerRow = ['Columns (columns35)'];
-
-  // Defensive: locate the grid that contains the columns
-  const container = element.querySelector('.container');
+  // Defensive: get the direct grid layout container inside the section
+  const section = element;
+  const container = section.querySelector('.container');
   if (!container) return;
   const grid = container.querySelector('.w-layout-grid');
   if (!grid) return;
 
-  // Extract columns: each direct child of grid is a column
-  const columns = Array.from(grid.children);
+  // Two top-level columns: left content (heading, subheading), right button
+  // Find all immediate children of the grid
+  const gridChildren = Array.from(grid.children);
+  if (gridChildren.length < 2) return;
 
-  // Each cell is the actual DOM element for that column
-  const columnsRow = columns.map((col) => col);
+  // Left: heading + subheading
+  const leftCol = gridChildren[0];
+  // Right: button/link
+  const rightCol = gridChildren[1];
 
-  // Only one data row below header
-  const rows = [headerRow, columnsRow];
+  // Build the cells for the columns block
+  const headerRow = ['Columns (columns35)'];
+  const columnsRow = [leftCol, rightCol];
 
-  // Create block table (no field comments for Columns block)
-  const table = WebImporter.DOMUtils.createTable(rows, document);
+  // Create the columns block table
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    columnsRow,
+  ], document);
 
-  // Replace original section with the table block
-  element.replaceWith(table);
+  // Replace the original section with the table
+  section.replaceWith(table);
 }

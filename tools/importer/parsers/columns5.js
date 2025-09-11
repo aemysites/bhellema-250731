@@ -1,35 +1,34 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: Get the grid containing the two main columns
-  const grid = element.querySelector('.grid-layout');
+  // Find the main grid container
+  const grid = element.querySelector('.w-layout-grid.grid-layout');
   if (!grid) return;
 
-  // Find the two main columns: content div and image
-  let contentCol = null;
-  let imageCol = null;
-  // Our grid-layout contains two children: a div and an img
-  const children = Array.from(grid.children);
-  for (const child of children) {
-    if (child.tagName === 'DIV' && !contentCol) {
-      contentCol = child;
-    } else if (child.tagName === 'IMG' && !imageCol) {
-      imageCol = child;
+  // Identify left (content) and right (image) columns
+  let leftCol = null;
+  let rightCol = null;
+
+  // The left side is a nested grid containing content
+  for (const child of grid.children) {
+    if (child.classList.contains('w-layout-grid')) {
+      leftCol = child;
+    }
+    if (child.tagName === 'IMG') {
+      rightCol = child;
     }
   }
-  if (!contentCol || !imageCol) return;
 
-  // Table header row
-  const headerRow = ['Columns (columns5)'];
-  // Table content row: first col is the content div, second col is the image
-  // Use the entire contentCol (with heading, paragraph, buttons) as is
-  const row = [contentCol, imageCol];
+  // Defensive: fallback for missing columns
+  if (!leftCol) leftCol = document.createElement('div');
+  if (!rightCol) rightCol = document.createElement('div');
 
-  // Build the table
-  const table = WebImporter.DOMUtils.createTable([
-    headerRow,
-    row
-  ], document);
-
-  // Replace original element with the columns block table
+  // Build the final rows as per block structure
+  const rows = [
+    ['Columns (columns5)'],
+    [leftCol, rightCol],
+  ];
+  
+  // Create the table using DOMUtils, referencing existing elements
+  const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

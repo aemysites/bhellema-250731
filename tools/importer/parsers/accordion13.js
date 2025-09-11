@@ -1,45 +1,42 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Compose Accordion block table
+  // Accordion block header row
+  const headerRow = ['Accordion'];
+
+  // Will collect all accordion items as [title, content]
   const rows = [];
-  // Block header matches example markdown
-  rows.push(['Accordion']);
 
-  // Find all accordion items (each .divider is one)
-  const itemDivs = element.querySelectorAll(':scope > .divider');
+  // Defensive: find all immediate children with class 'divider' (each is an accordion item)
+  const accordionItems = Array.from(element.querySelectorAll(':scope > .divider'));
 
-  itemDivs.forEach(divider => {
-    // Each divider contains two children:
-    // - Title (h4-heading)
-    // - Content (rich-text)
-    let titleEl = divider.querySelector('.h4-heading');
-    let contentEl = divider.querySelector('.rich-text');
-
-    // Defensive: fallback if not found
-    if (!titleEl) {
-      const grid = divider.querySelector('.w-layout-grid');
-      if (grid && grid.children[0]) titleEl = grid.children[0];
-    }
-    if (!contentEl) {
-      const grid = divider.querySelector('.w-layout-grid');
-      if (grid && grid.children[1]) contentEl = grid.children[1];
-    }
-
-    // Edge case: skip empty or malformed item
+  accordionItems.forEach(item => {
+    // Each divider contains a grid with two children: title and content
+    const grid = item.querySelector('.grid-layout');
+    if (!grid) return; // Skip if structure is unexpected
+    const gridChildren = Array.from(grid.children);
+    // Title is usually an h4 or similar heading
+    const titleEl = gridChildren.find(child => child.classList.contains('h4-heading'));
+    // Content is a rich-text paragraph (may contain multiple paragraphs)
+    const contentEl = gridChildren.find(child => child.classList.contains('rich-text'));
+    // Defensive: skip if missing required elements
     if (!titleEl || !contentEl) return;
-
-    // Model comments
-    const summaryComment = document.createComment(' field:summary ');
-    const textComment = document.createComment(' field:text ');
-
-    // Cells: include field comment then referenced element
-    const titleCell = [summaryComment, titleEl];
-    const contentCell = [textComment, contentEl];
-
-    rows.push([titleCell, contentCell]);
+    // For model hinting, wrap title in a fragment with comment
+    const titleFrag = document.createDocumentFragment();
+    titleFrag.appendChild(document.createComment(' field:summary '));
+    titleFrag.appendChild(titleEl);
+    // For model hinting, wrap content in a fragment with comment
+    const contentFrag = document.createDocumentFragment();
+    contentFrag.appendChild(document.createComment(' field:text '));
+    contentFrag.appendChild(contentEl);
+    rows.push([titleFrag, contentFrag]);
   });
 
-  // Only one block table in the example
-  const blockTable = WebImporter.DOMUtils.createTable(rows, document);
+  // Build the table cells array
+  const cells = [headerRow, ...rows];
+
+  // Create the accordion block table
+  const blockTable = WebImporter.DOMUtils.createTable(cells, document);
+
+  // Replace original element with the block table
   element.replaceWith(blockTable);
 }

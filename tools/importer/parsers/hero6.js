@@ -1,52 +1,64 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // --- Helper Functions ---
-  // Create table with 1 column and 3 rows as specified
+  // Header row for Hero (hero6)
+  const headerRow = ['Hero (hero6)'];
 
-  // 1. Header row (always the block name as per spec)
-  const headerRow = [ 'Hero (hero6)' ];
-
-  // 2. Image row
+  // --- Find the background image ---
   let imageCell = '';
-  const grid = element.querySelector('.w-layout-grid.grid-layout');
-  if (grid) {
-    const firstDiv = grid.children[0];
-    if (firstDiv) {
-      const img = firstDiv.querySelector('img');
-      if (img) {
-        // Reference the existing <img> element, do not clone
-        const frag = document.createDocumentFragment();
-        frag.appendChild(document.createComment(' field:image '));
-        frag.appendChild(img);
-        imageCell = frag;
-      }
+  const imageDiv = element.querySelector('.utility-min-height-100dvh');
+  if (imageDiv) {
+    const img = imageDiv.querySelector('img');
+    if (img) {
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = '<!-- field:image -->';
+      const picture = document.createElement('picture');
+      const newImg = document.createElement('img');
+      newImg.src = img.src;
+      newImg.alt = img.alt || '';
+      picture.appendChild(newImg);
+      wrapper.appendChild(picture);
+      imageCell = wrapper;
+    }
+  }
+  const imageRow = [imageCell ? imageCell : ''];
+
+  // --- Find text, subheading, and buttons ---
+  let textCellContent = [];
+  const textCard = element.querySelector('.card.utility-backdrop-filter-blur');
+  if (textCard) {
+    // Title
+    const h1 = textCard.querySelector('h1');
+    if (h1) textCellContent.push(h1);
+    // Subheading (paragraph)
+    const subheading = textCard.querySelector('p');
+    if (subheading) textCellContent.push(subheading);
+    // Buttons
+    const buttonGroup = textCard.querySelector('.button-group');
+    if (buttonGroup) {
+      const buttons = Array.from(buttonGroup.querySelectorAll('a'));
+      if (buttons.length) textCellContent.push(...buttons);
     }
   }
 
-  // 3. Text row (heading, subheading, CTAs)
-  let textCell = '';
-  if (grid && grid.children[1]) {
-    const rightCol = grid.children[1];
-    // Look for the .card with text content
-    const card = rightCol.querySelector('.card');
-    if (card) {
-      // Build a frag with the comment, then reference all original child nodes
-      const frag = document.createDocumentFragment();
-      frag.appendChild(document.createComment(' field:text '));
-      Array.from(card.childNodes).forEach((node) => {
-        frag.appendChild(node);
-      });
-      textCell = frag;
-    }
+  let textRowCell;
+  if (textCellContent.length > 0) {
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = '<!-- field:text -->';
+    textCellContent.forEach((el) => wrapper.appendChild(el));
+    textRowCell = wrapper;
+  } else {
+    textRowCell = '';
   }
+  const textRow = [textRowCell];
 
-  // Compose rows for table
-  const tableRows = [
+  // Build table
+  const cells = [
     headerRow,
-    [imageCell],
-    [textCell],
+    imageRow,
+    textRow
   ];
 
-  const table = WebImporter.DOMUtils.createTable(tableRows, document);
-  element.replaceWith(table);
+  // Replace element with block table
+  const block = WebImporter.DOMUtils.createTable(cells, document);
+  element.replaceWith(block);
 }

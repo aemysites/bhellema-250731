@@ -1,38 +1,55 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the .container that holds the two main columns
-  const container = element.querySelector(':scope > .container');
-  if (!container) return;
+  // Locate the grid containing the two main visual sides of the block
+  const mainGrid = element.querySelector('.w-layout-grid.grid-layout.tablet-1-column');
+  const imageGrid = element.querySelector('.w-layout-grid.grid-layout.mobile-portrait-1-column');
 
-  // The left content is composed of eyebrow, heading, text, author, button
-  // The right content is a grid with two images stacked
-  const gridBlocks = container.querySelectorAll(':scope > .w-layout-grid');
-  if (gridBlocks.length < 2) return;
-
-  // left aggregate: get eyebrow div, h1, and the first grid (text/author/button)
-  const leftMeta = container.querySelector(':scope > div > .eyebrow')?.parentElement;
-  const leftContent = gridBlocks[0];
-  const leftCol = document.createElement('div');
-  if (leftMeta) {
-    Array.from(leftMeta.children).forEach(child => leftCol.appendChild(child.cloneNode(true)));
+  // Left column: headline, eyebrow, description, author, button
+  let leftCol = document.createElement('div');
+  if (mainGrid) {
+    // Eyebrow + Headline
+    const left = mainGrid.children[0];
+    if (left) {
+      Array.from(left.childNodes).forEach((node) => {
+        leftCol.appendChild(node.cloneNode(true));
+      });
+    }
+    // Paragraph, author, button
+    const right = mainGrid.children[1];
+    if (right) {
+      // Description text
+      const richText = right.querySelector('.rich-text');
+      if (richText) {
+        Array.from(richText.childNodes).forEach((node) => {
+          leftCol.appendChild(node.cloneNode(true));
+        });
+      }
+      // Author info
+      const author = right.querySelector('.flex-horizontal.y-center.flex-gap-xs');
+      if (author) {
+        leftCol.appendChild(author.cloneNode(true));
+      }
+      // Button
+      const button = right.querySelector('.button');
+      if (button) {
+        leftCol.appendChild(button.cloneNode(true));
+      }
+    }
   }
-  if (leftContent) {
-    Array.from(leftContent.children).forEach(child => leftCol.appendChild(child.cloneNode(true)));
+
+  // Right column: image grid
+  let rightCol = document.createElement('div');
+  if (imageGrid) {
+    Array.from(imageGrid.children).forEach((imgCell) => {
+      // utility-aspect-1x1 > img
+      rightCol.appendChild(imgCell.cloneNode(true));
+    });
   }
 
-  // right: grid of images
-  const rightContent = gridBlocks[1];
-  const rightCol = document.createElement('div');
-  Array.from(rightContent.children).forEach(child => rightCol.appendChild(child.cloneNode(true)));
-
-  // Construct columns block table
-  const rows = [
-    ['Columns (columns11)'],
-    [leftCol, rightCol],
-  ];
+  // Build columns block table
+  const rows = [];
+  rows.push(['Columns (columns11)']);
+  rows.push([leftCol, rightCol]);
   const table = WebImporter.DOMUtils.createTable(rows, document);
-  // Replace the <section> element with the block table
-  if (table && element.parentNode) {
-    element.replaceWith(table);
-  }
+  element.replaceWith(table);
 }

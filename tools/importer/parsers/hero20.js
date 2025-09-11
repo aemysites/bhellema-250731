@@ -1,43 +1,51 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Extract background images (all .cover-image in grid)
-  let images = Array.from(
-    element.querySelectorAll('.ix-hero-scale-3x-to-1x .grid-layout .cover-image')
-  );
+  // --- HEADER ROW ---
+  const headerRow = ['Hero (hero20)'];
 
-  // Defensive: fallback in case grid structure changes
-  if (!images.length) {
-    images = Array.from(element.querySelectorAll('.ix-hero-scale-3x-to-1x img'));
+  // --- BACKGROUND IMAGE COLLAGE ---
+  let imageCell = null;
+  const collageGrid = element.querySelector('.ix-hero-scale-3x-to-1x .grid-layout');
+  if (collageGrid) {
+    // Collect all images and reference the actual elements (not clones)
+    const imgs = collageGrid.querySelectorAll('img');
+    if (imgs.length > 0) {
+      const figure = document.createElement('figure');
+      imgs.forEach(img => figure.appendChild(img)); // direct references
+      // Add model field hint for 'image'
+      const comment = document.createComment(' field:image ');
+      imageCell = [comment, figure];
+    }
   }
+  if (!imageCell) imageCell = [''];
 
-  // Wrapper for all images in the background
-  const imageCell = document.createElement('div');
-  images.forEach(img => imageCell.appendChild(img));
-  if (images.length) {
-    imageCell.appendChild(document.createComment(' field:image '));
-  }
-
-  // Extract content (headline, subheading, CTA)
+  // --- TEXT, SUBHEADING, CTA ---
+  let textCell = null;
   const content = element.querySelector('.ix-hero-scale-3x-to-1x-content .container');
-  const textCell = document.createElement('div');
   if (content) {
+    const parts = [];
+    // Heading
     const h1 = content.querySelector('h1');
-    if (h1) textCell.appendChild(h1);
+    if (h1) parts.push(h1);
+    // Subheading
     const subheading = content.querySelector('p');
-    if (subheading) textCell.appendChild(subheading);
-    const buttons = content.querySelector('.button-group');
-    if (buttons) textCell.appendChild(buttons);
-    textCell.appendChild(document.createComment(' field:text '));
+    if (subheading) parts.push(subheading);
+    // CTA group
+    const ctaGroup = content.querySelector('.button-group');
+    if (ctaGroup) parts.push(ctaGroup);
+    // Add model field hint for 'text'
+    const comment = document.createComment(' field:text ');
+    textCell = [comment, ...parts];
   }
+  if (!textCell) textCell = [''];
 
-  // Compose table rows
+  // --- TABLE ASSEMBLY ---
   const rows = [
-    ['Hero (hero20)'],
+    headerRow,
     [imageCell],
-    [textCell]
+    [textCell],
   ];
 
-  // Create block table
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

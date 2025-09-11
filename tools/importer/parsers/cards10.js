@@ -1,46 +1,58 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper: get image container (the div that wraps the <img>)
-  function getImageDiv(cardLink) {
-    // The image container is the first child div
-    const imageDiv = cardLink.querySelector('.utility-aspect-3x2');
-    return imageDiv;
+  // Helper to create model hint comment
+  function createModelHintComment(name) {
+    return document.createComment(` field:${name} `);
   }
 
-  // Helper: get text container (the div with tag, heading, and paragraph)
-  function getTextDiv(cardLink) {
-    // The text container is the .utility-padding-all-1rem div
-    const textDiv = cardLink.querySelector('.utility-padding-all-1rem');
-    return textDiv;
-  }
+  // Get all direct card links
+  const cards = Array.from(element.querySelectorAll(':scope > a.card-link'));
 
-  // Get all card links (cards)
-  const cardLinks = element.querySelectorAll(':scope > a.card-link');
-
-  // Table header (block name MUST match target exactly)
+  // Build header row
   const headerRow = ['Cards (cards10)'];
   const rows = [headerRow];
 
-  cardLinks.forEach((cardLink) => {
-    // --- IMAGE CELL ---
-    const imageDiv = getImageDiv(cardLink);
-    const imageCell = document.createElement('div');
-    imageCell.innerHTML = '<!-- field:image -->';
-    if (imageDiv) imageCell.append(imageDiv);
+  cards.forEach((card) => {
+    // First cell: image
+    const imageWrapper = card.querySelector('.utility-aspect-3x2');
+    let imageCellContent = null;
+    if (imageWrapper) {
+      // Find the image inside
+      const img = imageWrapper.querySelector('img');
+      if (img) {
+        // Add the model hint as a comment node before the image
+        imageCellContent = [createModelHintComment('image'), img];
+      }
+    }
+    // If no image found, set cell empty (no comment)
+    if (!imageCellContent) imageCellContent = '';
 
-    // --- TEXT CELL ---
-    const textDiv = getTextDiv(cardLink);
-    const textCell = document.createElement('div');
-    textCell.innerHTML = '<!-- field:text -->';
-    if (textDiv) textCell.append(textDiv);
+    // Second cell: text content
+    const textWrapper = card.querySelector('.utility-padding-all-1rem');
+    let textCellContent = null;
+    if (textWrapper) {
+      // We'll include the tag(s), heading, and paragraph as a single block
+      // Add the model hint as a comment node before the content
+      textCellContent = [createModelHintComment('text')];
+      // Tag group (optional)
+      const tagGroup = textWrapper.querySelector('.tag-group');
+      if (tagGroup) textCellContent.push(tagGroup);
+      // Heading (optional)
+      const heading = textWrapper.querySelector('h3, .h4-heading');
+      if (heading) textCellContent.push(heading);
+      // Paragraph (optional)
+      const desc = textWrapper.querySelector('p');
+      if (desc) textCellContent.push(desc);
+      // Remove the hint if cell is actually empty
+      if (textCellContent.length === 1) textCellContent = '';
+    }
+    if (!textCellContent) textCellContent = '';
 
-    rows.push([
-      imageCell,
-      textCell,
-    ]);
+    // Row for this card
+    rows.push([imageCellContent, textCellContent]);
   });
 
-  // Create block table
+  // Create the table and replace the element
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

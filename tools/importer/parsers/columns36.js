@@ -1,46 +1,50 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: find root content columns (left and right)
+  // Defensive: require .container child (main block)
   const container = element.querySelector('.container');
   if (!container) return;
 
-  // The grid wraps two primary children: left=content, right=images
-  const gridLayout = container.querySelector('.grid-layout');
-  if (!gridLayout) return;
+  // Find the grid that splits left/right
+  const grid = container.querySelector('.w-layout-grid.grid-layout');
+  if (!grid) return;
 
-  // Grab direct children of the grid layout (columns)
-  const columnDivs = Array.from(gridLayout.children);
-  if (columnDivs.length < 2) return;
+  // Get top-level columns (expecting two children)
+  const columns = Array.from(grid.children);
+  if (columns.length < 2) return;
 
-  // Left column (text, buttons)
-  const leftCol = columnDivs[0];
-  // Right column (images), first child with .grid-layout inside
-  const rightCol = columnDivs[1];
-  let imagesWrapper = rightCol.querySelector('.grid-layout');
+  // First column: headline, subheading, buttons
+  const leftCol = columns[0];
+  // Second column: image grid (should contain images)
+  const rightCol = columns[1];
 
-  // Defensive: if no images wrapper fallback to rightCol
-  if (!imagesWrapper) imagesWrapper = rightCol;
+  // --- Left cell: headline, subheading, buttons ---
+  // Grab the headline, subheading, and button-group as nodes
+  const h1 = leftCol.querySelector('h1');
+  const subheading = leftCol.querySelector('p');
+  const buttonGroup = leftCol.querySelector('.button-group');
 
-  // Collect all images inside imagesWrapper
-  const images = Array.from(imagesWrapper.querySelectorAll('img'));
+  // Build left cell content (array for order preservation, filter nulls)
+  const leftCellContent = [h1, subheading, buttonGroup].filter(Boolean);
 
-  // Compose left content: heading, paragraph, buttons
-  // Use entire leftCol for resilience
-  // Compose right content: images (in a fragment)
-  const rightContent = document.createDocumentFragment();
-  images.forEach(img => rightContent.appendChild(img));
+  // --- Right cell: image grid ---
+  // Find images in nested grid
+  const imageGrid = rightCol.querySelector('.w-layout-grid');
+  let images = [];
+  if (imageGrid) {
+    images = Array.from(imageGrid.querySelectorAll('img'));
+  }
+  // Defensive fallback: images on rightCol itself
+  if (images.length === 0) {
+    images = Array.from(rightCol.querySelectorAll('img'));
+  }
 
-  // Table header
+  // --- Build rows ---
   const headerRow = ['Columns (columns36)'];
-  // Table content (second row: left & right columns)
-  const cellsRow = [leftCol, rightContent];
+  // Each cell: array of elements (left: text/buttons, right: images)
+  const contentRow = [leftCellContent, images];
 
-  // Table 2d array
-  const tableArray = [headerRow, cellsRow];
+  const table = WebImporter.DOMUtils.createTable([headerRow, contentRow], document);
 
-  // Create the block table
-  const block = WebImporter.DOMUtils.createTable(tableArray, document);
-
-  // Replace the original element
-  element.replaceWith(block);
+  // Replace element with the new table block
+  element.replaceWith(table);
 }

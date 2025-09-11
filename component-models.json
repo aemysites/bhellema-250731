@@ -194,6 +194,13 @@
         "multi": false
       },
       {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image Alt",
+        "value": ""
+      },
+      {
         "component": "richtext",
         "name": "text",
         "value": "",
@@ -267,6 +274,87 @@
         "name": "rows",
         "value": "",
         "label": "Rows"
+      }
+    ]
+  },
+  {
+    "id": "hero",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "classes",
+        "label": "Style"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Alt",
+        "value": ""
+      },
+      {
+        "component": "richtext",
+        "name": "eyebrow",
+        "value": "",
+        "label": "eyebrow",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "eyebrow2",
+        "value": "",
+        "label": "eyebrow2",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "title",
+        "value": "",
+        "label": "title",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "text",
+        "value": "",
+        "label": "text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "footnote",
+        "value": "",
+        "label": "footnote",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "footnote",
+        "value": "",
+        "label": "footnote",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "footnote",
+        "value": "",
+        "label": "footnote",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "imagesmall",
+        "value": "",
+        "label": "image small text",
+        "valueType": "string"
       }
     ]
   },
