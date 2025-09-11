@@ -278,7 +278,7 @@
     ]
   },
   {
-    "id": "hero",
+    "id": "custom-hero",
     "fields": [
       {
         "component": "text",
