@@ -53,6 +53,9 @@
           "...": "../blocks/hero/_*.json#/definitions"
         },
         {
+          "...": "../blocks/custom-hero/_*.json#/definitions"
+        },
+        {
           "...": "../blocks/library-metadata/_*.json#/definitions"
         },
         {
