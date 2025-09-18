@@ -172,22 +172,6 @@
       ]
     },
     {
-      "name": "Cards",
-      "cluster": 2,
-      "source": "Cards",
-      "target": "Cards (cards2)",
-      "key": "cards2",
-      "instances": [
-        {
-          "url": "https://www.wknd-trendsetters.site/blog/fashion-blog-post",
-          "urlHash": "9b4d89f80efba6f8dbcb1e3da8ea8ffa8771a959",
-          "uuid": "9b4d89f8-03-a27d6a564ded217577666251c62dd15fe27c1901",
-          "xpath": "/html[1]/body[1]/section[2]",
-          "section": "section-1"
-        }
-      ]
-    },
-    {
       "name": "Columns",
       "cluster": 3,
       "source": "Columns",
@@ -198,7 +182,8 @@
           "url": "https://www.wknd-trendsetters.site/",
           "urlHash": "1b9ba84f36ee3a519917302a79dfd970725bae31",
           "uuid": "1b9ba84f-11-2543d43dac63c32e3ccae4aae2045cbf1572ea04",
-          "xpath": "/html[1]/body[1]/section[5]"
+          "xpath": "/html[1]/body[1]/section[5]",
+          "section": "section-2"
         }
       ]
     },
@@ -213,25 +198,29 @@
           "url": "https://www.wknd-trendsetters.site/blog/fashion-blog-post",
           "urlHash": "9b4d89f80efba6f8dbcb1e3da8ea8ffa8771a959",
           "uuid": "9b4d89f8-04-28a9b8a4613e4ebb7b85814fd3998dfa3ff3ea64",
-          "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]/div[1]"
+          "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]/div[1]",
+          "section": "section-2"
         },
         {
           "url": "https://www.wknd-trendsetters.site/blog/fashion-blog-post",
           "urlHash": "9b4d89f80efba6f8dbcb1e3da8ea8ffa8771a959",
           "uuid": "9b4d89f8-05-763479c3261fc43016e8eafc05c8ea8587e61655",
-          "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]/div[2]"
+          "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]/div[2]",
+          "section": "section-2"
         },
         {
           "url": "https://www.wknd-trendsetters.site/latest-trends-young-fashion",
           "urlHash": "f5e200536a2c91b06effaf661df0675e13f262b6",
           "uuid": "f5e20053-05-28a9b8a4613e4ebb7b85814fd3998dfa3ff3ea64",
-          "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]/div[1]"
+          "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]/div[1]",
+          "section": "section-2"
         },
         {
           "url": "https://www.wknd-trendsetters.site/latest-trends-young-fashion",
           "urlHash": "f5e200536a2c91b06effaf661df0675e13f262b6",
           "uuid": "f5e20053-06-763479c3261fc43016e8eafc05c8ea8587e61655",
-          "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]/div[2]"
+          "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]/div[2]",
+          "section": "section-2"
         }
       ]
     },
@@ -246,13 +235,15 @@
           "url": "https://www.wknd-trendsetters.site/blog/latest-trends-young-casual-fashion",
           "urlHash": "971148fccf483ccd07f6ef722bc01c7fb46f61d5",
           "uuid": "971148fc-03-c498d593a5bc97467d867eb87705c763456c87bd",
-          "xpath": "/html[1]/body[1]/section[1]"
+          "xpath": "/html[1]/body[1]/section[1]",
+          "section": "section-2"
         },
         {
           "url": "https://www.wknd-trendsetters.site/blog/fashion-blog-post",
           "urlHash": "9b4d89f80efba6f8dbcb1e3da8ea8ffa8771a959",
           "uuid": "9b4d89f8-02-c498d593a5bc97467d867eb87705c763456c87bd",
-          "xpath": "/html[1]/body[1]/section[1]"
+          "xpath": "/html[1]/body[1]/section[1]",
+          "section": "section-2"
         }
       ]
     },
@@ -290,7 +281,8 @@
           "url": "https://www.wknd-trendsetters.site/fashion-trends-young-adults",
           "urlHash": "d2dd722de7842a6232ce56b1307d383ff72c9358",
           "uuid": "d2dd722d-10-eadf6a6abca85dfbd8029464354f763b41bb12a6",
-          "xpath": "/html[1]/body[1]/section[3]/div[1]/div[2]"
+          "xpath": "/html[1]/body[1]/section[3]/div[1]/div[2]",
+          "section": "section-2"
         }
       ]
     },
@@ -507,7 +499,8 @@
           "url": "https://www.wknd-trendsetters.site/fashion-trends-young-adults-casual-sport",
           "urlHash": "1a14744466075b2d00884f27fb69e2633b6fcb84",
           "uuid": "1a147444-02-c498d593a5bc97467d867eb87705c763456c87bd",
-          "xpath": "/html[1]/body[1]/section[1]"
+          "xpath": "/html[1]/body[1]/section[1]",
+          "section": "section-2"
         }
       ]
     },
@@ -559,13 +552,15 @@
           "url": "https://www.wknd-trendsetters.site/blog/fashion-blog-post",
           "urlHash": "9b4d89f80efba6f8dbcb1e3da8ea8ffa8771a959",
           "uuid": "9b4d89f8-06-bcf58b63085bee4597101c756c702eb86af612c8",
-          "xpath": "/html[1]/body[1]/section[3]/div[2]"
+          "xpath": "/html[1]/body[1]/section[3]/div[2]",
+          "section": "section-2"
         },
         {
           "url": "https://www.wknd-trendsetters.site/latest-trends-young-fashion",
           "urlHash": "f5e200536a2c91b06effaf661df0675e13f262b6",
           "uuid": "f5e20053-07-bcf58b63085bee4597101c756c702eb86af612c8",
-          "xpath": "/html[1]/body[1]/section[3]/div[2]"
+          "xpath": "/html[1]/body[1]/section[3]/div[2]",
+          "section": "section-2"
         }
       ]
     },
@@ -596,7 +591,8 @@
           "url": "https://www.wknd-trendsetters.site/fashion-trends-young-adults-casual-sport",
           "urlHash": "1a14744466075b2d00884f27fb69e2633b6fcb84",
           "uuid": "1a147444-05-f1fc93ab3e21904951fd9ec2cb1dd9218e350e1d",
-          "xpath": "/html[1]/body[1]/section[3]"
+          "xpath": "/html[1]/body[1]/section[3]",
+          "section": "section-2"
         }
       ]
     },
@@ -611,28 +607,15 @@
           "url": "https://www.wknd-trendsetters.site/fashion-trends-of-the-season",
           "urlHash": "1cfeb2756419a8f56a89a355f5557c3321845adb",
           "uuid": "1cfeb275-06-eadf6a6abca85dfbd8029464354f763b41bb12a6",
-          "xpath": "/html[1]/body[1]/section[3]/div[1]/div[2]"
+          "xpath": "/html[1]/body[1]/section[3]/div[1]/div[2]",
+          "section": "section-2"
         },
         {
           "url": "https://www.wknd-trendsetters.site/fashion-insights",
           "urlHash": "67430c465ff7767e6ae98a0cffa44cd32754a351",
           "uuid": "67430c46-05-261c42ba0b32bcb3fb5c83c560b10c2435ad553d",
-          "xpath": "/html[1]/body[1]/section[2]/div[1]/div[2]"
-        }
-      ]
-    },
-    {
-      "name": "Columns",
-      "cluster": 18,
-      "source": "Columns",
-      "target": "Columns (columns18)",
-      "key": "columns18",
-      "instances": [
-        {
-          "url": "https://www.wknd-trendsetters.site/faq",
-          "urlHash": "429d6f000c5a6e38a121160bf56d01b17365cffe",
-          "uuid": "429d6f00-03-a27d6a564ded217577666251c62dd15fe27c1901",
-          "xpath": "/html[1]/body[1]/section[2]"
+          "xpath": "/html[1]/body[1]/section[2]/div[1]/div[2]",
+          "section": "section-2"
         }
       ]
     },
@@ -647,7 +630,8 @@
           "url": "https://www.wknd-trendsetters.site/",
           "urlHash": "1b9ba84f36ee3a519917302a79dfd970725bae31",
           "uuid": "1b9ba84f-04-69306c16bac5563398ce327c71e7f1e9493b6265",
-          "xpath": "/html[1]/body[1]/section[1]/div[1]/div[1]"
+          "xpath": "/html[1]/body[1]/section[1]/div[1]/div[1]",
+          "section": "section-2"
         }
       ]
     },
@@ -686,7 +670,6 @@
     {
       "name": "Tabs",
       "cluster": 22,
-      "source": "",
       "key": "tabs22",
       "instances": [
         {
@@ -748,19 +731,22 @@
           "url": "https://www.wknd-trendsetters.site/blog/latest-trends-young-casual-fashion",
           "urlHash": "971148fccf483ccd07f6ef722bc01c7fb46f61d5",
           "uuid": "971148fc-07-eadf6a6abca85dfbd8029464354f763b41bb12a6",
-          "xpath": "/html[1]/body[1]/section[3]/div[1]/div[2]"
+          "xpath": "/html[1]/body[1]/section[3]/div[1]/div[2]",
+          "section": "section-2"
         },
         {
           "url": "https://www.wknd-trendsetters.site/blog/fashion-trends-young-culture",
           "urlHash": "f5bdda3762c99b21ef3c8f0ca75cb53a00b4e8bf",
           "uuid": "f5bdda37-07-eadf6a6abca85dfbd8029464354f763b41bb12a6",
-          "xpath": "/html[1]/body[1]/section[3]/div[1]/div[2]"
+          "xpath": "/html[1]/body[1]/section[3]/div[1]/div[2]",
+          "section": "section-2"
         }
       ]
     },
     {
       "name": "unknown",
       "cluster": 26,
+      "key": "unknown26",
       "instances": [
         {
           "url": "https://www.wknd-trendsetters.site/blog/fashion-trends-young-culture",
@@ -830,7 +816,8 @@
           "url": "https://www.wknd-trendsetters.site/blog/fashion-trends-young-culture",
           "urlHash": "f5bdda3762c99b21ef3c8f0ca75cb53a00b4e8bf",
           "uuid": "f5bdda37-02-c498d593a5bc97467d867eb87705c763456c87bd",
-          "xpath": "/html[1]/body[1]/section[1]"
+          "xpath": "/html[1]/body[1]/section[1]",
+          "section": "section-2"
         }
       ]
     },
@@ -861,7 +848,8 @@
           "url": "https://www.wknd-trendsetters.site/blog/fashion-trends-young-style",
           "urlHash": "be00f351b0490d8b536bf724216d6530c30d5684",
           "uuid": "be00f351-02-c498d593a5bc97467d867eb87705c763456c87bd",
-          "xpath": "/html[1]/body[1]/section[1]"
+          "xpath": "/html[1]/body[1]/section[1]",
+          "section": "section-2"
         }
       ]
     },
@@ -906,7 +894,8 @@
           "url": "https://www.wknd-trendsetters.site/blog/fashion-trends-young-culture",
           "urlHash": "f5bdda3762c99b21ef3c8f0ca75cb53a00b4e8bf",
           "uuid": "f5bdda37-09-2543d43dac63c32e3ccae4aae2045cbf1572ea04",
-          "xpath": "/html[1]/body[1]/section[5]"
+          "xpath": "/html[1]/body[1]/section[5]",
+          "section": "section-2"
         }
       ]
     },
@@ -927,22 +916,6 @@
       ]
     },
     {
-      "name": "Cards",
-      "cluster": 37,
-      "source": "Cards",
-      "target": "Cards (cards37)",
-      "key": "cards37",
-      "instances": [
-        {
-          "url": "https://www.wknd-trendsetters.site/blog/fashion-trends-young-style",
-          "urlHash": "be00f351b0490d8b536bf724216d6530c30d5684",
-          "uuid": "be00f351-03-a27d6a564ded217577666251c62dd15fe27c1901",
-          "xpath": "/html[1]/body[1]/section[2]",
-          "section": "section-1"
-        }
-      ]
-    },
-    {
       "name": "Columns",
       "cluster": 38,
       "source": "Columns",
@@ -953,7 +926,8 @@
           "url": "https://www.wknd-trendsetters.site/blog/fashion-trends-young-style",
           "urlHash": "be00f351b0490d8b536bf724216d6530c30d5684",
           "uuid": "be00f351-05-eadf6a6abca85dfbd8029464354f763b41bb12a6",
-          "xpath": "/html[1]/body[1]/section[3]/div[1]/div[2]"
+          "xpath": "/html[1]/body[1]/section[3]/div[1]/div[2]",
+          "section": "section-2"
         }
       ]
     },
@@ -970,6 +944,54 @@
           "uuid": "1a147444-01-b2c8ec8cc7206114599cd049698cc67e0e048d63",
           "xpath": "/html[1]/body[1]/header[1]",
           "section": "section-2"
+        }
+      ]
+    },
+    {
+      "name": "Cards",
+      "cluster": 40,
+      "source": "Cards",
+      "target": "Cards (cards40)",
+      "key": "cards40",
+      "instances": [
+        {
+          "url": "https://www.wknd-trendsetters.site/blog/fashion-blog-post",
+          "urlHash": "9b4d89f80efba6f8dbcb1e3da8ea8ffa8771a959",
+          "uuid": "9b4d89f8-03-a27d6a564ded217577666251c62dd15fe27c1901",
+          "xpath": "/html[1]/body[1]/section[2]",
+          "section": "section-1"
+        }
+      ]
+    },
+    {
+      "name": "Columns",
+      "cluster": 41,
+      "source": "Columns",
+      "target": "Columns (columns41)",
+      "key": "columns41",
+      "instances": [
+        {
+          "url": "https://www.wknd-trendsetters.site/faq",
+          "urlHash": "429d6f000c5a6e38a121160bf56d01b17365cffe",
+          "uuid": "429d6f00-03-a27d6a564ded217577666251c62dd15fe27c1901",
+          "xpath": "/html[1]/body[1]/section[2]",
+          "section": "section-2"
+        }
+      ]
+    },
+    {
+      "name": "Cards",
+      "cluster": 42,
+      "source": "Cards",
+      "target": "Cards (cards42)",
+      "key": "cards42",
+      "instances": [
+        {
+          "url": "https://www.wknd-trendsetters.site/blog/fashion-trends-young-style",
+          "urlHash": "be00f351b0490d8b536bf724216d6530c30d5684",
+          "uuid": "be00f351-03-a27d6a564ded217577666251c62dd15fe27c1901",
+          "xpath": "/html[1]/body[1]/section[2]",
+          "section": "section-1"
         }
       ]
     }
@@ -993,13 +1015,15 @@
       "url": "https://www.wknd-trendsetters.site/",
       "urlHash": "1b9ba84f36ee3a519917302a79dfd970725bae31",
       "uuid": "1b9ba84f-03-5ca35d327fe38541f922f7ca000528089974c8ac",
-      "xpath": "/html[1]/body[1]/section[1]/div[1]/h2[1]"
+      "xpath": "/html[1]/body[1]/section[1]/div[1]/h2[1]",
+      "section": "section-2"
     },
     {
       "url": "https://www.wknd-trendsetters.site/",
       "urlHash": "1b9ba84f36ee3a519917302a79dfd970725bae31",
       "uuid": "1b9ba84f-05-adda47d09d7763b69d96936602e835dec2004e55",
-      "xpath": "/html[1]/body[1]/section[1]/div[1]/div[2]"
+      "xpath": "/html[1]/body[1]/section[1]/div[1]/div[2]",
+      "section": "section-2"
     },
     {
       "url": "https://www.wknd-trendsetters.site/",
@@ -1019,7 +1043,8 @@
       "url": "https://www.wknd-trendsetters.site/fashion-trends-of-the-season",
       "urlHash": "1cfeb2756419a8f56a89a355f5557c3321845adb",
       "uuid": "1cfeb275-02-c498d593a5bc97467d867eb87705c763456c87bd",
-      "xpath": "/html[1]/body[1]/section[1]"
+      "xpath": "/html[1]/body[1]/section[1]",
+      "section": "section-2"
     },
     {
       "url": "https://www.wknd-trendsetters.site/fashion-trends-of-the-season",
@@ -1032,7 +1057,8 @@
       "url": "https://www.wknd-trendsetters.site/fashion-trends-of-the-season",
       "urlHash": "1cfeb2756419a8f56a89a355f5557c3321845adb",
       "uuid": "1cfeb275-05-7c4b411c256121bb1e0e58c581250626ad209dca",
-      "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]"
+      "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]",
+      "section": "section-2"
     },
     {
       "url": "https://www.wknd-trendsetters.site/fashion-trends-of-the-season",
@@ -1066,7 +1092,8 @@
       "url": "https://www.wknd-trendsetters.site/fashion-insights",
       "urlHash": "67430c465ff7767e6ae98a0cffa44cd32754a351",
       "uuid": "67430c46-04-f3bed983a6611794488e2f927319697f2e0241b2",
-      "xpath": "/html[1]/body[1]/section[2]/div[1]/div[1]"
+      "xpath": "/html[1]/body[1]/section[2]/div[1]/div[1]",
+      "section": "section-2"
     },
     {
       "url": "https://www.wknd-trendsetters.site/fashion-insights",
@@ -1093,7 +1120,8 @@
       "url": "https://www.wknd-trendsetters.site/blog/latest-trends-young-casual-fashion",
       "urlHash": "971148fccf483ccd07f6ef722bc01c7fb46f61d5",
       "uuid": "971148fc-06-7c4b411c256121bb1e0e58c581250626ad209dca",
-      "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]"
+      "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]",
+      "section": "section-2"
     },
     {
       "url": "https://www.wknd-trendsetters.site/blog/fashion-blog-post",
@@ -1106,7 +1134,8 @@
       "url": "https://www.wknd-trendsetters.site/blog/fashion-trends-young-style",
       "urlHash": "be00f351b0490d8b536bf724216d6530c30d5684",
       "uuid": "be00f351-04-7c4b411c256121bb1e0e58c581250626ad209dca",
-      "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]"
+      "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]",
+      "section": "section-2"
     },
     {
       "url": "https://www.wknd-trendsetters.site/fashion-trends-young-adults",
@@ -1140,7 +1169,8 @@
       "url": "https://www.wknd-trendsetters.site/fashion-trends-young-adults",
       "urlHash": "d2dd722de7842a6232ce56b1307d383ff72c9358",
       "uuid": "d2dd722d-06-c498d593a5bc97467d867eb87705c763456c87bd",
-      "xpath": "/html[1]/body[1]/section[1]"
+      "xpath": "/html[1]/body[1]/section[1]",
+      "section": "section-2"
     },
     {
       "url": "https://www.wknd-trendsetters.site/fashion-trends-young-adults",
@@ -1153,7 +1183,8 @@
       "url": "https://www.wknd-trendsetters.site/fashion-trends-young-adults",
       "urlHash": "d2dd722de7842a6232ce56b1307d383ff72c9358",
       "uuid": "d2dd722d-09-7c4b411c256121bb1e0e58c581250626ad209dca",
-      "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]"
+      "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]",
+      "section": "section-2"
     },
     {
       "url": "https://www.wknd-trendsetters.site/fashion-trends-young-adults",
@@ -1180,13 +1211,15 @@
       "url": "https://www.wknd-trendsetters.site/blog/fashion-trends-young-culture",
       "urlHash": "f5bdda3762c99b21ef3c8f0ca75cb53a00b4e8bf",
       "uuid": "f5bdda37-06-7c4b411c256121bb1e0e58c581250626ad209dca",
-      "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]"
+      "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]",
+      "section": "section-2"
     },
     {
       "url": "https://www.wknd-trendsetters.site/latest-trends-young-fashion",
       "urlHash": "f5e200536a2c91b06effaf661df0675e13f262b6",
       "uuid": "f5e20053-02-c498d593a5bc97467d867eb87705c763456c87bd",
-      "xpath": "/html[1]/body[1]/section[1]"
+      "xpath": "/html[1]/body[1]/section[1]",
+      "section": "section-2"
     },
     {
       "url": "https://www.wknd-trendsetters.site/latest-trends-young-fashion",
@@ -1205,7 +1238,7 @@
     {
       "name": "section-2",
       "background": "rgb(0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
-      "count": 18
+      "count": 51
     }
   ]
 }
