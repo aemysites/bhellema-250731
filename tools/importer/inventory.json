@@ -557,21 +557,6 @@
       ]
     },
     {
-      "name": "Custom Hero",
-      "cluster": 16,
-      "source": "Custom Hero",
-      "target": "Custom Hero (customHero16)",
-      "key": "customHero16",
-      "instances": [
-        {
-          "url": "https://www.wknd-trendsetters.site/fashion-trends-young-adults-casual-sport",
-          "urlHash": "1a14744466075b2d00884f27fb69e2633b6fcb84",
-          "uuid": "1a147444-05-f1fc93ab3e21904951fd9ec2cb1dd9218e350e1d",
-          "xpath": "/html[1]/body[1]/section[3]"
-        }
-      ]
-    },
-    {
       "name": "Accordion",
       "cluster": 17,
       "key": "accordion17",
@@ -1032,6 +1017,18 @@
           "uuid": "f5bdda37-08-796e849cb17320ad9140c2a1b41bb8d247c7d309",
           "xpath": "/html[1]/body[1]/section[4]",
           "section": "section-1"
+        }
+      ]
+    },
+    {
+      "name": "Columns",
+      "cluster": 42,
+      "instances": [
+        {
+          "url": "https://www.wknd-trendsetters.site/fashion-trends-young-adults-casual-sport",
+          "urlHash": "1a14744466075b2d00884f27fb69e2633b6fcb84",
+          "uuid": "1a147444-05-f1fc93ab3e21904951fd9ec2cb1dd9218e350e1d",
+          "xpath": "/html[1]/body[1]/section[3]"
         }
       ]
     }
