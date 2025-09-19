@@ -1031,6 +1031,19 @@
           "xpath": "/html[1]/body[1]/section[3]"
         }
       ]
+    },
+    {
+      "name": "Hero",
+      "cluster": 43,
+      "instances": [
+        {
+          "url": "https://www.wknd-trendsetters.site/blog/fashion-trends-stories",
+          "urlHash": "0ce90e70ef4e1fb12be408961b1f59c6c28dfd0c",
+          "uuid": "0ce90e70-06-796e849cb17320ad9140c2a1b41bb8d247c7d309",
+          "xpath": "/html[1]/body[1]/section[4]",
+          "section": "section-2"
+        }
+      ]
     }
   ],
   "outliers": [
@@ -1039,13 +1052,6 @@
       "urlHash": "0ce90e70ef4e1fb12be408961b1f59c6c28dfd0c",
       "uuid": "0ce90e70-04-7c4b411c256121bb1e0e58c581250626ad209dca",
       "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]"
-    },
-    {
-      "url": "https://www.wknd-trendsetters.site/blog/fashion-trends-stories",
-      "urlHash": "0ce90e70ef4e1fb12be408961b1f59c6c28dfd0c",
-      "uuid": "0ce90e70-06-796e849cb17320ad9140c2a1b41bb8d247c7d309",
-      "xpath": "/html[1]/body[1]/section[4]",
-      "section": "section-2"
     },
     {
       "url": "https://www.wknd-trendsetters.site/fashion-trends-young-adults-casual-sport",
