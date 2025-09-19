@@ -1111,6 +1111,7 @@
     {
       "name": "Accordion",
       "cluster": 50,
+      "key" "accordion50",
       "instances": [
         {
           "url": "https://www.wknd-trendsetters.site/faq",
