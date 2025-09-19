@@ -1049,6 +1049,19 @@
           "section": "section-1"
         }
       ]
+    },
+    {
+      "name": "Columns",
+      "cluster": 46,
+      "instances": [
+        {
+          "url": "https://www.wknd-trendsetters.site/fashion-trends-young-adults",
+          "urlHash": "d2dd722de7842a6232ce56b1307d383ff72c9358",
+          "uuid": "d2dd722d-11-796e849cb17320ad9140c2a1b41bb8d247c7d309",
+          "xpath": "/html[1]/body[1]/section[4]",
+          "section": "section-1"
+        }
+      ]
     }
   ],
   "outliers": [
@@ -1190,13 +1203,6 @@
       "urlHash": "d2dd722de7842a6232ce56b1307d383ff72c9358",
       "uuid": "d2dd722d-09-7c4b411c256121bb1e0e58c581250626ad209dca",
       "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]"
-    },
-    {
-      "url": "https://www.wknd-trendsetters.site/fashion-trends-young-adults",
-      "urlHash": "d2dd722de7842a6232ce56b1307d383ff72c9358",
-      "uuid": "d2dd722d-11-796e849cb17320ad9140c2a1b41bb8d247c7d309",
-      "xpath": "/html[1]/body[1]/section[4]",
-      "section": "section-1"
     },
     {
       "url": "https://www.wknd-trendsetters.site/blog/fashion-trends-young-culture",
