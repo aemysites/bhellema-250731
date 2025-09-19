@@ -1,7 +1,7 @@
 {
   "templates": [
     {
-      "name": "'Content Hub'",
+      "name": "'Portfolio Showcase'",
       "cluster": 1,
       "pages": [
         {
@@ -15,7 +15,7 @@
       ]
     },
     {
-      "name": "'Portfolio Showcase'",
+      "name": "'Portfolio Grid'",
       "cluster": 2,
       "pages": [
         {
@@ -35,7 +35,7 @@
       ]
     },
     {
-      "name": "'Dashboard Template'",
+      "name": "'Portfolio Showcase'",
       "cluster": 4,
       "pages": [
         {
@@ -45,7 +45,7 @@
       ]
     },
     {
-      "name": "Dashboard Overview",
+      "name": "Portfolio Showcase",
       "cluster": 5,
       "pages": [
         {
@@ -65,7 +65,7 @@
       ]
     },
     {
-      "name": "Gallery Grid Page",
+      "name": "'Portfolio Showcase'",
       "cluster": 7,
       "pages": [
         {
@@ -75,7 +75,7 @@
       ]
     },
     {
-      "name": "Homepage",
+      "name": "'Portfolio Showcase'",
       "cluster": 8,
       "pages": [
         {
