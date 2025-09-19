@@ -1095,6 +1095,19 @@
           "section": "section-2"
         }
       ]
+    },
+    {
+      "name": "Hero",
+      "cluster": 48,
+      "instances": [
+        {
+          "url": "https://www.wknd-trendsetters.site/blog/fashion-blog-post",
+          "urlHash": "9b4d89f80efba6f8dbcb1e3da8ea8ffa8771a959",
+          "uuid": "9b4d89f8-07-796e849cb17320ad9140c2a1b41bb8d247c7d309",
+          "xpath": "/html[1]/body[1]/section[4]",
+          "section": "section-1"
+        }
+      ]
     }
   ],
   "outliers": [
@@ -1196,13 +1209,6 @@
       "urlHash": "971148fccf483ccd07f6ef722bc01c7fb46f61d5",
       "uuid": "971148fc-06-7c4b411c256121bb1e0e58c581250626ad209dca",
       "xpath": "/html[1]/body[1]/section[3]/div[1]/div[1]"
-    },
-    {
-      "url": "https://www.wknd-trendsetters.site/blog/fashion-blog-post",
-      "urlHash": "9b4d89f80efba6f8dbcb1e3da8ea8ffa8771a959",
-      "uuid": "9b4d89f8-07-796e849cb17320ad9140c2a1b41bb8d247c7d309",
-      "xpath": "/html[1]/body[1]/section[4]",
-      "section": "section-1"
     },
     {
       "url": "https://www.wknd-trendsetters.site/blog/fashion-trends-young-style",
