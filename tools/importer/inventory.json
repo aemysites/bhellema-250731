@@ -159,7 +159,7 @@
       "name": "Columns",
       "cluster": 1,
       "source": "Columns",
-      "target": "Columns (columns1)",
+      "target": "Hero",
       "key": "columns1",
       "instances": [
         {
