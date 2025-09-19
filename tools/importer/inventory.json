@@ -1010,6 +1010,19 @@
           "section": "section-2"
         }
       ]
+    },
+    {
+      "name": "Hero",
+      "cluster": 43,
+      "instances": [
+        {
+          "url": "https://www.wknd-trendsetters.site/fashion-insights",
+          "urlHash": "67430c465ff7767e6ae98a0cffa44cd32754a351",
+          "uuid": "67430c46-06-f1fc93ab3e21904951fd9ec2cb1dd9218e350e1d",
+          "xpath": "/html[1]/body[1]/section[3]",
+          "section": "section-2"
+        }
+      ]
     }
   ],
   "outliers": [
@@ -1085,13 +1098,6 @@
       "urlHash": "67430c465ff7767e6ae98a0cffa44cd32754a351",
       "uuid": "67430c46-04-f3bed983a6611794488e2f927319697f2e0241b2",
       "xpath": "/html[1]/body[1]/section[2]/div[1]/div[1]"
-    },
-    {
-      "url": "https://www.wknd-trendsetters.site/fashion-insights",
-      "urlHash": "67430c465ff7767e6ae98a0cffa44cd32754a351",
-      "uuid": "67430c46-06-f1fc93ab3e21904951fd9ec2cb1dd9218e350e1d",
-      "xpath": "/html[1]/body[1]/section[3]",
-      "section": "section-2"
     },
     {
       "url": "https://www.wknd-trendsetters.site/blog/latest-trends-young-casual-fashion",
