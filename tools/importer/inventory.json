@@ -1044,6 +1044,19 @@
           "section": "section-2"
         }
       ]
+    },
+    {
+      "name": "Hero",
+      "cluster": 44,
+      "instances": [
+        {
+          "url": "https://www.wknd-trendsetters.site/",
+          "urlHash": "1b9ba84f36ee3a519917302a79dfd970725bae31",
+          "uuid": "1b9ba84f-01-70928af0e9d7f0ac1f13f2d60f543d2cf08783dd",
+          "xpath": "/html[1]/body[1]/header[1]/div[1]",
+          "section": "section-1"
+        }
+      ]
     }
   ],
   "outliers": [
@@ -1058,13 +1071,6 @@
       "urlHash": "1a14744466075b2d00884f27fb69e2633b6fcb84",
       "uuid": "1a147444-03-f3bed983a6611794488e2f927319697f2e0241b2",
       "xpath": "/html[1]/body[1]/section[2]/div[1]/div[1]",
-      "section": "section-1"
-    },
-    {
-      "url": "https://www.wknd-trendsetters.site/",
-      "urlHash": "1b9ba84f36ee3a519917302a79dfd970725bae31",
-      "uuid": "1b9ba84f-01-70928af0e9d7f0ac1f13f2d60f543d2cf08783dd",
-      "xpath": "/html[1]/body[1]/header[1]/div[1]",
       "section": "section-1"
     },
     {
