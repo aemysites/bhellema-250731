@@ -571,20 +571,6 @@
       ]
     },
     {
-      "name": "Table (bordered)",
-      "cluster": 18,
-      "key": "tableBordered18",
-      "instances": [
-        {
-          "url": "https://www.wknd-trendsetters.site/faq",
-          "urlHash": "429d6f000c5a6e38a121160bf56d01b17365cffe",
-          "uuid": "429d6f00-02-adda47d09d7763b69d96936602e835dec2004e55",
-          "xpath": "/html[1]/body[1]/section[1]/div[1]/div[2]",
-          "section": "section-1"
-        }
-      ]
-    },
-    {
       "name": "Cards",
       "cluster": 19,
       "source": "Cards",
@@ -1118,6 +1104,19 @@
           "urlHash": "d2dd722de7842a6232ce56b1307d383ff72c9358",
           "uuid": "d2dd722d-11-796e849cb17320ad9140c2a1b41bb8d247c7d309",
           "xpath": "/html[1]/body[1]/section[4]",
+          "section": "section-1"
+        }
+      ]
+    },
+    {
+      "name": "Accordion",
+      "cluster": 50,
+      "instances": [
+        {
+          "url": "https://www.wknd-trendsetters.site/faq",
+          "urlHash": "429d6f000c5a6e38a121160bf56d01b17365cffe",
+          "uuid": "429d6f00-02-adda47d09d7763b69d96936602e835dec2004e55",
+          "xpath": "/html[1]/body[1]/section[1]/div[1]/div[2]",
           "section": "section-1"
         }
       ]
