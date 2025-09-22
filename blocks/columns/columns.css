@@ -51,9 +51,6 @@
   min-height: 90px;
 }
 
-/* The direct child is a flex container that vertically stacks its children */
-
-/* Hide all content except the first paragraph */
 .columns h2,
 .columns p:not(:first-of-type),
 .columns .button-container,
@@ -62,16 +59,15 @@
   display: none;
 }
 
-/* Style the first paragraph for improved visual match */
 .columns p:first-of-type {
   font-size: 16px;
   color: #222;
   font-weight: 400;
   line-height: 1.5;
   text-align: center;
-  margin-top: 22px;   /* slightly more space above */
-  margin-bottom: 10px; /* add a bit of space below */
-  max-width: 900px;    /* adjust for balanced wrapping */
+  margin-top: 22px;
+  margin-bottom: 10px;
+  max-width: 900px;
   padding: 0 24px;
   background: none;
   box-sizing: border-box;
@@ -79,12 +75,175 @@
   hyphens: none;
 }
 
-/* Responsive adjustments for small screens */
 @media (width <= 900px) {
   .columns p:first-of-type {
     margin-top: 12px;
     margin-bottom: 6px;
     max-width: 98vw;
     padding: 0 2vw;
+  }
+}
+
+
+.columns.columns3 {
+  background: #FAFAF6;
+  padding: 48px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.columns.columns3 > div {
+  display: flex;
+  flex-direction: row;
+  max-width: 1100px;
+  width: 100%;
+  gap: 56px;
+  align-items: stretch; /* Ensure columns align at top and maintain equal height */
+  padding: 0 32px;
+}
+
+/* Responsive stacking */
+@media (width <= 900px) {
+  .columns.columns3 > div {
+    flex-direction: column;
+    gap: 32px;
+    padding: 0 6vw;
+    align-items: stretch;
+  }
+}
+
+/* Left column - image placeholder styling */
+.columns.columns3 > div > div:first-child {
+  flex: 1 1 0;
+  min-width: 320px;
+  max-width: 420px;
+  aspect-ratio: 1 / 1;
+  border-radius: 24px;
+  background: #e1e1e1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  overflow: hidden;
+  margin-top: 0;
+  height: 100%;
+}
+
+/* If image is present, fill the placeholder, rounded */
+.columns.columns3 > div > div:first-child > *:not(:empty) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 24px;
+  display: block;
+}
+
+/* Right column - content */
+.columns.columns3 > div > div:last-child {
+  flex: 1 1 0;
+  min-width: 340px;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0;
+  margin-top: 0;
+  text-align: left;
+  padding-top: 0;
+  height: 100%;
+}
+
+/* Remove default top margin from headline */
+.columns.columns3 h1 {
+  color: #181818;
+  font-size: 3.2rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+  margin-top: 0; /* Ensure headline is flush with top */
+  margin-bottom: 6px;
+  padding: 0;
+  text-align: left;
+}
+
+/* Responsive font size for headline */
+@media (width <= 900px) {
+  .columns.columns3 h1 {
+    font-size: 2.1rem;
+    margin-bottom: 5px;
+  }
+}
+
+.columns.columns3 p {
+  color: #444;
+  font-size: 1.08rem;
+  margin-top: 0; /* Ensure paragraph sits tight beneath headline */
+  margin-bottom: 10px;
+  line-height: 1.4;
+  max-width: 420px;
+  text-align: left;
+}
+
+/* Button container directly under paragraph, tight spacing */
+.columns.columns3 .button-container {
+  display: flex;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+/* Button styling: outlined, pill-shaped, responsive text */
+.columns.columns3 .button-container a.button {
+  background: #fff;
+  color: #181818;
+  border: 1.5px solid #181818;
+  border-radius: 2.4em;
+  padding: 12px 32px;
+  font-size: 1rem;
+  font-weight: 500;
+  box-shadow: none;
+  margin: 0;
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+  text-align: left;
+}
+
+/* Button hover/focus */
+.columns.columns3 .button-container a.button:hover,
+.columns.columns3 .button-container a.button:focus {
+  background: #181818;
+  color: #fff;
+  border-color: #181818;
+}
+
+/* Small screen adjustments */
+@media (width <= 600px) {
+  .columns.columns3 {
+    padding: 24px 0;
+  }
+
+  .columns.columns3 > div {
+    padding: 0 3vw;
+  }
+
+  .columns.columns3 > div > div:first-child {
+    min-width: 160px;
+    max-width: 99vw;
+    aspect-ratio: 1 / 1.1;
+  }
+
+  .columns.columns3 > div > div:last-child {
+    min-width: 0;
+    max-width: 99vw;
+  }
+
+  .columns.columns3 h1 {
+    margin-bottom: 4px;
+  }
+
+  .columns.columns3 p {
+    margin-bottom: 8px;
   }
 }
