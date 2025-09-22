@@ -1,12 +1,13 @@
 /* stylelint-disable no-descending-specificity */
 .columns > div {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+  align-items: flex-start;
   justify-content: flex-start;
   width: 100%;
   padding: 0;
   margin: 0;
+  gap: 72px;
 }
 
 .columns img {
@@ -15,6 +16,12 @@
 
 .columns > div > div {
   order: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  min-width: 120px;
+  width: auto;
 }
 
 .columns > div > .columns-img-col {
@@ -40,20 +47,20 @@
 
 
 .columns {
-  background: #F7F8F5;
+  background: #000;
   width: 100%;
   margin: 0;
-  padding: 0;
+  padding: 48px 0;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: flex-start;
   min-height: 90px;
+  color: #fff;
+  box-sizing: border-box;
+  gap: 120px;
 }
 
-/* The direct child is a flex container that vertically stacks its children */
-
-/* Hide all content except the first paragraph */
 .columns h2,
 .columns p:not(:first-of-type),
 .columns .button-container,
@@ -62,16 +69,15 @@
   display: none;
 }
 
-/* Style the first paragraph for improved visual match */
 .columns p:first-of-type {
   font-size: 16px;
   color: #222;
   font-weight: 400;
   line-height: 1.5;
   text-align: center;
-  margin-top: 22px;   /* slightly more space above */
-  margin-bottom: 10px; /* add a bit of space below */
-  max-width: 900px;    /* adjust for balanced wrapping */
+  margin-top: 22px;
+  margin-bottom: 10px;
+  max-width: 900px;
   padding: 0 24px;
   background: none;
   box-sizing: border-box;
@@ -79,7 +85,6 @@
   hyphens: none;
 }
 
-/* Responsive adjustments for small screens */
 @media (width <= 900px) {
   .columns p:first-of-type {
     margin-top: 12px;
@@ -88,3 +93,193 @@
     padding: 0 2vw;
   }
 }
+
+
+/* --- Unhide all columns content hidden by previous rules --- */
+.columns h2,
+.columns h3,
+.columns h4,
+.columns h5,
+.columns h6,
+.columns img,
+.columns picture,
+.columns .button-container,
+.columns p,
+.columns ul,
+.columns ol,
+.columns li,
+.columns > div > div
+{
+  display: revert;
+  visibility: revert;
+}
+
+/* --- Root: two main columns side-by-side --- */
+
+/* Responsive stacking for columns */
+@media (width <= 900px) {
+  .columns {
+    flex-direction: column;
+    gap: 32px;
+    padding: 32px 0;
+  }
+}
+
+/* --- Two main columns: subcolumns side by side --- */
+
+@media (width <= 900px) {
+  .columns > div {
+    flex-direction: column;
+    gap: 32px;
+    width: 100%;
+  }
+}
+
+/* --- Subcolumns: stack content vertically --- */
+
+/* --- Logo and blog name row (if present) --- */
+.columns > div > div:first-child {
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* --- Logo image size --- */
+.columns img,
+.columns picture img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Blog name/title (beside logo) --- */
+.columns > div > div:first-child > *:not(img, picture) {
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Social icons row (if present) --- */
+.columns > div > div ul,
+.columns > div > div .social-row {
+  display: flex;
+  flex-direction: row;
+  gap: 18px;
+  margin-bottom: 24px;
+  list-style: none;
+  padding: 0;
+}
+
+/* --- Section headings styling --- */
+.columns h2, 
+.columns h3, 
+.columns h4 {
+  color: #777;
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 12px;
+  letter-spacing: 0.05em;
+}
+
+/* --- Navigation/link lists --- */
+.columns ul,
+.columns ol {
+  flex-direction: column;
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  background: none;
+  color: inherit;
+}
+
+.columns li {
+  margin: 0;
+  padding: 0;
+}
+
+.columns a:not(.button),
+.columns .button-container a {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 400;
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  transition: color 0.2s;
+}
+
+.columns a:hover,
+.columns .button-container a:hover {
+  color: #ddd;
+  text-decoration: underline;
+}
+
+/* --- Button links as plain nav links --- */
+.columns .button-container a.button {
+  background: none;
+  color: #fff;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+  box-shadow: none;
+  border-radius: 0;
+  text-align: left;
+  white-space: normal;
+}
+
+.columns .button-container {
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+}
+
+/* --- Clean up unwanted margin/padding --- */
+.columns p,
+.columns ul,
+.columns li {
+  margin: 0;
+  padding: 0;
+  background: none;
+}
+
+/* --- Hide empty divs for layout cleanliness --- */
+.columns > div > div:empty {
+  display: none;
+}
+
+/* --- Responsive tweaks for inner gaps --- */
+@media (width <= 700px) {
+  .columns {
+    padding: 24px 0;
+  }
+
+  .columns > div {
+    gap: 16px;
+  }
+
+  .columns > div > div {
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .columns > div > div:first-child {
+    margin-bottom: 12px;
+    gap: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* --- Ensure lists are non-bulleted --- */
