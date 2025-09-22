@@ -935,7 +935,7 @@
       "name": "Columns",
       "cluster": 37,
       "source": "Hero",
-      "target": "Hero (hero37)",
+      "target": "Columns (columns37)",
       "key": "hero37",
       "instances": [
         {
