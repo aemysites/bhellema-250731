@@ -317,7 +317,6 @@
   box-sizing: border-box;
 }
 
-/* ----- Badge Row: Flex grouping for first two <p> elements ----- */
 .cards.cards12 .cards-card-body .badge-row {
   display: flex;
   flex-direction: row;
@@ -326,7 +325,6 @@
   width: 100%;
 }
 
-/* Force first two <p> side-by-side using flex and margin */
 .cards.cards12 .cards-card-body > p:nth-of-type(1),
 .cards.cards12 .cards-card-body > p:nth-of-type(2) {
   display: inline-flex;
@@ -351,12 +349,10 @@
   margin-bottom: 24px;
 }
 
-/* Remove extra margin from all other <p>s */
 .cards.cards12 .cards-card-body > p {
   margin-bottom: 0;
 }
 
-/* Non-badge <p> (if present) revert to normal styling */
 .cards.cards12 .cards-card-body > p:nth-of-type(n+3) {
   display: block;
   background: none;
@@ -371,7 +367,6 @@
   white-space: normal;
 }
 
-/* ----- Title Styling ----- */
 .cards.cards12 .cards-card-body h3 {
   margin-top: 0;
   margin-bottom: 0;
@@ -382,6 +377,114 @@
   letter-spacing: 0.04em;
   line-height: 1.15;
   word-break: break-word;
+  overflow-wrap: anywhere;
   text-transform: none;
   width: 100%;
+}
+
+
+.cards.cards35 {
+  background: #fff;
+  padding: 0;
+}
+
+/* Responsive grid: 3 columns desktop, 2 columns tablet, 1 column mobile */
+.cards.cards35 > ul {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 24px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/* Each card aligns its two children side by side */
+.cards.cards35 > ul > li {
+  display: flex;
+  flex-direction: row;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Only the first .cards-card-body is visible and acts as the image block */
+.cards.cards35 > ul > li > .cards-card-body:first-child {
+  flex: 1 1 100%;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 20px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #eee; /* Fallback when image not available */
+  box-shadow: none;
+}
+
+/* Remove margin/padding from card bodies for edge-to-edge image */
+.cards.cards35 .cards-card-body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Hide the second (empty) card body in each card */
+.cards.cards35 > ul > li > .cards-card-body:last-child {
+  display: none;
+}
+
+/* Hide button containers and their links */
+.cards.cards35 .cards-card-body .button-container {
+  display: none;
+}
+
+/* Assign images to each card using nth-child selectors (ensure URLs are correct and accessible) */
+.cards.cards35 > ul > li:nth-child(1) > .cards-card-body:first-child {
+  background-image: url("/content/dam/bhellema-250731/image-generation-assets/4745a10f-7bf7-4bd3-806a-d5dc041a4d39.avif");
+}
+
+.cards.cards35 > ul > li:nth-child(2) > .cards-card-body:first-child {
+  background-image: url("/content/dam/bhellema-250731/image-generation-assets/4406b135-18c7-4f6e-bd13-943043cf8552.avif");
+}
+
+.cards.cards35 > ul > li:nth-child(3) > .cards-card-body:first-child {
+  background-image: url("/content/dam/bhellema-250731/image-generation-assets/5ea48dab-5c5a-47ee-875e-a568e901a0c9.avif");
+}
+
+.cards.cards35 > ul > li:nth-child(4) > .cards-card-body:first-child {
+  background-image: url("/content/dam/bhellema-250731/image-generation-assets/c12b9431-cacc-45c8-8868-7ea40ddc64bf.avif");
+}
+
+.cards.cards35 > ul > li:nth-child(5) > .cards-card-body:first-child {
+  background-image: url("/content/dam/bhellema-250731/image-generation-assets/0a1ee5be-af8a-409a-820e-22017070b341.avif");
+}
+
+.cards.cards35 > ul > li:nth-child(6) > .cards-card-body:first-child {
+  background-image: url("/content/dam/bhellema-250731/image-generation-assets/f3eefba5-ed3c-4e9f-b2b6-8b385eb62a3d.avif");
+}
+
+/* Tablet breakpoint: 2 columns, 3 rows */
+@media (width <= 900px) {
+  .cards.cards35 > ul {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+}
+
+/* Mobile breakpoint: 1 column, 6 stacked rows */
+@media (width <= 600px) {
+  .cards.cards35 > ul {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(6, 1fr);
+  }
+
+  .cards.cards35 > ul > li > .cards-card-body:first-child {
+    aspect-ratio: 16 / 10;
+  }
 }
