@@ -1059,7 +1059,8 @@
           "xpath": "/html[1]/body[1]/section[1]"
         }
       ],
-      "key": "hero45"
+      "key": "hero45",
+      "target": "Columns (columns37)"
     },
     {
       "name": "Hero",
