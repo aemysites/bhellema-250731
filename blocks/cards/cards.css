@@ -61,20 +61,17 @@
   gap: 0;
 }
 
-/* LEFT COLUMN (large image + text) */
 .cards.cards2 > ul > li:first-child {
   max-width: 55%;
   align-items: flex-start;
 }
 
-/* tightly group image and text – no stretching */
 .cards.cards2 > ul > li:first-child .cards-card-body {
   margin: 0;
   padding: 0;
   display: block;
 }
 
-/* remove gap between image and text, only margin-bottom on image */
 .cards.cards2 > ul > li:first-child .button-container {
   width: 100%;
   aspect-ratio: 4 / 5;
@@ -100,7 +97,6 @@
   pointer-events: none;
 }
 
-/* Stack text tightly under image */
 .cards.cards2 > ul > li:first-child .cards-card-body:nth-of-type(2) {
   margin: 0;
   padding: 0;
@@ -127,7 +123,6 @@
   line-height: 1.45;
 }
 
-/* Final p = button look */
 .cards.cards2 > ul > li:first-child .cards-card-body:nth-of-type(2) p:last-child {
   display: inline-block;
   padding: 8px 32px;
@@ -147,7 +142,6 @@
   color: var(--background-color);
 }
 
-/* RIGHT COLUMN: increase width, image size, and group tightly */
 .cards.cards2 > ul > li:nth-child(2) {
   max-width: 45%;
   flex-basis: 45%;
@@ -208,7 +202,6 @@
   line-height: 1.42;
 }
 
-/* Remove button look for right column (in case) */
 .cards.cards2 > ul > li:nth-child(2) .cards-card-body:nth-of-type(2) p:last-child {
   border: none;
   padding: 0;
@@ -232,7 +225,6 @@
   pointer-events: none;
 }
 
-/* Responsive: stack columns on small screens */
 @media (width <= 900px) {
   .cards.cards2 > ul {
     flex-direction: column;
@@ -252,5 +244,72 @@
     border-radius: 18px;
     min-height: 160px;
     aspect-ratio: 16 / 9;
+  }
+}
+
+
+.cards.cards7 > ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cards.cards7 > ul > li {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  flex: 1 1 0;
+  border: none;
+  border-radius: 20px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  aspect-ratio: 4 / 3;
+  min-width: 0;
+  height: auto;
+  box-shadow: none;
+  background-color: #eaeaea;
+}
+
+/* Assign background images for each card */
+.cards.cards7 > ul > li:nth-child(1) {
+  background-image: url('/content/dam/bhellema-250731/image-generation-assets/05d8e4ff-b7d8-418a-bffc-25bcc8ccc607.avif');
+}
+
+.cards.cards7 > ul > li:nth-child(2) {
+  background-image: url('/content/dam/bhellema-250731/image-generation-assets/f55b6d62-bc1d-4700-8258-318e659fa50c.avif');
+}
+
+.cards.cards7 > ul > li:nth-child(3) {
+  background-image: url('/content/dam/bhellema-250731/image-generation-assets/b8143f3e-5950-48ee-89ba-ecbf1f09942a.avif');
+}
+
+/* Visually hide inner card content, but preserve layout so cards render */
+.cards.cards7 .cards-card-body,
+.cards.cards7 .cards-card-body .button-container,
+.cards.cards7 .cards-card-body .button {
+  visibility: hidden;
+  height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+/* Responsive: stack cards vertically on small screens */
+@media (width <= 900px) {
+  .cards.cards7 > ul {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .cards.cards7 > ul > li {
+    width: 100%;
+    max-width: none;
   }
 }
