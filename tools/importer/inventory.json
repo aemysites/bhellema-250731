@@ -1049,7 +1049,7 @@
       "key": "hero44"
     },
     {
-      "name": "Hero",
+      "name": "Columns",
       "cluster": 45,
       "instances": [
         {
@@ -1059,7 +1059,8 @@
           "xpath": "/html[1]/body[1]/section[1]"
         }
       ],
-      "key": "hero45"
+      "target": "Columns (columns45)",
+      "key": "columns45"
     },
     {
       "name": "Hero",
