@@ -45,3 +45,104 @@
     padding: 40px 32px;
   }
 }
+
+.hero-container > .hero-wrapper {
+  max-width: unset;
+  padding: 0;
+}
+
+.hero.hero29 {
+  position: relative;
+  width: 100vw;
+  min-height: 60vh;
+  height: 60vw;
+  max-height: 90vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Remove unwanted margin/padding from all nested divs */
+.hero.hero29 > div,
+.hero.hero29 > div > div {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Make the hero image fill the block */
+.hero.hero29 > div:first-child {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+  display: block;
+  pointer-events: none;
+}
+
+.hero.hero29 > div:first-child picture,
+.hero.hero29 > div:first-child img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Center overlay text perfectly */
+.hero.hero29 > div:nth-child(2) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+/* Headline: maximize width so "WKND TrendsettersBLOG" wraps cleanly into two lines */
+.hero.hero29 h1 {
+  color: #fff;
+  text-align: center;
+  font-weight: 300;
+  font-size: clamp(2.1rem, 5vw, 4rem);
+  letter-spacing: 0.09em;
+  line-height: 1.12;
+  margin: 0;
+  padding: 0;
+  background: none;
+  max-width: 85vw;
+  white-space: normal;
+  word-break: keep-all;
+  hyphens: none;
+  overflow-wrap: normal;
+  margin-top: 0;
+}
+
+/* Responsive: allow full width and reduce font size so wraps still only create two lines */
+@media (width <= 900px) {
+  .hero.hero29 {
+    min-height: 44vw;
+    height: 52vw;
+    max-height: 75vw;
+  }
+
+  .hero.hero29 h1 {
+    font-size: clamp(1.3rem, 7vw, 2.4rem);
+    max-width: 98vw;
+  }
+}
+
+/* Remove possible parent section/div spacing at the top */
+main > .section > div > .hero.hero29 {
+  margin-top: 0;
+}
+
+/* Remove additional default margins above h1 (in case) */
