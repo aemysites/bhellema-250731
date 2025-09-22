@@ -932,7 +932,7 @@
       ]
     },
     {
-      "name": "Hero",
+      "name": "Columns",
       "cluster": 37,
       "source": "Hero",
       "target": "Hero (hero37)",
