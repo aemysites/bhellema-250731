@@ -51,9 +51,6 @@
   min-height: 90px;
 }
 
-/* The direct child is a flex container that vertically stacks its children */
-
-/* Hide all content except the first paragraph */
 .columns h2,
 .columns p:not(:first-of-type),
 .columns .button-container,
@@ -62,16 +59,15 @@
   display: none;
 }
 
-/* Style the first paragraph for improved visual match */
 .columns p:first-of-type {
   font-size: 16px;
   color: #222;
   font-weight: 400;
   line-height: 1.5;
   text-align: center;
-  margin-top: 22px;   /* slightly more space above */
-  margin-bottom: 10px; /* add a bit of space below */
-  max-width: 900px;    /* adjust for balanced wrapping */
+  margin-top: 22px;
+  margin-bottom: 10px;
+  max-width: 900px;
   padding: 0 24px;
   background: none;
   box-sizing: border-box;
@@ -79,7 +75,6 @@
   hyphens: none;
 }
 
-/* Responsive adjustments for small screens */
 @media (width <= 900px) {
   .columns p:first-of-type {
     margin-top: 12px;
@@ -87,4 +82,158 @@
     max-width: 98vw;
     padding: 0 2vw;
   }
+}
+
+
+.columns.columns5 {
+  background: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Main container: Two equal columns side by side */
+.columns.columns5 > div {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  min-height: 80vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Left column: vertically center and left align all content */
+.columns.columns5 > div > div:first-child {
+  flex: 1 1 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  background: #fff;
+  min-height: 0;
+  height: 100%;
+  padding: 0 7vw 0 10vw;
+  box-sizing: border-box;
+}
+
+/* Headline styling */
+.columns.columns5 h2 {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #222;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  line-height: 1.1;
+}
+
+/* Paragraph styling */
+.columns.columns5 p {
+  color: #555;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  margin-top: 0;
+  max-width: 480px;
+  text-align: left;
+  padding: 0;
+  background: none;
+  box-sizing: border-box;
+}
+
+/* Button container */
+.columns.columns5 .button-container {
+  display: flex;
+  gap: 1.2rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+/* Button styling */
+.columns.columns5 .button-container .button {
+  padding: 0.75em 2em;
+  border: 2px solid #222;
+  border-radius: 2em;
+  background: #fff;
+  color: #222;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  margin: 0;
+}
+
+.columns.columns5 .button-container .button:hover,
+.columns.columns5 .button-container .button:focus {
+  background: #222;
+  color: #fff;
+  border-color: #222;
+}
+
+/* Right column: force image to fill, remove empty space */
+.columns.columns5 > div > div:last-child {
+  flex: 1 1 50%;
+  position: relative;
+  min-height: 0;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0;
+  overflow: hidden;
+
+  /* Remove flex alignment to prevent image centering */
+  display: block;
+}
+
+/* Fill the column with the image */
+.columns.columns5 > div > div:last-child img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center right;
+  margin: 0;
+  border-radius: 0;
+  display: block;
+}
+
+/* Responsive: stack columns on small screens, image remains prominent */
+@media (width <= 900px) {
+  .columns.columns5 > div {
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .columns.columns5 > div > div:first-child,
+  .columns.columns5 > div > div:last-child {
+    width: 100%;
+    min-height: 0;
+    height: auto;
+    padding-left: 6vw;
+    padding-right: 6vw;
+  }
+
+  .columns.columns5 > div > div:last-child {
+    min-height: 180px;
+    position: relative;
+  }
+
+  .columns.columns5 > div > div:last-child img {
+    height: 35vh;
+    min-height: 180px;
+    object-fit: cover;
+    object-position: center top;
+  }
+}
+
+/* Remove default vertical margins for tight fit */
+.columns.columns5 > div > div:first-child > *:first-child {
+  margin-top: 0;
+}
+
+.columns.columns5 > div > div:first-child > *:last-child {
+  margin-bottom: 0;
 }
