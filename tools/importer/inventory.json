@@ -1004,7 +1004,8 @@
           "xpath": "/html[1]/body[1]/section[4]",
           "section": "section-1"
         }
-      ]
+      ],
+      "key": "columns41"
     },
     {
       "name": "Columns",
@@ -1016,7 +1017,8 @@
           "uuid": "1a147444-05-f1fc93ab3e21904951fd9ec2cb1dd9218e350e1d",
           "xpath": "/html[1]/body[1]/section[3]"
         }
-      ]
+      ],
+      "key": "columns42"
     },
     {
       "name": "Hero",
@@ -1029,7 +1031,8 @@
           "xpath": "/html[1]/body[1]/section[4]",
           "section": "section-2"
         }
-      ]
+      ],
+      "key": "hero43"
     },
     {
       "name": "Hero",
@@ -1042,7 +1045,8 @@
           "xpath": "/html[1]/body[1]/header[1]/div[1]",
           "section": "section-1"
         }
-      ]
+      ],
+      "key": "hero44"
     },
     {
       "name": "Hero",
@@ -1054,7 +1058,8 @@
           "uuid": "1cfeb275-02-c498d593a5bc97467d867eb87705c763456c87bd",
           "xpath": "/html[1]/body[1]/section[1]"
         }
-      ]
+      ],
+      "key": "hero45"
     },
     {
       "name": "Hero",
@@ -1067,7 +1072,8 @@
           "xpath": "/html[1]/body[1]/section[3]",
           "section": "section-2"
         }
-      ]
+      ],
+      "key": "hero46"
     },
     {
       "name": "Hero",
@@ -1080,7 +1086,8 @@
           "xpath": "/html[1]/body[1]/section[3]",
           "section": "section-2"
         }
-      ]
+      ],
+      "key": "hero47"
     },
     {
       "name": "Hero",
@@ -1093,7 +1100,8 @@
           "xpath": "/html[1]/body[1]/section[4]",
           "section": "section-1"
         }
-      ]
+      ],
+      "key": "hero48"
     },
     {
       "name": "Hero",
@@ -1106,7 +1114,8 @@
           "xpath": "/html[1]/body[1]/section[4]",
           "section": "section-1"
         }
-      ]
+      ],
+      "key": "hero49"
     },
     {
       "name": "Accordion",
