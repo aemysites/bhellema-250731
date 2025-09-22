@@ -61,20 +61,17 @@
   gap: 0;
 }
 
-/* LEFT COLUMN (large image + text) */
 .cards.cards2 > ul > li:first-child {
   max-width: 55%;
   align-items: flex-start;
 }
 
-/* tightly group image and text – no stretching */
 .cards.cards2 > ul > li:first-child .cards-card-body {
   margin: 0;
   padding: 0;
   display: block;
 }
 
-/* remove gap between image and text, only margin-bottom on image */
 .cards.cards2 > ul > li:first-child .button-container {
   width: 100%;
   aspect-ratio: 4 / 5;
@@ -100,7 +97,6 @@
   pointer-events: none;
 }
 
-/* Stack text tightly under image */
 .cards.cards2 > ul > li:first-child .cards-card-body:nth-of-type(2) {
   margin: 0;
   padding: 0;
@@ -127,7 +123,6 @@
   line-height: 1.45;
 }
 
-/* Final p = button look */
 .cards.cards2 > ul > li:first-child .cards-card-body:nth-of-type(2) p:last-child {
   display: inline-block;
   padding: 8px 32px;
@@ -147,7 +142,6 @@
   color: var(--background-color);
 }
 
-/* RIGHT COLUMN: increase width, image size, and group tightly */
 .cards.cards2 > ul > li:nth-child(2) {
   max-width: 45%;
   flex-basis: 45%;
@@ -208,7 +202,6 @@
   line-height: 1.42;
 }
 
-/* Remove button look for right column (in case) */
 .cards.cards2 > ul > li:nth-child(2) .cards-card-body:nth-of-type(2) p:last-child {
   border: none;
   padding: 0;
@@ -232,7 +225,6 @@
   pointer-events: none;
 }
 
-/* Responsive: stack columns on small screens */
 @media (width <= 900px) {
   .cards.cards2 > ul {
     flex-direction: column;
@@ -253,4 +245,143 @@
     min-height: 160px;
     aspect-ratio: 16 / 9;
   }
+}
+
+
+.cards.cards12 > ul {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: 100%;
+  background: none;
+  box-sizing: border-box;
+}
+
+@media (width <= 1100px) {
+  .cards.cards12 > ul {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (width <= 700px) {
+  .cards.cards12 > ul {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+.cards.cards12 > ul > li {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 2px 16px rgb(0 0 0 / 6%);
+  border: none;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+  min-height: 540px;
+  box-sizing: border-box;
+}
+
+.cards.cards12 .cards-card-image {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  overflow: hidden;
+  background: #ececec;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.cards.cards12 .cards-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  display: block;
+}
+
+.cards.cards12 .cards-card-body {
+  flex: 1 1 auto;
+  padding: 24px 24px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-sizing: border-box;
+}
+
+/* ----- Badge Row: Flex grouping for first two <p> elements ----- */
+.cards.cards12 .cards-card-body .badge-row {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+/* Force first two <p> side-by-side using flex and margin */
+.cards.cards12 .cards-card-body > p:nth-of-type(1),
+.cards.cards12 .cards-card-body > p:nth-of-type(2) {
+  display: inline-flex;
+  align-items: center;
+  background: #F4F4F4;
+  color: #222;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  border-radius: 16px;
+  padding: 4px 12px;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+  white-space: nowrap;
+  margin-bottom: 0;
+  margin-right: 8px;
+  margin-top: 0;
+}
+
+.cards.cards12 .cards-card-body > p:nth-of-type(2) {
+  margin-right: 0;
+  margin-bottom: 24px;
+}
+
+/* Remove extra margin from all other <p>s */
+.cards.cards12 .cards-card-body > p {
+  margin-bottom: 0;
+}
+
+/* Non-badge <p> (if present) revert to normal styling */
+.cards.cards12 .cards-card-body > p:nth-of-type(n+3) {
+  display: block;
+  background: none;
+  color: inherit;
+  font-size: inherit;
+  font-weight: normal;
+  text-transform: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  letter-spacing: 0;
+  white-space: normal;
+}
+
+/* ----- Title Styling ----- */
+.cards.cards12 .cards-card-body h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 12px;
+  font-size: 22px;
+  color: #222;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+  word-break: break-word;
+  text-transform: none;
+  width: 100%;
 }
