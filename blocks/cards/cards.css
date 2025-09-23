@@ -162,7 +162,7 @@
   font-weight: 700;
   letter-spacing: 0.04em;
   line-height: 1.15;
-  word-break: break-word;
+  word-wrap: break-word;
   overflow-wrap: break-word;
   text-transform: none;
   width: 100%;
@@ -522,7 +522,6 @@
   transition: box-shadow 0.2s;
 }
 
-/* Responsive: Stack cards vertically on small screens */
 @media (width <= 900px) {
   .cards.cards7 > ul {
     flex-direction: column;
@@ -539,7 +538,6 @@
   }
 }
 
-/* Set background images for each card using nth-child selectors */
 .cards.cards7 > ul > li:nth-child(1) {
   background-image: url('/content/dam/bhellema-250731/image-generation-assets/05d8e4ff-b7d8-418a-bffc-25bcc8ccc607.avif');
 }
@@ -552,7 +550,173 @@
   background-image: url('/content/dam/bhellema-250731/image-generation-assets/b8143f3e-5950-48ee-89ba-ecbf1f09942a.avif');
 }
 
-/* Hide inner content so only the images show */
 .cards.cards7 > ul > li > .cards-card-body {
   display: none;
+}
+
+
+.cards.cards10 > ul {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Responsive columns */
+@media (width <= 1100px) {
+  .cards.cards10 > ul {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width <= 700px) {
+  .cards.cards10 > ul {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card styling */
+.cards.cards10 > ul > li {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 18px;
+  border: 1px solid #E7E7E7;
+  box-shadow: 0 2px 8px rgb(80 80 80 / 8%);
+  overflow: hidden;
+  min-height: 380px;
+  height: 100%;
+  padding: 0;
+  box-sizing: border-box;
+  transition: box-shadow 0.15s;
+
+  /* visually separate cards from page background */
+}
+
+/* Reset inner spacing */
+.cards.cards10 .cards-card-body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Image area (first .cards-card-body in each li) */
+.cards.cards10 > ul > li > .cards-card-body:first-child {
+  width: 100%;
+  display: block;
+  position: relative;
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+/* The aspect-ratio container for image */
+.cards.cards10 > ul > li > .cards-card-body:first-child .button-container {
+  width: 100%;
+  aspect-ratio: 16/9;
+  min-height: 150px;
+  background: #eee;
+  padding: 0;
+  margin: 0;
+  border-radius: 18px 18px 0 0;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  display: block;
+}
+
+/* Make .button fill and allow background image to show (via JS) */
+.cards.cards10 > ul > li > .cards-card-body:first-child .button {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 150px;
+  border-radius: 18px 18px 0 0;
+  text-indent: -1000vw;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  margin: 0;
+  box-sizing: border-box;
+  border: none;
+  position: static;
+}
+
+/* Content area */
+.cards.cards10 > ul > li > .cards-card-body:last-child {
+  width: 100%;
+  flex: 1 0 auto;
+  padding: 32px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: #fff;
+  box-sizing: border-box;
+  min-height: 0;
+  justify-content: flex-start;
+}
+
+/* Pill styling (first p in content) */
+.cards.cards10 > ul > li > .cards-card-body:last-child > p:first-child {
+  background: #F2F2F2;
+  color: #707070;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  border-radius: 100px;
+  padding: 4px 12px;
+  margin-bottom: 10px;
+  margin-top: 0;
+  letter-spacing: 0.2px;
+  display: inline-block;
+}
+
+/* Headline */
+.cards.cards10 > ul > li > .cards-card-body:last-child h3 {
+  font-size: 22px;
+  font-weight: bold;
+  color: #2A2A2A;
+  margin: 0 0 12px;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+}
+
+/* Description */
+.cards.cards10 > ul > li > .cards-card-body:last-child > p:last-child {
+  font-size: 15px;
+  color: #545454;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Responsive tweaks for mobile */
+@media (width <= 700px) {
+  .cards.cards10 > ul > li {
+    border-radius: 14px;
+    min-height: 0;
+  }
+
+  .cards.cards10 > ul > li > .cards-card-body:first-child .button-container {
+    border-radius: 14px 14px 0 0;
+    min-height: 90px;
+  }
+
+  .cards.cards10 > ul > li > .cards-card-body:first-child .button {
+    border-radius: 14px 14px 0 0;
+    min-height: 90px;
+  }
+
+  .cards.cards10 > ul > li > .cards-card-body:last-child {
+    padding: 18px;
+  }
+}
+
+/* Subtle hover effect */
+.cards.cards10 > ul > li:hover {
+  box-shadow: 0 8px 24px rgb(80 80 80 / 15%);
 }
