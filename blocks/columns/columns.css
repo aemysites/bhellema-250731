@@ -374,7 +374,6 @@
   margin: 0;
 }
 
-/* Layout: two columns side by side, fill viewport height */
 .columns.columns5 > div {
   display: flex;
   flex-direction: row;
@@ -383,7 +382,6 @@
   box-sizing: border-box;
 }
 
-/* Left column: vertically center the content group as a block */
 .columns.columns5 > div > div:first-child {
   flex: 1 1 50%;
   display: flex;
@@ -397,7 +395,6 @@
   background: var(--background-color);
 }
 
-/* Group headline, paragraph, and buttons for vertical centering */
 .columns.columns5 > div > div:first-child > div {
   display: flex;
   flex-direction: column;
@@ -407,7 +404,6 @@
   justify-content: center;
 }
 
-/* Headline styling */
 .columns.columns5 h2 {
   display: block;
   font-size: 2.5rem;
@@ -422,7 +418,6 @@
   width: 100%;
 }
 
-/* Untruncate and wrap paragraph text */
 .columns.columns5 > div > div:first-child > div > p {
   color: #444;
   font-size: 1.15rem;
@@ -436,7 +431,6 @@
   text-overflow: unset !important;
 }
 
-/* Button alignment and spacing */
 .columns.columns5 .button-container {
   display: flex;
   flex-direction: row;
@@ -445,7 +439,6 @@
   padding: 0;
 }
 
-/* Button styling */
 .columns.columns5 .button-container .button {
   background: #fff;
   border: 2px solid #222;
@@ -460,13 +453,11 @@
   min-width: 180px;
 }
 
-/* Show secondary button as lighter if present */
 .columns.columns5 .button-container .button + .button {
   border-color: #bbb;
   color: #888;
 }
 
-/* Right column: fill with image */
 .columns.columns5 > div > div:last-child {
   flex: 1 1 50%;
   min-height: 100vh;
@@ -482,7 +473,6 @@
   background: transparent;
 }
 
-/* Ensure wrapper p fills and stretches to assist image fill */
 .columns.columns5 > div > div:last-child > p {
   margin: 0;
   padding: 0;
@@ -493,7 +483,6 @@
   justify-content: stretch;
 }
 
-/* Make image fill entire column, maintaining proportions */
 .columns.columns5 > div > div:last-child img {
   width: 100%;
   height: 100%;
@@ -503,7 +492,6 @@
   min-width: 100%;
 }
 
-/* Responsive: stack columns vertically on smaller screens */
 @media (width <= 900px) {
   .columns.columns5 > div {
     flex-direction: column;
@@ -537,5 +525,120 @@
     min-height: 220px;
     height: 220px;
     object-fit: cover;
+  }
+}
+
+
+.columns.columns8 {
+  background: #fff;
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+}
+
+/* Main wrapper: two columns side by side */
+.columns.columns8 > div {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+  align-items: flex-start;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+/* Left column: heading */
+.columns.columns8 > div > div:first-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 1 1 0%;
+  min-width: 0;
+}
+
+/* Heading style */
+.columns.columns8 h2 {
+  display: block;
+  font-size: 2.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #000;
+  margin: 0 0 0.2em;
+  line-height: 1.1;
+  text-align: left;
+}
+
+/* Right column: paragraph and button stacked vertically, both left-aligned */
+.columns.columns8 > div > div:last-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start; /* Ensures left alignment */
+  flex: 1 1 0%;
+  min-width: 0;
+  gap: 10px; /* Slightly tighter gap between paragraph and button */
+}
+
+/* Paragraph styling */
+.columns.columns8 > div > div:last-child p {
+  font-size: 0.9rem;
+  color: #222;
+  line-height: 1.3;
+  margin: 0;
+  text-align: left;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  padding: 0;
+  max-width: 420px; /* Limit width for better text block balance */
+}
+
+/* Ensure button container is visible and spaced tightly below paragraph */
+.columns.columns8 .button-container {
+  display: block;
+  margin: 0;
+  width: auto;
+  align-self: flex-start;
+}
+
+/* Button style override for explicit visibility and proper outline */
+.columns.columns8 .button-container .button {
+  display: inline-block;
+  padding: 6px 28px;
+  border: 1.5px solid #000;
+  border-radius: 25px;
+  background: #fff;
+  color: #000;
+  font-size: 0.9rem;
+  text-align: center;
+  text-decoration: none;
+  margin: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+/* Hover/focus effect for button */
+.columns.columns8 .button-container .button:hover,
+.columns.columns8 .button-container .button:focus {
+  background: #f7f7f7;
+}
+
+/* Responsive: stack columns vertically on small screens */
+@media (width <= 900px) {
+  .columns.columns8 > div {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .columns.columns8 > div > div {
+    width: 100%;
+  }
+
+  .columns.columns8 > div > div:last-child p {
+    max-width: 100%;
+  }
+
+  .columns.columns8 .button-container {
+    margin-top: 8px;
   }
 }
