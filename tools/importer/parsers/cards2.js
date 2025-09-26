@@ -1,101 +1,71 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to add a field comment before element if not already present
-  function withFieldComment(fieldName, content) {
+  // Helper to create a fragment with a field comment and content
+  function fieldFrag(field, content) {
     const frag = document.createDocumentFragment();
-    frag.appendChild(document.createComment(` field:${fieldName} `));
-    if (Array.isArray(content)) {
-      content.forEach((el) => frag.appendChild(el));
-    } else {
-      frag.appendChild(content);
-    }
+    frag.appendChild(document.createComment(` field:${field} `));
+    frag.appendChild(content);
     return frag;
   }
 
-  // Helper to compose a cell with optional content and field comment
-  function cell(field, content) {
-    if (!content || (Array.isArray(content) && content.length === 0)) {
-      return document.createElement('div'); // empty cell
-    }
-    return withFieldComment(field, content);
-  }
-
-  // Get the main grid container (card grid)
-  const grid = element.querySelector('.grid-layout');
+  // Find the main grid containing all cards
+  const grid = element.querySelector('.w-layout-grid.grid-layout');
   if (!grid) return;
 
-  // Rows will be [ header, ...cards ]
-  const rows = [];
-  // Add header row
-  rows.push(['Cards (cards2)']);
+  // Get all card elements (direct children that are links)
+  const cards = Array.from(grid.children).filter(
+    (child) => child.matches('a.utility-link-content-block, a.utility-link-content-block.w-inline-block')
+  );
 
-  // Get all 3 card areas
-  const cardEls = [];
-  // First card: big card (left), is a link block
-  const firstCard = grid.children[0];
-  if (firstCard && firstCard.matches('a.utility-link-content-block')) {
-    cardEls.push(firstCard);
-  }
-  // Second area: two grid cards (images+text, right top)
-  // These are inside a flex container
-  const gridFlex = grid.children[1];
-  if (gridFlex) {
-    // Only direct a.utility-link-content-block children are cards
-    const flexCards = Array.from(gridFlex.querySelectorAll(':scope > a.utility-link-content-block'));
-    flexCards.forEach((c) => cardEls.push(c));
-  }
-  // Third area: text-only cards with dividers (right bottom)
-  const textFlex = grid.children[2];
-  if (textFlex) {
-    const flexTextCards = Array.from(textFlex.querySelectorAll(':scope > a.utility-link-content-block'));
-    flexTextCards.forEach((c) => cardEls.push(c));
+  // For the right column, there is a nested grid with more cards
+  const nestedGrid = Array.from(grid.children).find(
+    (child) => child.classList.contains('w-layout-grid') && child !== grid
+  );
+  let nestedCards = [];
+  if (nestedGrid) {
+    nestedCards = Array.from(nestedGrid.querySelectorAll('a.utility-link-content-block'));
   }
 
-  // Parse each card element into a [image, text] cell row
-  cardEls.forEach((card) => {
-    // IMAGE CELL
-    let imageCell = null;
-    // Prefer .utility-aspect-1x1 or .utility-aspect-3x2 containers with img inside
-    let imgDiv = card.querySelector('.utility-aspect-1x1, .utility-aspect-3x2');
-    let img = imgDiv && imgDiv.querySelector('img');
+  // Compose all cards in order: left feature card, then right column cards
+  const allCards = [cards[0], ...nestedCards];
+
+  // Table header
+  const headerRow = ['Cards (cards2)'];
+  const rows = [headerRow];
+
+  // For each card, extract image and text
+  allCards.forEach((card) => {
+    // --- Image cell ---
+    let imageCell = '';
+    const img = card.querySelector('img');
     if (img) {
-      // Put the parent div (aspect ratio wrapper) as the cell content
-      imageCell = cell('image', imgDiv);
-    } else {
-      // Text-only: empty cell
-      imageCell = document.createElement('div');
+      // Wrap in <picture> for robustness
+      const picture = document.createElement('picture');
+      picture.appendChild(img);
+      imageCell = fieldFrag('image', picture);
     }
 
-    // TEXT CELL
-    // Compose text content: tag (optional), heading, paragraph
-    const textParts = [];
-    // Tag
-    const tag = card.querySelector('.tag-group');
-    if (tag) {
-      textParts.push(tag.cloneNode(true));
-    }
-    // Heading (h3/h4)
-    const heading = card.querySelector('h3');
-    if (heading) {
-      textParts.push(heading.cloneNode(true));
-    }
-    // Description
+    // --- Text cell ---
+    let textCell = '';
+    // Find heading (h2 or h3 or h4)
+    const heading = card.querySelector('h2, h3, h4');
+    // Find description (first <p>)
     const desc = card.querySelector('p');
-    if (desc) {
-      textParts.push(desc.cloneNode(true));
-    }
-    // Only add text cell if we have content
-    let textCell;
-    if (textParts.length) {
-      textCell = cell('text', textParts);
-    } else {
-      textCell = document.createElement('div');
+    // Find CTA (button or .button)
+    const cta = card.querySelector('.button');
+    // Compose text fragment
+    const textFrag = document.createDocumentFragment();
+    if (heading) textFrag.appendChild(heading);
+    if (desc) textFrag.appendChild(desc);
+    if (cta) textFrag.appendChild(cta);
+    if (textFrag.childNodes.length > 0) {
+      textCell = fieldFrag('text', textFrag);
     }
 
     rows.push([imageCell, textCell]);
   });
 
-  // Build the table and replace the element
-  const table = WebImporter.DOMUtils.createTable(rows, document);
-  element.replaceWith(table);
+  // Create block table
+  const block = WebImporter.DOMUtils.createTable(rows, document);
+  element.replaceWith(block);
 }

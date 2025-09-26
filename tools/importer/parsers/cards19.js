@@ -1,37 +1,47 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Get all top-level card containers
-  const cardElements = Array.from(element.querySelectorAll(':scope > div'));
+  // Cards (cards19) block: 2 columns, multiple rows, each row = card
+  // Model fields: card.image, card.imageAlt (collapsed), card.text (collapsed)
 
-  // Table header (block name)
+  // Helper to create a cell with field hint and content
+  function cellWithHint(field, content) {
+    const frag = document.createDocumentFragment();
+    frag.appendChild(document.createComment(` field:${field} `));
+    frag.appendChild(content);
+    return frag;
+  }
+
+  // Find all card elements (direct children)
+  const cardEls = Array.from(element.children);
+
+  // Table header
   const headerRow = ['Cards (cards19)'];
   const rows = [headerRow];
 
-  cardElements.forEach(cardEl => {
-    // Icon cell
+  cardEls.forEach((cardEl) => {
+    // Icon (SVG image)
+    let iconImg = null;
+    // Find the first img inside .icon
+    const iconDiv = cardEl.querySelector('.icon');
+    if (iconDiv) {
+      iconImg = iconDiv.querySelector('img');
+    }
+    // Text content (paragraph)
+    let textEl = cardEl.querySelector('p');
+
+    // First cell: icon image (card.image)
     let iconCell = '';
-    const iconContainer = cardEl.querySelector(':scope > div.icon, :scope > div > .icon');
-    if (iconContainer) {
-      const frag = document.createDocumentFragment();
-      frag.appendChild(document.createComment(' field:image '));
-      frag.appendChild(iconContainer);
-      iconCell = frag;
+    if (iconImg) {
+      iconCell = cellWithHint('image', iconImg);
     }
-
-    // Text cell
+    // Second cell: text content (card.text)
     let textCell = '';
-    const textP = cardEl.querySelector('p');
-    if (textP && textP.textContent.trim()) {
-      const frag = document.createDocumentFragment();
-      frag.appendChild(document.createComment(' field:text '));
-      frag.appendChild(textP);
-      textCell = frag;
+    if (textEl) {
+      textCell = cellWithHint('text', textEl);
     }
-
     rows.push([iconCell, textCell]);
   });
 
-  // Create table
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

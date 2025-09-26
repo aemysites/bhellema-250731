@@ -10,13 +10,13 @@
   font-size: var(--body-font-size-xs);
 }
 
-@media (width >= 600px) {
+@media (width >=600px) {
   .table.block table {
     font-size: var(--body-font-size-s);
   }
 }
 
-@media (width >= 900px) {
+@media (width >=900px) {
   .table.block table {
     font-size: var(--body-font-size-m);
   }
@@ -46,7 +46,7 @@
   margin: 0;
 }
 
-.table table td p + p {
+.table table td p+p {
   margin-top: 0.25em;
 }
 

@@ -1,22 +1,38 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Defensive: find the column grid
-  const grid = element.querySelector('.w-layout-grid');
+  // Columns block header row as required
+  const headerRow = ['Columns block (columns3)'];
+
+  // Find the grid layout (main content container)
+  const grid = element.querySelector('.grid-layout');
   if (!grid) return;
 
-  // Get the direct children of the grid (these are the two columns)
-  const columns = Array.from(grid.children);
+  // Get direct children of the grid (should be [img, contentDiv])
+  const gridChildren = Array.from(grid.children);
 
-  // Prepare the table rows
-  const headerRow = ['Columns (columns3)']; // Per spec, exact header
-  const contentRow = columns.map((col) => col); // Reference, do not clone
+  // Defensive: expect two columns (image, content)
+  let leftCol = null;
+  let rightCol = null;
+  if (gridChildren.length >= 2) {
+    leftCol = gridChildren[0];
+    rightCol = gridChildren[1];
+  } else {
+    // fallback: treat all children as columns
+    [leftCol, rightCol] = gridChildren;
+  }
 
-  // Create the table
+  // The left column is the image
+  // The right column is the text content (headline, subheading, buttons)
+
+  // Build the content row with direct references (no cloning)
+  const contentRow = [leftCol, rightCol];
+
+  // Compose the table
   const table = WebImporter.DOMUtils.createTable([
     headerRow,
-    contentRow
+    contentRow,
   ], document);
 
-  // Replace the original section with the table
+  // Replace the original element with the new table
   element.replaceWith(table);
 }

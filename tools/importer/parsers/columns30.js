@@ -1,38 +1,27 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Find the grid container that holds the columns
-  const grid = element.querySelector('.w-layout-grid');
-  if (!grid) return;
-
-  // Get all direct children (columns)
-  const columns = Array.from(grid.children);
-  if (columns.length < 4) return; // Defensive: expect at least 4 for this layout
-
-  // Left column: Name (Taylor Brooks)
-  const left = columns[0];
-  // Middle column: Tags
-  const middle = columns[1];
-  // Right column: Heading + rich text
-  const heading = columns[2];
-  const richText = columns[3];
-
-  // Compose the right column's content (heading and rich text, preserving structure and all content)
-  const rightContent = document.createElement('div');
-  rightContent.appendChild(heading);
-  rightContent.appendChild(richText);
-
-  // Per specification: use the target block name exactly
+  // Columns (columns30) block: always use the block name as the header row
   const headerRow = ['Columns (columns30)'];
 
-  // Assemble the table rows, referencing existing elements
-  const dataRow = [left, middle, rightContent];
+  // Identify all direct children (columns)
+  const columns = Array.from(element.querySelectorAll(':scope > div'));
 
-  // Create the columns table
-  const table = WebImporter.DOMUtils.createTable([
+  // For each column, extract the image element if present
+  const cells = columns.map((col) => {
+    // Only reference the existing <img> element (do not clone or create new)
+    const img = col.querySelector('img');
+    return img || '';
+  });
+
+  // Compose the table rows: header, then one row with the columns
+  const tableRows = [
     headerRow,
-    dataRow
-  ], document);
+    cells
+  ];
 
-  // Replace the original element with our block table
-  element.replaceWith(table);
+  // Create the block table
+  const block = WebImporter.DOMUtils.createTable(tableRows, document);
+
+  // Replace the original element with the block table
+  element.replaceWith(block);
 }

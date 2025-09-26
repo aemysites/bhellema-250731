@@ -1,31 +1,26 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  if (!element) return;
-
-  // Block header must match exactly
-  const headerRow = ['Columns (columns15)'];
-
-  // Find the main .grid-layout (holds two columns: left content, right image)
-  const grid = element.querySelector('.w-layout-grid.grid-layout');
+  // Columns block (columns15) - Columns block, no field hints in cells
+  // Get the grid layout container (assume first .grid-layout inside the main container)
+  const grid = element.querySelector('.grid-layout');
   if (!grid) return;
-  const cols = Array.from(grid.children);
-  if (cols.length < 2) return; // Defensive: need both columns
 
-  // Left column: capture all its contents as a single cell (preserves HTML)
-  const leftCol = cols[0];
-  // To ensure all text content is included, select all child elements and text nodes
-  // We'll clone the left column deeply to preserve all structure and text
-  const leftCell = leftCol.cloneNode(true);
+  // Get all immediate children of the grid (each column)
+  const columns = Array.from(grid.children);
 
-  // Right column: the image element (may contain more than one image, but mostly one)
-  // Directly clone the right column for consistency
-  const rightCell = cols[1].cloneNode(true);
+  // Prepare the header row (block name)
+  const headerRow = ['Columns block (columns15)'];
 
-  // Compose rows for block table
-  const columnsRow = [leftCell, rightCell];
-  const rows = [headerRow, columnsRow];
-  const table = WebImporter.DOMUtils.createTable(rows, document);
+  // Prepare the columns row (one cell per column)
+  // For columns block: no field hints, just the content
+  const columnsRow = columns.map(col => col);
 
-  // Output only the block table per spec
+  // Build the table
+  const table = WebImporter.DOMUtils.createTable([
+    headerRow,
+    columnsRow
+  ], document);
+
+  // Replace the original element with the new table
   element.replaceWith(table);
 }

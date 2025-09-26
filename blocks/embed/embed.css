@@ -5,7 +5,7 @@
   margin: 32px auto;
 }
 
-.embed > div {
+.embed>div {
   display: flex;
   justify-content: center;
 }
@@ -21,7 +21,7 @@
   position: relative;
 }
 
-.embed .embed-placeholder > * {
+.embed .embed-placeholder>* {
   display: flex;
   align-items: center;
   justify-content: center;

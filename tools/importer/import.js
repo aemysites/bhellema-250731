@@ -11,43 +11,52 @@
  */
 /* global WebImporter */
 /* eslint-disable no-console */
-import columns3Parser from './parsers/columns3.js';
-import columns4Parser from './parsers/columns4.js';
 import columns1Parser from './parsers/columns1.js';
+import columns8Parser from './parsers/columns8.js';
 import columns5Parser from './parsers/columns5.js';
-import columns9Parser from './parsers/columns9.js';
-import columns11Parser from './parsers/columns11.js';
-import columns14Parser from './parsers/columns14.js';
-import cards10Parser from './parsers/cards10.js';
+import columns4Parser from './parsers/columns4.js';
 import hero6Parser from './parsers/hero6.js';
-import accordion13Parser from './parsers/accordion13.js';
-import tabs2Parser from './parsers/tabs22.js';
+import columns3Parser from './parsers/columns3.js';
+import cards10Parser from './parsers/cards10.js';
 import cards2Parser from './parsers/cards2.js';
+import columns11Parser from './parsers/columns11.js';
 import columns15Parser from './parsers/columns15.js';
+import cards12Parser from './parsers/cards12.js';
 import cards19Parser from './parsers/cards19.js';
-import columns18Parser from './parsers/columns18.js';
-import carousel21Parser from './parsers/carousel21.js';
-import hero20Parser from './parsers/hero20.js';
-import hero12Parser from './parsers/hero12.js';
-import columns27Parser from './parsers/columns27.js';
 import cards7Parser from './parsers/cards7.js';
-import carousel16Parser from './parsers/carousel16.js';
-import columns31Parser from './parsers/columns31.js';
+import hero20Parser from './parsers/hero20.js';
+import columns21Parser from './parsers/columns21.js';
+import hero13Parser from './parsers/hero13.js';
+import tabs22Parser from './parsers/tabs22.js';
 import cards23Parser from './parsers/cards23.js';
-import cards25Parser from './parsers/cards25.js';
-import cards17Parser from './parsers/cards17.js';
-import hero28Parser from './parsers/hero28.js';
+import accordion17Parser from './parsers/accordion17.js';
+import carousel24Parser from './parsers/carousel24.js';
+import columns28Parser from './parsers/columns28.js';
 import columns30Parser from './parsers/columns30.js';
+import cards26Parser from './parsers/cards26.js';
+import columns31Parser from './parsers/columns31.js';
+import hero25Parser from './parsers/hero25.js';
+import hero29Parser from './parsers/hero29.js';
+import columns33Parser from './parsers/columns33.js';
 import columns32Parser from './parsers/columns32.js';
-import cards29Parser from './parsers/cards29.js';
-import cards24Parser from './parsers/cards24.js';
-import columns35Parser from './parsers/columns35.js';
+import columns9Parser from './parsers/columns9.js';
+import columns39Parser from './parsers/columns39.js';
+import hero37Parser from './parsers/hero37.js';
+import cards34Parser from './parsers/cards34.js';
+import hero40Parser from './parsers/hero40.js';
+import columns42Parser from './parsers/columns42.js';
+import columns41Parser from './parsers/columns41.js';
+import hero43Parser from './parsers/hero43.js';
+import hero44Parser from './parsers/hero44.js';
+import cards36Parser from './parsers/cards36.js';
+import columns45Parser from './parsers/columns45.js';
+import hero49Parser from './parsers/hero49.js';
+import hero46Parser from './parsers/hero46.js';
+import accordion50Parser from './parsers/accordion50.js';
+import hero48Parser from './parsers/hero48.js';
+import cards35Parser from './parsers/cards35.js';
+import hero47Parser from './parsers/hero47.js';
 import columns38Parser from './parsers/columns38.js';
-import columns36Parser from './parsers/columns36.js';
-import hero39Parser from './parsers/hero39.js';
-import cards37Parser from './parsers/cards37.js';
-import cards33Parser from './parsers/cards33.js';
-import accordion34Parser from './parsers/accordion34.js';
 import headerParser from './parsers/header.js';
 import metadataParser from './parsers/metadata.js';
 import cleanupTransformer from './transformers/cleanup.js';
@@ -64,53 +73,64 @@ import {
 
 const parsers = {
   metadata: metadataParser,
-  columns3: columns3Parser,
-  columns4: columns4Parser,
   columns1: columns1Parser,
+  columns8: columns8Parser,
   columns5: columns5Parser,
-  columns9: columns9Parser,
-  columns11: columns11Parser,
-  columns14: columns14Parser,
-  cards10: cards10Parser,
+  columns4: columns4Parser,
   hero6: hero6Parser,
-  accordion13: accordion13Parser,
+  columns3: columns3Parser,
+  cards10: cards10Parser,
   cards2: cards2Parser,
+  columns11: columns11Parser,
   columns15: columns15Parser,
+  cards12: cards12Parser,
   cards19: cards19Parser,
-  columns18: columns18Parser,
-  carousel21: carousel21Parser,
-  hero20: hero20Parser,
-  hero12: hero12Parser,
-  columns27: columns27Parser,
   cards7: cards7Parser,
-  carousel16: carousel16Parser,
-  columns31: columns31Parser,
+  hero20: hero20Parser,
+  columns21: columns21Parser,
+  hero13: hero13Parser,
+  tabs22: tabs22Parser,
   cards23: cards23Parser,
-  cards25: cards25Parser,
-  cards17: cards17Parser,
-  hero28: hero28Parser,
+  accordion17: accordion17Parser,
+  carousel24: carousel24Parser,
+  columns28: columns28Parser,
   columns30: columns30Parser,
+  cards26: cards26Parser,
+  columns31: columns31Parser,
+  hero25: hero25Parser,
+  hero29: hero29Parser,
+  columns33: columns33Parser,
   columns32: columns32Parser,
-  cards29: cards29Parser,
-  cards24: cards24Parser,
-  columns35: columns35Parser,
+  columns9: columns9Parser,
+  columns39: columns39Parser,
+  hero37: hero37Parser,
+  cards34: cards34Parser,
+  hero40: hero40Parser,
+  columns42: columns42Parser,
+  columns41: columns41Parser,
+  hero43: hero43Parser,
+  hero44: hero44Parser,
+  cards36: cards36Parser,
+  columns45: columns45Parser,
+  hero49: hero49Parser,
+  hero46: hero46Parser,
+  accordion50: accordion50Parser,
+  hero48: hero48Parser,
+  cards35: cards35Parser,
+  hero47: hero47Parser,
   columns38: columns38Parser,
-  columns36: columns36Parser,
-  hero39: hero39Parser,
-  cards37: cards37Parser,
-  cards33: cards33Parser,
-  accordion34: accordion34Parser,
-  tabs22: tabs2Parser,
   ...customParsers,
 };
 
-const transformers = {
-  cleanup: cleanupTransformer,
-  images: imageTransformer,
-  links: linkTransformer,
-  sections: sectionsTransformer,
-  ...customTransformers,
-};
+const transformers = [
+  cleanupTransformer,
+  imageTransformer,
+  linkTransformer,
+  sectionsTransformer,
+  ...(Array.isArray(customTransformers)
+    ? customTransformers
+    : Object.values(customTransformers)),
+];
 
 // Additional page elements to parse that are not included in the inventory
 const pageElements = [{ name: 'metadata' }, ...customElements];
@@ -121,7 +141,7 @@ WebImporter.Import = {
   ),
   transform: (hookName, element, payload) => {
     // perform any additional transformations to the page
-    Object.values(transformers).forEach((transformerFn) => (
+    transformers.forEach((transformerFn) => (
       transformerFn.call(this, hookName, element, payload)
     ));
   },
@@ -180,7 +200,8 @@ function transformPage(main, { inventory, ...source }) {
     .map((instance) => ({
       ...instance,
       element: WebImporter.Import.getElementByXPath(document, instance.xpath),
-    }));
+    }))
+    .filter((block) => block.element);
 
   // remove fragment elements from the current page
   fragmentElements.forEach((element) => {
@@ -312,8 +333,8 @@ export default {
     await handleOnLoad(payload);
   },
 
-  transform: async (source) => {
-    const { document, params: { originalURL } } = source;
+  transform: async (payload) => {
+    const { document, params: { originalURL } } = payload;
 
     /* eslint-disable-next-line prefer-const */
     let publishUrl = window.location.origin;
@@ -342,7 +363,7 @@ export default {
     let main = document.body;
 
     // before transform hook
-    WebImporter.Import.transform(TransformHook.beforeTransform, main, { ...source, inventory });
+    WebImporter.Import.transform(TransformHook.beforeTransform, main, { ...payload, inventory });
 
     // perform the transformation
     let path = null;
@@ -355,16 +376,16 @@ export default {
         return [];
       }
       main = document.createElement('div');
-      transformFragment(main, { ...source, fragment, inventory });
+      transformFragment(main, { ...payload, fragment, inventory });
       path = fragment.path;
     } else {
       // page transformation
-      transformPage(main, { ...source, inventory });
-      path = generateDocumentPath(source, inventory);
+      transformPage(main, { ...payload, inventory });
+      path = generateDocumentPath(payload, inventory);
     }
 
     // after transform hook
-    WebImporter.Import.transform(TransformHook.afterTransform, main, { ...source, inventory });
+    WebImporter.Import.transform(TransformHook.afterTransform, main, { ...payload, inventory });
 
     return [{
       element: main,

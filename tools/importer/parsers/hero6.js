@@ -1,64 +1,42 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Header row for Hero (hero6)
+  // Helper to add field comment before content
+  function withFieldHint(field, content) {
+    const frag = document.createDocumentFragment();
+    frag.appendChild(document.createComment(` field:${field} `));
+    frag.appendChild(content);
+    return frag;
+  }
+
+  // 1. Table header row
   const headerRow = ['Hero (hero6)'];
 
-  // --- Find the background image ---
+  // 2. Background image row (image field)
   let imageCell = '';
-  const imageDiv = element.querySelector('.utility-min-height-100dvh');
-  if (imageDiv) {
-    const img = imageDiv.querySelector('img');
-    if (img) {
-      const wrapper = document.createElement('div');
-      wrapper.innerHTML = '<!-- field:image -->';
-      const picture = document.createElement('picture');
-      const newImg = document.createElement('img');
-      newImg.src = img.src;
-      newImg.alt = img.alt || '';
-      picture.appendChild(newImg);
-      wrapper.appendChild(picture);
-      imageCell = wrapper;
-    }
-  }
-  const imageRow = [imageCell ? imageCell : ''];
-
-  // --- Find text, subheading, and buttons ---
-  let textCellContent = [];
-  const textCard = element.querySelector('.card.utility-backdrop-filter-blur');
-  if (textCard) {
-    // Title
-    const h1 = textCard.querySelector('h1');
-    if (h1) textCellContent.push(h1);
-    // Subheading (paragraph)
-    const subheading = textCard.querySelector('p');
-    if (subheading) textCellContent.push(subheading);
-    // Buttons
-    const buttonGroup = textCard.querySelector('.button-group');
-    if (buttonGroup) {
-      const buttons = Array.from(buttonGroup.querySelectorAll('a'));
-      if (buttons.length) textCellContent.push(...buttons);
-    }
+  const imageEl = element.querySelector('img');
+  if (imageEl) {
+    // Reference the existing image element, wrap in <picture>
+    const picture = document.createElement('picture');
+    picture.appendChild(imageEl);
+    imageCell = withFieldHint('image', picture);
   }
 
-  let textRowCell;
-  if (textCellContent.length > 0) {
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = '<!-- field:text -->';
-    textCellContent.forEach((el) => wrapper.appendChild(el));
-    textRowCell = wrapper;
-  } else {
-    textRowCell = '';
+  // 3. Text row (text field)
+  let textCell = '';
+  const card = element.querySelector('.card');
+  if (card) {
+    textCell = withFieldHint('text', card);
   }
-  const textRow = [textRowCell];
 
-  // Build table
-  const cells = [
+  // Compose the table rows
+  const rows = [
     headerRow,
-    imageRow,
-    textRow
+    [imageCell],
+    [textCell],
   ];
 
-  // Replace element with block table
-  const block = WebImporter.DOMUtils.createTable(cells, document);
+  // Create the block table
+  const block = WebImporter.DOMUtils.createTable(rows, document);
+  // Replace the original element with the block table
   element.replaceWith(block);
 }

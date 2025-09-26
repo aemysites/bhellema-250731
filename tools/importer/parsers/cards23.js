@@ -1,65 +1,63 @@
 /* global WebImporter */
 export default function parse(element, { document }) {
-  // Helper to create model hint comment
-  function createFieldComment(name) {
-    return document.createComment(` field:${name} `);
+  // Helper to create a field-hinted fragment
+  function fieldFragment(field, content) {
+    const frag = document.createDocumentFragment();
+    frag.appendChild(document.createComment(` field:${field} `));
+    frag.appendChild(content);
+    return frag;
   }
 
-  // Find the active tab pane (the one that's visible)
-  const activePane = element.querySelector('.w-tab-pane.w--tab-active');
-  if (!activePane) return;
+  // Find all tab panes (each contains a grid of cards)
+  const tabPanes = element.querySelectorAll('.w-tab-pane');
+  const cards = [];
 
-  // Find grid inside active tab
-  const grid = activePane.querySelector('.w-layout-grid');
-  if (!grid) return;
-
-  // Find all card anchor elements
-  const cards = Array.from(grid.querySelectorAll('a'));
-
-  // Always use the block name and variant as header
-  const headerRow = ['Cards (cards23)'];
-  const rows = [headerRow];
-
-  cards.forEach(card => {
-    // Image cell
-    let imageCell = '';
-    const img = card.querySelector('img');
-    if (img) {
-      imageCell = [createFieldComment('image'), img.cloneNode(true)];
-    }
-
-    // Text cell: gather all visible text (not just h3 and .paragraph-sm)
-    let textCell = '';
-    // Collect all text-based children in card (h3, div.paragraph-sm, etc)
-    const textContentEls = [];
-    // In some cards, text is direct children; in others, inside wrappers
-    card.childNodes.forEach(child => {
-      // Only element nodes
-      if (child.nodeType === 1) {
-        if (child.matches('h3, .paragraph-sm')) {
-          textContentEls.push(child.cloneNode(true));
-        } else {
-          // For wrappers, look for h3/paragraph-sm inside
-          const h3 = child.querySelector('h3');
-          if (h3) textContentEls.push(h3.cloneNode(true));
-          // Get all .paragraph-sm elements inside
-          child.querySelectorAll('.paragraph-sm').forEach(para => {
-            textContentEls.push(para.cloneNode(true));
-          });
-        }
+  tabPanes.forEach((tabPane) => {
+    // Each tabPane contains a grid-layout div
+    const grid = tabPane.querySelector('.w-layout-grid');
+    if (!grid) return;
+    // Each card is an <a> inside the grid
+    const cardEls = grid.querySelectorAll('a.utility-link-content-block');
+    cardEls.forEach((cardEl) => {
+      // Card image (optional)
+      let img = cardEl.querySelector('img');
+      let imgCell = '';
+      if (img) {
+        imgCell = fieldFragment('image', img);
       }
+      // Card text (title + description)
+      // Try to get the heading and paragraph
+      let textCell = '';
+      const frag = document.createDocumentFragment();
+      // Heading
+      const heading = cardEl.querySelector('h3');
+      if (heading) {
+        frag.appendChild(heading);
+      }
+      // Description
+      const desc = cardEl.querySelector('div.paragraph-sm');
+      if (desc) {
+        frag.appendChild(document.createElement('br'));
+        frag.appendChild(desc);
+      }
+      if (frag.childNodes.length > 0) {
+        textCell = fieldFragment('text', frag);
+      }
+      cards.push([imgCell, textCell]);
     });
-    // If text content elements found, add comment and content
-    if (textContentEls.length > 0) {
-      const wrapper = document.createElement('div');
-      textContentEls.forEach(el => wrapper.appendChild(el));
-      textCell = [createFieldComment('text'), wrapper];
-    }
-
-    rows.push([imageCell, textCell]);
   });
 
-  // Replace element with block table
+  // Compose the table rows
+  const rows = [];
+  rows.push(['Cards (cards23)']);
+  cards.forEach(([imgCell, textCell]) => {
+    rows.push([
+      imgCell || '',
+      textCell || '',
+    ]);
+  });
+
+  // Create the table and replace the element
   const table = WebImporter.DOMUtils.createTable(rows, document);
   element.replaceWith(table);
 }

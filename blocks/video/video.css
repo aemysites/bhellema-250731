@@ -9,7 +9,7 @@
   aspect-ratio: 16 / 9;
 }
 
-.video > div {
+.video>div {
   display: flex;
   justify-content: center;
 }
@@ -24,7 +24,7 @@
   position: relative;
 }
 
-.video .video-placeholder > * {
+.video .video-placeholder>* {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -33,7 +33,7 @@
 }
 
 .video[data-embed-loaded='true'] .video-placeholder,
-.video[data-embed-loaded='false'] .video-placeholder + * {
+.video[data-embed-loaded='false'] .video-placeholder+* {
   visibility: hidden;
   height: 0;
   width: 0;
