@@ -1,6 +1,7 @@
 {
   "mappings": [
     "/content/bhellema-250731/:/",
+    "/content/bhellema-250731/blog:/blog",
     "/content/bhellema-250731/configuration:/.helix/config.json",
     "/content/bhellema-250731/metadata:/metadata.json",
     "/content/bhellema-250731/tools/sidekick/library:/tools/sidekick/library.json"
