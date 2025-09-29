@@ -358,7 +358,6 @@
 
 
 .columns.columns9 {
-  /* Main block: stack two areas vertically (top content row, bottom image row) */
   display: grid;
   grid-template-rows: auto 1fr;
   gap: 0;
@@ -370,7 +369,6 @@
   margin: 0 auto;
 }
 
-/* ----- TOP ROW: SIDE-BY-SIDE BLOCK ----- */
 .columns.columns9 > div:first-child {
   display: flex;
   flex-direction: row;
@@ -383,7 +381,6 @@
   grid-row: 1;
 }
 
-/* LEFT: text stack */
 .columns.columns9 > div:first-child > div:first-child {
   flex: 1 1 0;
   display: flex;
@@ -395,7 +392,6 @@
   padding: 0 4vw 0 7vw;
 }
 
-/* RIGHT: contact info stack */
 .columns.columns9 > div:first-child > div:nth-child(2) {
   flex: 1 1 0;
   display: flex;
@@ -405,11 +401,8 @@
   padding: 0 7vw 0 4vw;
   min-width: 0;
   box-sizing: border-box;
-
-  /* Force contact info vertical stack and hide images */
 }
 
-/* HIDE ANY IMAGES OR IMAGE CONTAINERS IN TOP RIGHT COLUMN */
 .columns.columns9 > div:first-child > div:nth-child(2) img,
 .columns.columns9 > div:first-child > div:nth-child(2) picture,
 .columns.columns9 > div:first-child > div:nth-child(2) .columns-img-col,
@@ -419,7 +412,6 @@
   display: none;
 }
 
-/* CONTACT INFO: vertical spacing */
 .columns.columns9 > div:first-child > div:nth-child(2) h4 {
   color: #8e8e8e;
   text-transform: uppercase;
@@ -434,7 +426,6 @@
   margin: 0 0 12px;
 }
 
-/* ----- BOTTOM ROW: IMAGE ONLY, CENTERED ----- */
 .columns.columns9 > div:nth-child(2) {
   display: flex;
   flex-direction: row;
@@ -455,7 +446,6 @@
   padding: 0;
 }
 
-/* Only show the image here */
 .columns.columns9 .columns-img-col img {
   width: 100%;
   max-width: 800px;
@@ -465,12 +455,10 @@
   box-shadow: 0 4px 24px rgb(0 0 0 / 5%);
 }
 
-/* Prevent hiding/collapsing other divs, but keep layout clean */
 .columns.columns9 > div:nth-child(2) > div:not(.columns-img-col) {
   display: none;
 }
 
-/* Headings and text refinement */
 .columns.columns9 h2 {
   color: #8e8e8e;
   text-transform: uppercase;
@@ -497,7 +485,6 @@
   line-height: 1.4;
 }
 
-/* Responsive: stack both rows vertically, image full width below content */
 @media (width <= 900px) {
   .columns.columns9 {
     grid-template-rows: auto 1fr;
@@ -526,4 +513,171 @@
     margin: 24px auto 0;
     max-width: 100%;
   }
+}
+
+
+.columns.columns11 {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.columns.columns11 > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  width: 100%;
+  min-height: 0;
+}
+
+@media (width <= 900px) {
+  .columns.columns11 > div {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: 2rem;
+  }
+}
+
+/* Left column layout and spacing */
+.columns.columns11 > div > div:first-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 2.5rem 2rem 2.5rem 0;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  background: var(--background-color);
+}
+
+@media (width <= 900px) {
+  .columns.columns11 > div > div:first-child {
+    padding: 2rem 0;
+    align-items: flex-start;
+  }
+}
+
+/* Label styling */
+.columns.columns11 > div > div:first-child > div:first-child > p:first-child {
+  margin-bottom: 1.5rem;
+  color: #888;
+  font-size: var(--body-font-size-s);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Headline styling */
+.columns.columns11 > div > div:first-child > div:first-child > h1 {
+  margin: 0 0 2.2rem;
+  color: var(--text-color);
+  font-size: var(--heading-font-size-xxl);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  text-align: left;
+}
+
+/* Subtext, author, date, read time, button area */
+.columns.columns11 > div > div:first-child > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  width: 100%;
+}
+
+.columns.columns11 > div > div:first-child > div:last-child > p {
+  color: #505050;
+  font-size: var(--body-font-size-s);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.columns.columns11 .button-container {
+  margin-top: 1.3rem;
+  margin-bottom: 0;
+  display: block;
+}
+
+/* Button styling (high specificity) */
+.columns.columns11 .button-container .button {
+  border: 1.5px solid var(--text-color);
+  background: var(--background-color);
+  color: var(--text-color);
+  border-radius: 999px;
+  padding: 0.58em 1.5em;
+  font-size: var(--body-font-size-s);
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  box-shadow: none;
+  margin: 0;
+}
+
+.columns.columns11 .button-container .button:hover,
+.columns.columns11 .button-container .button:focus {
+  background: #f2f2f2;
+  color: var(--text-color);
+  border-color: var(--text-color);
+}
+
+/* Author/date row inline styling */
+.columns.columns11 > div > div:first-child > div:last-child > p:nth-child(3),
+.columns.columns11 > div > div:first-child > div:last-child > p:nth-child(4),
+.columns.columns11 > div > div:first-child > div:last-child > p:nth-child(5),
+.columns.columns11 > div > div:first-child > div:last-child > p:nth-child(6) {
+  display: inline;
+  font-size: var(--body-font-size-xs);
+  color: #888;
+  margin-right: 0.4em;
+  font-weight: 500;
+}
+
+/* Second column: images in a grid */
+.columns.columns11 > div > div:last-child {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+@media (width <= 900px) {
+  .columns.columns11 > div > div:last-child {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: 1.5rem;
+  }
+}
+
+/* Image containers */
+.columns.columns11 .columns-img-col {
+  border-radius: 20px;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background: #eee;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+/* Images inside containers */
+.columns.columns11 .columns-img-col img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Prevent images from exceeding their container */
+.columns.columns11 picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.columns.columns11 .columns-img-col picture {
+  width: 100%;
+  height: 100%;
 }
