@@ -1,9 +1,20 @@
 .tabs .tabs-list {
   display: flex;
-  gap: 0.5ch;
-  max-width: 100%;
+  gap: 2.2rem;
+  max-width: 900px;
   font-size: var(--body-font-size-xs);
   overflow-x: auto;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-end;
+  background: transparent;
+  border: none;
+  margin: 0 0 0.6rem;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 2;
 }
 
 @media (width >=600px) {
@@ -21,22 +32,37 @@
 .tabs .tabs-list button {
   flex: 0 0 max-content;
   margin: 0;
-  border: 1px solid #dadada;
+  border: none;
   border-radius: 0;
-  padding: 0.5em;
+  padding: 0 0 0.2rem;
   background-color: var(--light-color);
-  color: initial;
-  font-weight: bold;
+  color: #b3b3b3;
+  font-weight: 400;
   line-height: unset;
   text-align: initial;
   text-overflow: unset;
   overflow: unset;
   white-space: unset;
-  transition: background-color 0.2s;
+  transition: color 0.2s;
+  background: none;
+  outline: none;
+  font-size: 1.22rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  position: relative;
+  min-width: 70px;
+  min-height: 32px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  box-shadow: none;
+  background-clip: padding-box;
 }
 
 .tabs .tabs-list button p {
   margin: 0;
+  letter-spacing: 0.04em;
+  font-size: inherit;
 }
 
 
@@ -48,11 +74,159 @@
 
 .tabs .tabs-panel {
   margin-top: -1px;
-  padding: 24px;
-  border: 1px solid #dadada;
+  padding: 0;
+  border: none;
   overflow: auto;
+  background: transparent;
+  box-shadow: none;
+  margin: 0;
+  width: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
 }
 
 .tabs .tabs-panel[aria-hidden='true'] {
   display: none;
+}
+
+.tabs {
+  background: #000;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Use grid for vertical stacking, centered horizontally */
+.tabs .tabs.block {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  place-items: start center;
+  width: 100%;
+  max-width: 100vw;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* Tabs bar: horizontally center, moderate gap, tightly packed below */
+
+/* Tab button: transparent bg, remove border, adjust padding, fix vertical alignment */
+
+/* Remove background from active tab, only color + underline, bring underline closer to text */
+.tabs .tabs-list button[aria-selected="true"] {
+  color: #fff;
+  background: transparent;
+}
+
+.tabs .tabs-list button[aria-selected="true"]::after {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: #fff;
+  border-radius: 2px;
+  margin: auto;
+  pointer-events: none;
+}
+
+/* Tab label style */
+
+/* Remove panel border/padding, center content */
+
+.tabs .tabs-panel[aria-hidden="false"] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Panel content: tighter stacking, consistent width */
+.tabs .tabs-panel[aria-hidden="false"] > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  gap: 0.7rem;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+/* Heading: big, white, centered, less vertical margin */
+.tabs .tabs-panel[aria-hidden="false"] > div > h3 {
+  color: #fff;
+  text-align: center;
+  margin: 0 0 0.6rem;
+  font-size: clamp(2.1rem, 6vw, 2.8rem);
+  font-weight: 400;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  line-height: 1.10;
+  word-spacing: 0.09em;
+  width: 100%;
+}
+
+/* Remove p margin around image, fix alignment */
+.tabs .tabs-panel[aria-hidden="false"] > div > p {
+  margin: 0;
+  text-align: center;
+  width: 100%;
+  display: block;
+}
+
+/* Image: centered, rounded, responsive, max width */
+.tabs .tabs-panel[aria-hidden="false"] img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 880px;
+  border-radius: 22px;
+  height: auto;
+  box-sizing: border-box;
+}
+
+/* Optionally, apply fallback background only to picture container */
+.tabs .tabs-panel[aria-hidden="false"] picture {
+  border-radius: 22px;
+  width: 100%;
+  display: block;
+}
+
+/* Responsive tweaks for spacing/gap */
+@media (width <= 900px) {
+  .tabs .tabs-list {
+    max-width: 100vw;
+    gap: 1.2rem;
+    margin-bottom: 0.45rem;
+  }
+
+  .tabs .tabs-panel[aria-hidden="false"] > div {
+    max-width: 98vw;
+    gap: 0.35rem;
+  }
+
+  .tabs .tabs-panel[aria-hidden="false"] img {
+    max-width: 98vw;
+    border-radius: 12px;
+  }
+
+  .tabs .tabs-panel[aria-hidden="false"] > div > h3 {
+    font-size: clamp(1.2rem, 7vw, 2rem);
+    margin-bottom: 0.35rem;
+  }
+}
+
+@media (width <= 600px) {
+  .tabs .tabs-list {
+    gap: 0.3rem;
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .tabs .tabs-panel[aria-hidden="false"] > div {
+    gap: 0.18rem;
+  }
 }
