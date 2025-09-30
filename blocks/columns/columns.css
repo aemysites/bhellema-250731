@@ -49,7 +49,6 @@
   padding: 48px 0;
 }
 
-/* Ensure direct child div (the row container) lays out its children side by side */
 .columns.columns1 > div {
   display: flex;
   flex-flow: row nowrap;
@@ -67,7 +66,6 @@
   background: transparent;
 }
 
-/* Card styling for any direct child (to cover .columns-img-col and other possible columns) */
 .columns.columns1 > div > * {
   background: #FAFAF6;
   border: 2px solid #191919;
@@ -85,7 +83,6 @@
   margin: 0;
 }
 
-/* Make images inside each card fill the card and keep rounded corners */
 .columns.columns1 > div > * picture,
 .columns.columns1 > div > * img {
   width: 100%;
@@ -95,7 +92,6 @@
   object-fit: cover;
 }
 
-/* Responsive: stack cards vertically and fill most of the screen width on mobile */
 @media (width <= 900px) {
   .columns.columns1 > div {
     flex-flow: column nowrap;
@@ -632,7 +628,6 @@
   }
 }
 
-/* Left column layout and spacing */
 .columns.columns11 > div > div:first-child {
   display: flex;
   flex-direction: column;
@@ -652,7 +647,6 @@
   }
 }
 
-/* Label styling */
 .columns.columns11 > div > div:first-child > div:first-child > p:first-child {
   margin-bottom: 1.5rem;
   color: #888;
@@ -662,7 +656,6 @@
   text-transform: uppercase;
 }
 
-/* Headline styling */
 .columns.columns11 > div > div:first-child > div:first-child > h1 {
   margin: 0 0 2.2rem;
   color: var(--text-color);
@@ -673,7 +666,6 @@
   text-align: left;
 }
 
-/* Subtext, author, date, read time, button area */
 .columns.columns11 > div > div:first-child > div:last-child {
   display: flex;
   flex-direction: column;
@@ -694,7 +686,6 @@
   display: block;
 }
 
-/* Button styling (high specificity) */
 .columns.columns11 .button-container .button {
   border: 1.5px solid var(--text-color);
   background: var(--background-color);
@@ -715,7 +706,6 @@
   border-color: var(--text-color);
 }
 
-/* Author/date row inline styling */
 .columns.columns11 > div > div:first-child > div:last-child > p:nth-child(3),
 .columns.columns11 > div > div:first-child > div:last-child > p:nth-child(4),
 .columns.columns11 > div > div:first-child > div:last-child > p:nth-child(5),
@@ -727,7 +717,6 @@
   font-weight: 500;
 }
 
-/* Second column: images in a grid */
 .columns.columns11 > div > div:last-child {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -746,7 +735,6 @@
   }
 }
 
-/* Image containers */
 .columns.columns11 .columns-img-col {
   border-radius: 20px;
   overflow: hidden;
@@ -757,7 +745,6 @@
   justify-content: stretch;
 }
 
-/* Images inside containers */
 .columns.columns11 .columns-img-col img {
   width: 100%;
   height: 100%;
@@ -765,7 +752,6 @@
   display: block;
 }
 
-/* Prevent images from exceeding their container */
 .columns.columns11 picture {
   display: block;
   width: 100%;
@@ -775,4 +761,170 @@
 .columns.columns11 .columns-img-col picture {
   width: 100%;
   height: 100%;
+}
+
+
+.columns.columns3 {
+  background: #FAFAF6;
+  padding: 0;
+}
+
+/* Use flexbox for true side-by-side columns, limit width to prevent overflow */
+.columns.columns3 > div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 56px;
+  width: 100%;
+  max-width: 1100px; /* Prevent columns from overflowing parent */
+  margin: 0 auto;
+  min-height: 540px;
+  box-sizing: border-box;
+  padding: 48px 0;
+  background: none;
+}
+
+@media (width <= 900px) {
+  .columns.columns3 > div {
+    flex-direction: column;
+    gap: 32px;
+    padding: 32px 0;
+    min-height: 0;
+    max-width: 98vw;
+  }
+}
+
+/* Left column (image) */
+.columns.columns3 .columns-img-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 400px;
+  min-width: 320px;
+  max-width: 400px;
+  height: auto;
+}
+
+.columns.columns3 .columns-img-col img {
+  border-radius: 24px;
+  width: 340px;
+  height: 340px;
+  object-fit: cover;
+  display: block;
+  max-width: 100%;
+}
+
+@media (width <= 600px) {
+  .columns.columns3 .columns-img-col,
+  .columns.columns3 .columns-img-col img {
+    min-width: 0;
+    max-width: 95vw;
+    width: 90vw;
+    height: auto;
+  }
+}
+
+/* Right column: restrict width and ensure content stacks and is visible */
+.columns.columns3 > div > div:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 28px;
+  max-width: 520px;
+  width: 100%;
+  min-width: 300px;
+  height: auto;
+  box-sizing: border-box;
+  padding: 0;
+  overflow: visible;
+  background: none; /* Remove any background image that might interfere */
+}
+
+/* Fix any previously hidden children */
+.columns.columns3 > div > div:nth-child(2) > * {
+  display: block;
+  visibility: visible;
+  opacity: 1;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+/* Responsive: center content on small screens */
+@media (width <= 900px) {
+  .columns.columns3 > div > div:nth-child(2) {
+    align-items: center;
+    text-align: center;
+    max-width: 98vw;
+    min-width: 0;
+  }
+}
+
+/* Headline styling */
+.columns.columns3 > div > div:nth-child(2) h1 {
+  font-size: 54px;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  line-height: 1.04;
+  color: #181817;
+  margin: 0 0 12px;
+  text-align: left;
+  max-width: 100%;
+}
+
+@media (width <= 600px) {
+  .columns.columns3 > div > div:nth-child(2) h1 {
+    font-size: 32px;
+    text-align: center;
+    max-width: 98vw;
+  }
+}
+
+/* Paragraph styling */
+.columns.columns3 > div > div:nth-child(2) p:not(.button-container) {
+  color: #49494B;
+  font-size: 18px;
+  line-height: 1.5;
+  margin: 0 0 16px;
+  max-width: 100%;
+}
+
+/* Button row styling */
+.columns.columns3 .button-container {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+}
+
+@media (width <= 600px) {
+  .columns.columns3 .button-container {
+    justify-content: center;
+    gap: 12px;
+  }
+}
+
+/* Button styling */
+.columns.columns3 .button-container .button {
+  border: 2px solid #181817;
+  border-radius: 24px;
+  background: #fff;
+  color: #181817;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px 28px;
+  margin: 0;
+  transition: background 0.2s, color 0.2s;
+  box-shadow: none;
+}
+
+.columns.columns3 .button-container .button:hover,
+.columns.columns3 .button-container .button:focus {
+  background: #181817;
+  color: #fff;
+  border-color: #181817;
+  text-decoration: none;
 }
