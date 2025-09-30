@@ -368,7 +368,6 @@
   background: #fff;
 }
 
-/* Always show four cards in a single row on desktop */
 .cards.cards12 > ul {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -380,7 +379,6 @@
   place-items: stretch stretch;
 }
 
-/* Card styling */
 .cards.cards12 > ul > li {
   background: #fff;
   border: none;
@@ -395,7 +393,6 @@
   margin: 0;
 }
 
-/* Card image at top */
 .cards.cards12 .cards-card-image {
   width: 100%;
   line-height: 0;
@@ -412,7 +409,6 @@
   border-top-right-radius: 24px;
 }
 
-/* Card body layout and spacing */
 .cards.cards12 .cards-card-body {
   display: flex;
   flex-direction: column;
@@ -420,7 +416,6 @@
   flex: 1;
 }
 
-/* Label-date row (side by side) */
 .cards.cards12 .cards-card-body .cards-label-date-row,
 .cards.cards12 .cards-card-body .cards-label-date-flex {
   display: flex;
@@ -442,7 +437,6 @@
   padding: 0;
 }
 
-/* Label (first p) as pill */
 .cards.cards12 .cards-card-body p:first-child {
   background: #f6f6f6;
   color: #131313;
@@ -452,14 +446,12 @@
   margin-right: 10px;
 }
 
-/* Date (second p) right aligned */
 .cards.cards12 .cards-card-body p:nth-child(2) {
   color: #454545;
   font-weight: 400;
   margin-left: auto;
 }
 
-/* Place label/date side by side for first two p */
 .cards.cards12 .cards-card-body > p:first-child,
 .cards.cards12 .cards-card-body > p:nth-child(2) {
   margin-top: 0;
@@ -470,7 +462,6 @@
   margin-left: 0;
 }
 
-/* Card title style */
 .cards.cards12 .cards-card-body h3 {
   margin-top: 18px;
   margin-bottom: 0;
@@ -483,12 +474,10 @@
   overflow-wrap: break-word;
 }
 
-/* Remove bottom margin from last child */
 .cards.cards12 .cards-card-body > *:last-child {
   margin-bottom: 0;
 }
 
-/* Responsive: stack cards vertically on small screens */
 @media (width <= 1050px) {
   .cards.cards12 > ul {
     grid-template-columns: repeat(2, 1fr);
@@ -515,8 +504,102 @@
   }
 }
 
-/* Remove unwanted margin from text elements */
 .cards.cards12 .cards-card-body p,
 .cards.cards12 .cards-card-body h3 {
   margin-top: 0;
+}
+
+
+.cards.cards19 {
+  /* Remove any default horizontal margin or max-width, ensure full bleed */
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+  width: 100vw;
+  max-width: 100vw;
+  box-sizing: border-box;
+  background: none;
+}
+
+/* Make the grid of cards fill the viewport horizontally */
+.cards.cards19 > ul {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 36px;
+  width: 100vw;
+  max-width: 100vw;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+}
+
+/* Each card should take the full width of its grid cell */
+.cards.cards19 > ul > li {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+  box-sizing: border-box;
+}
+
+/* Reserve space for icon area even if empty */
+.cards.cards19 > ul > li > .cards-card-body:first-child {
+  width: 20px;
+  min-width: 20px;
+  height: 20px;
+  margin-right: 12px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/* Text area */
+.cards.cards19 > ul > li > .cards-card-body:last-child {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* Remove paragraph margins, match color, size, spacing */
+.cards.cards19 > ul > li > .cards-card-body:last-child p {
+  margin: 0;
+  color: #222;
+  font-size: 12px;
+  line-height: 1.45;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-align: left;
+  padding: 0;
+}
+
+/* Responsive behavior: 2 columns at tablet, 1 at mobile */
+@media (width <= 900px) {
+  .cards.cards19 > ul {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    width: 100vw;
+    max-width: 100vw;
+  }
+}
+
+@media (width <= 600px) {
+  .cards.cards19 > ul {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    width: 100vw;
+    max-width: 100vw;
+  }
 }
