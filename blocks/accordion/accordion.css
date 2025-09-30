@@ -1,8 +1,13 @@
+/* stylelint-disable no-descending-specificity */
 .accordion details {
-  border: 1px solid #dadada;
+  border: none;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  background: none;
+  color: inherit;
 }
 
-/* stylelint-disable-next-line no-descending-specificity */
 .accordion details+details {
   margin-top: 24px;
 }
@@ -13,12 +18,24 @@
 
 .accordion details summary {
   position: relative;
-  padding: 0 16px;
+  padding: 16px;
   padding-right: 46px;
   cursor: pointer;
   list-style: none;
   overflow: auto;
   transition: background-color 0.2s;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  box-sizing: border-box;
+  min-height: 44px;
+  color: inherit;
 }
 
 .accordion details[open] summary {
@@ -39,23 +56,72 @@
   position: absolute;
   top: 50%;
   right: 18px;
-  transform: translateY(-50%) rotate(135deg);
+  transform: rotate(135deg);
   width: 6px;
   height: 6px;
-  border: 2px solid;
-  border-width: 2px 2px 0 0;
+  border: 1.5px solid #4c4c4c;
+  border-width: 1.5px 1.5px 0 0;
   transition: transform 0.2s;
+  display: inline-block;
+  margin-left: 10px;
+  align-self: center;
+  flex: 0 0 auto;
 }
 
 .accordion details[open] summary::after {
-  transform: translateY(-50%) rotate(-45deg);
+  transform: rotate(-45deg);
 }
 
 .accordion details .accordion-item-body {
   padding: 0 16px;
+  margin: 0;
+  border: none;
+  background: transparent;
+  color: #4c4c4c;
 }
 
 .accordion details[open] .accordion-item-body {
   border-top: 1px solid #dadada;
   background-color: var(--background-color);
 }
+
+.accordion {
+  background-color: #f6f7f3;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0;
+  color: #4c4c4c;
+}
+
+/* Each accordion row */
+
+/* Divider line between rows, but not after last */
+.accordion details:not(:last-child) {
+  border-bottom: 1px solid #e0e0dc;
+}
+
+/* Remove any extra spacing between details */
+.accordion details + details {
+  margin-top: 0;
+}
+
+/* Layout for summary: tighter padding, side by side for arrow and text */
+
+/* Hide native marker for summary */
+
+/* Ensure text styles and alignment for label */
+.accordion details summary p {
+  color: #4c4c4c;
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0;
+  padding: 0;
+  flex: 1 1 auto;
+  text-align: left;
+  line-height: 1.4;
+  min-width: 0;
+}
+
+/* Custom arrow styling: thinner, lighter, properly centered */
+
+/* Accordion content body: padded to align with summary text */
