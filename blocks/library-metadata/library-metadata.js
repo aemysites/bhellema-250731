@@ -1,5 +1,3 @@
-// import { moveInstrumentation } from '../../scripts/scripts.js';
-
 export default async function decorate(block) {
   [...block.children].forEach((child, index) => {
     const directDivs = [...child.children].filter((el) => el.tagName === 'DIV');
@@ -8,8 +6,6 @@ export default async function decorate(block) {
       if (index === 0) {
         const secondDiv = directDivs[1];
         const h2 = document.createElement('h2');
-        // moveInstrumentation(secondDiv, h2);
-
         h2.innerHTML = secondDiv.innerHTML;
         child.replaceChild(h2, secondDiv);
       }
