@@ -8,7 +8,7 @@ export default async function decorate(block) {
       if (index === 0) {
         const secondDiv = directDivs[1];
         const h2 = document.createElement('h2');
-        moveInstrumentation(h2, secondDiv);
+        moveInstrumentation(secondDiv, h2);
 
         h2.innerHTML = secondDiv.innerHTML;
         child.replaceChild(h2, secondDiv);
